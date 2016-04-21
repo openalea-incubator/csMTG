@@ -30,13 +30,24 @@ namespace csMTG
             root = id;
             parent.Add(root, -1);
             children.Add(root,null);
-            id++;
+            id = NewId();
         }
 
         // The number of elements in the tree
          int Count() {
             int count = children.Count();
             return count;
+        }
+        
+        //Attributes a unique new id
+        private int NewId()
+        {
+            do
+            {
+                id++;
+            }
+            while (children.ContainsKey(id));
+            return id;
         }
 
         // Add a child to the id specified in the parameter
@@ -58,7 +69,7 @@ namespace csMTG
                     children[parentId] = newList;
                 }
                 parent[id] = parentId;
-                id++;
+                id = NewId();
             }
         }
        
