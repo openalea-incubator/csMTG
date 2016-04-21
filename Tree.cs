@@ -10,20 +10,32 @@ namespace csMTG
 {
    public class Tree
     {
-        // Define the attributes
-        int id { get; set; } = 0;
+         // Every vertex has a unique id
+        public int id { get; private set; } = 0;
+        
+        // Root attribute
+        int root;
+        
+        // Children corresponds to : parent_id => { children's ids } 
+        public Dictionary<int, List<int>> children = new Dictionary<int, List<int>>();
+
+        // Parent corresponds to : child_id => parent_id
+        public Dictionary<int, int> parent = new Dictionary<int, int>();
+        
         //The key is the parent's id, and the values are a list of children
         protected Dictionary<int, List<int>> parent = new Dictionary<int, List<int>>();
 
         // Constructor
         public Tree() {
-            parent.Add(id, null);
+            root = id;
+            parent.Add(root, -1);
+            children.Add(root,null);
             id++;
         }
 
         // The number of elements in the tree
          int Count() {
-            int count = parent.Count();
+            int count = children.Count();
             return count;
         }
 
@@ -35,20 +47,18 @@ namespace csMTG
             else
             {
                 //Case where the parent already has at least a child
-                if(parent[parentId] != null)
+                if(children[parentId] != null)
                 {
-                    parent[parentId].Add(id);
-                    parent.Add(id, null);
-                    id++;
+                    children[parentId].Add(id);
                 }
                   else
                 {
                     List<int> newList = new List<int>();
                     newList.Add(id);
-                    parent[parentId] = newList;
-                    parent.Add(id, null);
-                    id++;
+                    children[parentId] = newList;
                 }
+                parent[id] = parentId;
+                id++;
             }
         }
        
