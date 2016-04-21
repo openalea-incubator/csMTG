@@ -8,7 +8,10 @@ using System.Diagnostics;
 
 namespace csMTG
 {
-   public class Tree
+    /// <summary>
+    /// Implementation of a class representing a rooted tree which only stores ids of its elements.
+    /// </summary>
+    public class Tree
     {
          // Every vertex has a unique id
         public int id { get; private set; } = 0;
@@ -21,25 +24,30 @@ namespace csMTG
 
         // Parent corresponds to : child_id => parent_id
         public Dictionary<int, int> parent = new Dictionary<int, int>();
-        
-        //The key is the parent's id, and the values are a list of children
-        protected Dictionary<int, List<int>> parent = new Dictionary<int, List<int>>();
 
-        // Constructor
+
+        /// <summary>
+        /// Constructor of the class.
+        /// <para>When created, a root of the tree is defined. Its id is zero and it has no children.</para>
+        /// </summary>
         public Tree() {
             root = id;
             parent.Add(root, -1);
             children.Add(root,null);
-            id = NewId();
         }
-        
-        // The number of elements in the tree
-         int Count() {
+
+        /// <summary>
+        /// Counts the number of elements in the tree.
+        /// </summary>
+        /// <returns>Number of vertices</returns>
+        int Count() {
             int count = children.Count();
             return count;
         }
-        
-        //Attributes a unique new id
+
+        /// <summary>
+        /// Function which generates a unique Id.
+        /// </summary>
         private int NewId()
         {
             do
@@ -50,7 +58,12 @@ namespace csMTG
             return id;
         }
 
-        // Add a child to the id specified in the parameter
+        /// <summary>
+        /// Add a child to a specific parent.
+        /// </summary>
+        /// <param name="parentId"> The parent to which the child will be added. </param>
+        /// <param name="childId"> The child to add. This parameter is optional. </param>
+        /// <returns> Returns the id of the child added. </returns>
         public int AddChild(int parentId, int childId = -1) {
 
             if (!(children.ContainsKey(parentId)))
@@ -82,7 +95,9 @@ namespace csMTG
             return childId;
         }
 
-        // Assign a new child to a parent
+        /// <summary>
+        /// Assign a new child to a parent.
+        /// </summary>
         void NewChild(int parentId, int childId)
         {
             if (children[parentId] != null)
@@ -98,7 +113,11 @@ namespace csMTG
             parent[childId] = parentId;
         }
 
-        // Replace an existing parent with the one specified in the parameters
+        /// <summary>
+        /// Replace an existing parent with the one specified in the parameters.
+        /// </summary>
+        /// <param name="parentId">The new parent.</param>
+        /// <param name="childId">The child for which the parent will be changed.</param>
         void ReplaceParent(int parentId, int childId)
         {
             int oldParent = parent[childId];
