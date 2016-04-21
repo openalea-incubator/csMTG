@@ -32,7 +32,7 @@ namespace csMTG
             children.Add(root,null);
             id = NewId();
         }
-
+        
         // The number of elements in the tree
          int Count() {
             int count = children.Count();
@@ -51,28 +51,60 @@ namespace csMTG
         }
 
         // Add a child to the id specified in the parameter
-        void AddChild(int parentId) {
+        public int AddChild(int parentId, int childId = -1) {
 
-            if (!(parent.ContainsKey(parentId)))
-                Console.WriteLine("This parent does not exist!");
+            if (!(children.ContainsKey(parentId)))
+                Console.WriteLine("Parent number "+parentId+" does not exist!");
             else
             {
-                //Case where the parent already has at least a child
-                if(children[parentId] != null)
+                // Case where the child wasn't specified
+                if (childId == -1)
                 {
-                    children[parentId].Add(id);
+                    childId = NewId();
+                    NewChild(parentId, childId);
+                    children.Add(childId, null);
                 }
-                  else
+                // Case where the child is specified
+                else
                 {
-                    List<int> newList = new List<int>();
-                    newList.Add(id);
-                    children[parentId] = newList;
+                    //If the child exists already, change his parent
+                    if (parent.ContainsKey(childId))
+                    {
+                        ReplaceParent(parentId, childId);
+                    }
+                    else
+                    {
+                        NewChild(parentId, childId);
+                        children.Add(childId, null);
+                    }
                 }
-                parent[id] = parentId;
-                id = NewId();
             }
+            return childId;
         }
-       
+
+        // Assign a new child to a parent
+        void NewChild(int parentId, int childId)
+        {
+            if (children[parentId] != null)
+            {
+                children[parentId].Add(childId);
+            }
+            else
+            {
+                List<int> tmpList = new List<int>();
+                tmpList.Add(childId);
+                children[parentId] = tmpList;
+            }
+            parent[childId] = parentId;
+        }
+
+        // Replace an existing parent with the one specified in the parameters
+        void ReplaceParent(int parentId, int childId)
+        {
+            int oldParent = parent[childId];
+            NewChild(parentId, childId);
+            children[oldParent].Remove(childId);
+        }
 
         static void Main(String[] args)   
         {
