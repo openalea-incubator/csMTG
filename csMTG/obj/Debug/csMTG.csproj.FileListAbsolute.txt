@@ -1,0 +1,7 @@
+C:\Users\aannaque\Desktop\csMTG\csMTG\csMTG\bin\Debug\csMTG.exe.config
+C:\Users\aannaque\Desktop\csMTG_github\csMTG\csMTG\bin\Debug\csMTG.exe.config
+C:\Users\aannaque\Desktop\csMTG_github\csMTG\csMTG\obj\Debug\csMTG.csprojResolveAssemblyReference.cache
+C:\Users\aannaque\Desktop\csMTG_github\csMTG\csMTG\bin\Debug\csMTG.exe
+C:\Users\aannaque\Desktop\csMTG_github\csMTG\csMTG\bin\Debug\csMTG.pdb
+C:\Users\aannaque\Desktop\csMTG_github\csMTG\csMTG\obj\Debug\csMTG.exe
+C:\Users\aannaque\Desktop\csMTG_github\csMTG\csMTG\obj\Debug\csMTG.pdb

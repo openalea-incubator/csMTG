@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 14 for Windows Desktop
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csMTG", "csMTG\csMTG.csproj", "{83967160-D752-4576-833D-2878C8A13362}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csMTGTests", "csMTGTests\csMTGTests.csproj", "{F9C79E1C-60E2-49E3-957B-57CD85CA4015}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{83967160-D752-4576-833D-2878C8A13362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83967160-D752-4576-833D-2878C8A13362}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83967160-D752-4576-833D-2878C8A13362}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83967160-D752-4576-833D-2878C8A13362}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9C79E1C-60E2-49E3-957B-57CD85CA4015}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9C79E1C-60E2-49E3-957B-57CD85CA4015}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9C79E1C-60E2-49E3-957B-57CD85CA4015}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9C79E1C-60E2-49E3-957B-57CD85CA4015}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
