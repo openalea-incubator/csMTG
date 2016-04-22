@@ -1,9 +1,0 @@
-C:\Users\aannaque\Desktop\csMTG\csMTG\bin\Debug\csMTG.exe.config
-C:\Users\aannaque\Desktop\csMTG\csMTG\obj\Debug\csMTG.exe
-C:\Users\aannaque\Desktop\csMTG\csMTG\obj\Debug\csMTG.pdb
-C:\Users\aannaque\Desktop\csMTG\code\bin\Debug\csMTG.exe.config
-C:\Users\aannaque\Desktop\csMTG\code\obj\Debug\csMTG.exe
-C:\Users\aannaque\Desktop\csMTG\code\obj\Debug\csMTG.pdb
-C:\Users\aannaque\Desktop\csMTG\code\bin\Debug\csMTG.exe
-C:\Users\aannaque\Desktop\csMTG\code\bin\Debug\csMTG.pdb
-C:\Users\aannaque\Desktop\csMTG\code\obj\Debug\code.csprojResolveAssemblyReference.cache

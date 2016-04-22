@@ -1,7 +1,7 @@
-csMTG/bin
-csMTG/obj
-csMTG/Properties
-csMTGTests/bin
-csMTGTests/obj
-csMTGTests/Properties
+code/bin
+code/obj
+code/Properties
+test/bin
+test/obj
+test/Properties
 .vs/csMTG
