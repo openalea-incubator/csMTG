@@ -17,7 +17,7 @@ namespace csMTG
         public int id { get; private set; } = 0;
         
         // Root attribute
-        int root;
+        public int root { get; private set; }
         
         // Children corresponds to : parent_id => { children's ids } 
         public Dictionary<int, List<int>> children = new Dictionary<int, List<int>>();

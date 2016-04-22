@@ -42,7 +42,6 @@ namespace csMTG.Tests
         }
 
         [TestMethod()]
-        //Case where we specify the id of the child that doesn't exist
         public void AddChild_ChildIdDoesntExist_SpecificIdCreated()
         {
             Tree t = new Tree();
@@ -59,12 +58,65 @@ namespace csMTG.Tests
         {
             Tree t = new Tree();
 
-            int firstChild = t.AddChild(0); //Should be equal to 1
-            int secondChild = t.AddChild(0, 2); //Should be equal to 2
-            int thirdChild = t.AddChild(0); //Should be equal to 3
+            int firstChild = t.AddChild(t.root); //Should be equal to 1
+            int secondChild = t.AddChild(t.root, 2); //Should be equal to 2
+            int thirdChild = t.AddChild(t.root); //Should be equal to 3
 
-            //Assert.IsTrue(t.children[0]);
+            //All children have been added to the root
+            Assert.AreEqual(t.children[t.root].Count(), 3);
+            Assert.IsTrue(t.children[t.root].Contains(firstChild));
+            Assert.IsTrue(t.children[t.root].Contains(secondChild));
+            Assert.IsTrue(t.children[t.root].Contains(thirdChild));
 
+            //All children have the right id (2 isn't repeated)
+            Assert.AreEqual(firstChild, 1);
+            Assert.AreEqual(secondChild, 2);
+            Assert.AreEqual(thirdChild, 3);
+
+            //All children have the right parent
+            Assert.AreEqual(t.parent[firstChild], t.root);
+            Assert.AreEqual(t.parent[secondChild], t.root);
+            Assert.AreEqual(t.parent[thirdChild], t.root);
+        }
+
+        [TestMethod()]
+        public void AddChild_ChildAlreadyExists_ParentIsChanged()
+        {
+            Tree t = new Tree();
+
+            int firstChild = t.AddChild(t.root);
+            int secondChild = t.AddChild(firstChild, 2);
+            int thirdChild = t.AddChild(t.root, secondChild);
+
+            //All children have been added to the right parent
+            Assert.AreEqual(t.children[t.root].Count(), 2);
+            Assert.IsTrue(t.children[t.root].Contains(firstChild));
+            Assert.IsTrue(t.children[t.root].Contains(thirdChild));
+            Assert.IsFalse(t.children[firstChild].Contains(secondChild));
+
+            //All children have the right id (2 isn't repeated)
+            Assert.AreEqual(firstChild, 1);
+            Assert.AreEqual(secondChild, 2);
+            Assert.AreEqual(thirdChild, 2);
+
+            //All children have the right parent
+            Assert.AreEqual(t.parent[firstChild], t.root);
+            Assert.AreEqual(t.parent[secondChild], t.root);
+            Assert.AreEqual(t.parent[thirdChild], t.root);
+        }
+
+        [TestMethod()]
+        public void AddChild_ParentDoesntExist_ChildNotAdded()
+        {
+            Tree t = new Tree();
+
+            int childId = t.AddChild(1);
+
+            //Child hasn't been added
+            Assert.IsFalse(t.children.ContainsKey(1));
+
+            //An id hasn't been attributed
+            Assert.AreEqual(childId, -1);
         }
     }
 }
