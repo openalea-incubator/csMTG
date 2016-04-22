@@ -54,9 +54,9 @@
     <Compile Include="TreeTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\csMTG\csMTG.csproj">
+    <ProjectReference Include="..\code\code.csproj">
       <Project>{83967160-D752-4576-833D-2878C8A13362}</Project>
-      <Name>csMTG</Name>
+      <Name>code</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

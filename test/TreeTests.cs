@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+//For each testing method, the name will be in this format:
+//   NameOfTheTestedMethod_CaseWeAreTesting_ExpectedBehavior
 namespace csMTG.Tests
 {
     [TestClass()]
@@ -50,6 +52,19 @@ namespace csMTG.Tests
             Assert.IsTrue(t.children[0].Contains(childId));
             Assert.AreEqual(t.children[0].Count(), 1);
             Assert.AreEqual(t.parent[childId], 0);
+        }
+
+        [TestMethod()]
+        public void AddChild_SpecifyChildId_IdIsNotRepeated()
+        {
+            Tree t = new Tree();
+
+            int firstChild = t.AddChild(0); //Should be equal to 1
+            int secondChild = t.AddChild(0, 2); //Should be equal to 2
+            int thirdChild = t.AddChild(0); //Should be equal to 3
+
+            //Assert.IsTrue(t.children[0]);
+
         }
     }
 }

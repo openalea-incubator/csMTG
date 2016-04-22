@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 14 for Windows Desktop
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csMTG", "csMTG\csMTG.csproj", "{83967160-D752-4576-833D-2878C8A13362}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "code", "code\code.csproj", "{83967160-D752-4576-833D-2878C8A13362}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csMTGTests", "csMTGTests\csMTGTests.csproj", "{F9C79E1C-60E2-49E3-957B-57CD85CA4015}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{F9C79E1C-60E2-49E3-957B-57CD85CA4015}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
