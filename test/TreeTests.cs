@@ -13,6 +13,7 @@ namespace csMTG.Tests
     [TestClass()]
     public class TreeTests
     {
+        #region Test of constructor
         [TestMethod()]
         public void Tree_NewTree_RootCreated()
         {
@@ -20,14 +21,119 @@ namespace csMTG.Tests
             int root = t.children.Keys.First();
             Assert.AreEqual(root, 0);
         }
+        #endregion
 
+        #region Test of function Count
         [TestMethod()]
         public void Count_NewTreeCreated_Returns1()
         {
             Tree t = new Tree();
             Assert.AreEqual(t.Count(), 1);
         }
+        #endregion
+        
+        #region Tests of function NbChildren
+        [TestMethod()]
+        public void NbChildren_NormalCase_ReturnsNumberOfChildren()
+        {
+            Tree t = new Tree();
 
+            t.AddChild(t.root);
+            t.AddChild(t.root);
+            t.AddChild(t.root);
+
+            Assert.AreEqual(t.NbChildren(t.root), 3);
+        }
+
+        [TestMethod()]
+        public void NbChildren_NoChildren_ReturnsZero()
+        {
+            Tree t = new Tree();
+
+            Assert.AreEqual(t.NbChildren(t.root), 0);
+        }
+
+        [TestMethod()]
+        public void NbChildren_ParameterDoesntExist_ReturnsMinusOne()
+        {
+            Tree t = new Tree();
+
+            t.AddChild(t.root);
+            t.AddChild(t.root);
+            t.AddChild(t.root);
+
+            Assert.AreEqual(t.NbChildren(100), -1);
+        }
+        #endregion
+
+        #region Tests of getter: Parent
+        [TestMethod()]
+        public void Parent_NormalCase_ReturnsParentId()
+        {
+            Tree t = new Tree();
+
+            t.AddChild(0, 1);
+            t.AddChild(1, 50);
+            int childId = t.AddChild(0);
+
+            Assert.AreEqual(t.Parent(1), 0);
+            Assert.AreEqual(t.Parent(50), 1);
+            Assert.AreEqual(t.Parent(childId), 0);
+        }
+
+        [TestMethod()]
+        public void Parent_ChildIdDoesntExist_ReturnsMinus999()
+        {
+            Tree t = new Tree();
+
+            t.AddChild(0, 1);
+
+            Assert.AreEqual(t.Parent(100), -999);
+        }
+        #endregion
+
+        #region Test of getter : Children
+        [TestMethod()]
+        public void Children_NormalCase_ReturnsListOfChildren()
+        {
+            Tree t = new Tree();
+
+            int firstChild = t.AddChild(t.root);
+            int secondChild = t.AddChild(t.root);
+            int thirdChild = t.AddChild(t.root);
+
+            List<int> expectedListOfChildren = new List<int>();
+            expectedListOfChildren.Add(firstChild);
+            expectedListOfChildren.Add(secondChild);
+            expectedListOfChildren.Add(thirdChild);
+
+            CollectionAssert.AreEqual(t.Children(t.root), expectedListOfChildren);
+        }
+
+        [TestMethod()]
+        public void Children_ParameterDoesntExist_ReturnsListWithMinusOne()
+        {
+            Tree t = new Tree();
+
+            List<int> expectedResult = null;
+
+            CollectionAssert.AreEqual(t.Children(10),expectedResult);
+        }
+
+        [TestMethod()]
+        public void Children_NoChildren_EmptyList()
+        {
+            Tree t = new Tree();
+
+            int childId = t.AddChild(t.root);
+
+            List<int> expectedResult = new List<int> { };
+
+            CollectionAssert.AreEqual(t.Children(childId), expectedResult);
+        }
+        #endregion
+
+        #region Tests of function AddChild
         [TestMethod()]
         public void AddChild_NormalScenario_OneChildAdded()
         {
@@ -118,5 +224,6 @@ namespace csMTG.Tests
             //An id hasn't been attributed
             Assert.AreEqual(childId, -1);
         }
+        #endregion
     }
 }

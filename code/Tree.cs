@@ -37,12 +37,87 @@ namespace csMTG
         }
 
         /// <summary>
+        /// Gives the number of children of a vertice.
+        /// </summary>
+        /// <param name="verticeId"> The id of the vertice parent. </param>
+        /// <returns> Returns the number of children vertices (0 if there are none).
+        /// If the vertice parent does not exist, it returns -1 .</returns>
+        public int NbChildren(int verticeId)
+        {
+            int nbChildren = 0;
+            Dictionary<int, List<int>> temporary = children;
+
+            if (!temporary.ContainsKey(verticeId))
+                nbChildren = -1;
+            else
+            {
+                if (temporary[verticeId] != null)
+                    nbChildren = temporary[verticeId].Count();
+
+            }
+
+            return nbChildren;
+        }
+
+        /// <summary>
+        /// Gives the parent of the child in the parameter.
+        /// </summary>
+        /// <param name="verticeId"> The identifier of the child. </param>
+        /// <returns> Returns the identifier of the parent.
+        /// In case the parameter doesn't exist, it returns -999. </returns>
+        public int Parent(int verticeId)
+        {
+            int parentId;
+            Dictionary<int, int> temporary = parent;
+
+            if (temporary.ContainsKey(verticeId))
+                parentId = temporary[verticeId];
+            else
+                parentId = -999;
+
+            return parentId;
+        }
+
+        /// <summary>
+        /// Gives a list of the specified id's Children.
+        /// </summary>
+        /// <param name="verticeId"> The identifier of the parent. </param>
+        /// <returns> Returns a list of the parameter's children.
+        /// If the identifier doesn't have children, it returns an empty list.
+        /// If the identifier doesn't exist, it returns null. </returns>
+        public List<int> Children(int verticeId)
+        {
+            List<int> listOfChildren;
+
+            if (!parent.ContainsKey(verticeId))
+                listOfChildren = null;
+            else
+            {
+                if (children[verticeId] != null)
+                    listOfChildren = children[verticeId];
+                else
+                    listOfChildren = new List<int>() { };
+            }
+            return listOfChildren;
+        }
+
+        /// <summary>
         /// Counts the number of elements in the tree.
         /// </summary>
         /// <returns>Number of vertices</returns>
         public int Count() {
-            int count = children.Count();
+            int count = parent.Count();
             return count;
+        }
+
+        /// <summary>
+        /// Counts the number of vertices in the tree.
+        /// </summary>
+        /// <returns> Returns the total number of vertices. </returns>
+        public int NbVertices()
+        {
+            int nbVertices = parent.Count();
+            return nbVertices;
         }
 
         /// <summary>
@@ -54,7 +129,7 @@ namespace csMTG
             {
                 id++;
             }
-            while (children.ContainsKey(id));
+            while (parent.ContainsKey(id));
             return id;
         }
 
@@ -63,7 +138,8 @@ namespace csMTG
         /// </summary>
         /// <param name="parentId"> The parent to which the child will be added. </param>
         /// <param name="childId"> The child to add. This parameter is optional. </param>
-        /// <returns> Returns the id of the child added. </returns>
+        /// <returns> Returns the id of the child added.
+        /// If the parent doesn't exist, it returns -1.</returns>
         public int AddChild(int parentId, int childId = -1) {
 
             if (!(children.ContainsKey(parentId)))
@@ -127,7 +203,6 @@ namespace csMTG
 
         static void Main(String[] args)   
         {
-            
 
         }
     }
