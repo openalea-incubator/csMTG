@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
+
 namespace csMTG
 {
     /// <summary>
@@ -39,20 +40,20 @@ namespace csMTG
         /// <summary>
         /// Gives the number of children of a vertice.
         /// </summary>
-        /// <param name="verticeId"> The id of the vertice parent. </param>
+        /// <param name="vertexId"> The id of the vertice parent. </param>
         /// <returns> Returns the number of children vertices (0 if there are none).
         /// If the vertice parent does not exist, it returns -1 .</returns>
-        public int NbChildren(int verticeId)
+        public int NbChildren(int vertexId)
         {
             int nbChildren = 0;
             Dictionary<int, List<int>> temporary = children;
 
-            if (!temporary.ContainsKey(verticeId))
+            if (!temporary.ContainsKey(vertexId))
                 nbChildren = -1;
             else
             {
-                if (temporary[verticeId] != null)
-                    nbChildren = temporary[verticeId].Count();
+                if (temporary[vertexId] != null)
+                    nbChildren = temporary[vertexId].Count();
 
             }
 
@@ -62,16 +63,16 @@ namespace csMTG
         /// <summary>
         /// Gives the parent of the child in the parameter.
         /// </summary>
-        /// <param name="verticeId"> The identifier of the child. </param>
+        /// <param name="vertexId"> The identifier of the child. </param>
         /// <returns> Returns the identifier of the parent.
         /// In case the parameter doesn't exist, it returns -999. </returns>
-        public int Parent(int verticeId)
+        public int Parent(int vertexId)
         {
             int parentId;
             Dictionary<int, int> temporary = parent;
 
-            if (temporary.ContainsKey(verticeId))
-                parentId = temporary[verticeId];
+            if (temporary.ContainsKey(vertexId))
+                parentId = temporary[vertexId];
             else
                 parentId = -999;
 
@@ -81,20 +82,20 @@ namespace csMTG
         /// <summary>
         /// Gives a list of the specified id's Children.
         /// </summary>
-        /// <param name="verticeId"> The identifier of the parent. </param>
+        /// <param name="vertexId"> The identifier of the parent. </param>
         /// <returns> Returns a list of the parameter's children.
         /// If the identifier doesn't have children, it returns an empty list.
         /// If the identifier doesn't exist, it returns null. </returns>
-        public List<int> Children(int verticeId)
+        public List<int> Children(int vertexId)
         {
             List<int> listOfChildren;
 
-            if (!parent.ContainsKey(verticeId))
+            if (!parent.ContainsKey(vertexId))
                 listOfChildren = null;
             else
             {
-                if (children[verticeId] != null)
-                    listOfChildren = children[verticeId];
+                if (children[vertexId] != null)
+                    listOfChildren = children[vertexId];
                 else
                     listOfChildren = new List<int>() { };
             }
@@ -200,6 +201,48 @@ namespace csMTG
             NewChild(parentId, childId);
             children[oldParent].Remove(childId);
         }
+
+        /// <summary>
+        ///  Generates a random tree with a specified number of vertices and children per vertex
+        /// </summary>
+        /// <param name="nbVertices"> The number of tree's vertices </param>
+        /// <param name="nbChildren"> The maximum number for a vertex </param>
+        /// <returns> Returns the generated tree </returns>
+        public Tree RandomTree(Tree t, int nbVertices, int nbChildren = 4)
+        {
+            int childrenToAdd;
+
+            List<int> randomStack = new List<int>(){ 0 };
+            Random r = new Random();
+            Random r2 = new Random();
+
+            while (nbVertices > 0)
+            {
+                // Set a random number of children to add within the specified range.
+                
+                int randomInt = r.Next(1, nbChildren);
+                childrenToAdd = Math.Min(randomInt, nbVertices);
+
+                // Choose a random vertex among those in the stack of potential parents
+                
+                int randomNumber = r2.Next(0, randomStack.Count()-1);
+                int randomVertex = randomStack[randomNumber];
+
+                // Add the specified number of children to the random parent
+                for (int i = 0; i < childrenToAdd; ++i)
+                {
+                    int newChild = AddChild(randomVertex);
+                    randomStack.Add(newChild);
+                    nbVertices--;
+                }
+
+                randomStack.Remove(randomVertex);
+
+            }
+
+            return t;
+        }
+        
 
         static void Main(String[] args)   
         {
