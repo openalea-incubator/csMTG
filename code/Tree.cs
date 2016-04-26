@@ -38,23 +38,21 @@ namespace csMTG
         }
 
         /// <summary>
-        /// Gives the number of children of a vertice.
+        /// Gives the number of children of a vertex.
         /// </summary>
-        /// <param name="vertexId"> The id of the vertice parent. </param>
+        /// <param name="vertexId"> The id of the vertex parent. </param>
         /// <returns> Returns the number of children vertices (0 if there are none).
-        /// If the vertice parent does not exist, it returns -1 .</returns>
+        /// If the vertex parent does not exist, it returns 0 .</returns>
         public int NbChildren(int vertexId)
         {
             int nbChildren = 0;
-            Dictionary<int, List<int>> temporary = children;
 
-            if (!temporary.ContainsKey(vertexId))
-                nbChildren = -1;
+            if (!children.ContainsKey(vertexId))
+                nbChildren = 0;
             else
             {
-                if (temporary[vertexId] != null)
-                    nbChildren = temporary[vertexId].Count();
-
+                if (children[vertexId] != null)
+                    nbChildren = children[vertexId].Count();
             }
 
             return nbChildren;
@@ -65,17 +63,19 @@ namespace csMTG
         /// </summary>
         /// <param name="vertexId"> The identifier of the child. </param>
         /// <returns> Returns the identifier of the parent.
-        /// In case the parameter doesn't exist, it returns -999. </returns>
-        public int Parent(int vertexId)
+        /// In case the parameter doesn't exist, it raises an exception and returns null. </returns>
+        public int? Parent(int vertexId)
         {
-            int parentId;
-            Dictionary<int, int> temporary = parent;
+            int? parentId;
 
-            if (temporary.ContainsKey(vertexId))
-                parentId = temporary[vertexId];
-            else
-                parentId = -999;
-
+            try
+            {
+                parentId = parent[vertexId];
+            }catch(KeyNotFoundException)
+            {
+                parentId = null;
+            }
+            
             return parentId;
         }
 
@@ -83,7 +83,7 @@ namespace csMTG
         /// Gives a list of the specified id's Children.
         /// </summary>
         /// <param name="vertexId"> The identifier of the parent. </param>
-        /// <returns> Returns a list of the parameter's children.
+        /// <returns> Returns a list of the parent's children.
         /// If the identifier doesn't have children, it returns an empty list.
         /// If the identifier doesn't exist, it returns null. </returns>
         public List<int> Children(int vertexId)

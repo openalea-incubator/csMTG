@@ -54,7 +54,7 @@ namespace csMTG.Tests
         }
 
         [TestMethod()]
-        public void NbChildren_ParameterDoesntExist_ReturnsMinusOne()
+        public void NbChildren_ParameterDoesntExist_ReturnsZero()
         {
             Tree t = new Tree();
 
@@ -62,7 +62,7 @@ namespace csMTG.Tests
             t.AddChild(t.root);
             t.AddChild(t.root);
 
-            Assert.AreEqual(t.NbChildren(100), -1);
+            Assert.AreEqual(t.NbChildren(100), 0);
         }
         #endregion
 
@@ -82,13 +82,14 @@ namespace csMTG.Tests
         }
 
         [TestMethod()]
-        public void Parent_ChildIdDoesntExist_ReturnsMinus999()
+        public void Parent_ChildIdDoesntExist_ReturnsNull()
         {
             Tree t = new Tree();
 
             t.AddChild(0, 1);
 
-            Assert.AreEqual(t.Parent(100), -999);
+            Assert.IsNull(t.Parent(100));
+
         }
         #endregion
 
