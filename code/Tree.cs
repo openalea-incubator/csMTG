@@ -212,9 +212,11 @@ namespace csMTG
         {
             int childrenToAdd;
 
-            List<int> randomStack = new List<int>(){ 0 };
+            List<int> randomStack = new List<int>();
             Random r = new Random();
             Random r2 = new Random();
+            randomStack.Add(t.root);
+            nbVertices--;
 
             while (nbVertices > 0)
             {
