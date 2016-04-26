@@ -203,6 +203,54 @@ namespace csMTG
         }
 
         /// <summary>
+        /// Remove a vertex.
+        /// </summary>
+        /// <param name="vertexId"> The identifier of the vertex to be removed. </param>
+        /// <param name="reparentChild"> 
+        /// If it is set to true, all the children of the vertex will get his parent as a parent.
+        /// If it is set to false, the vertex can not be suppressed if it has children. </param>
+        void RemoveVertex(int vertexId, bool reparentChild)
+        {
+            // Root can't be removed.
+            if (vertexId == root)
+                Console.WriteLine("The root can't be deleted");
+            else
+            {
+                // Vertex doesn't exist
+                if (!parent.ContainsKey(vertexId))
+                    Console.WriteLine("This vertex doesn't exist ! ");
+                else
+                {
+                    // Delete the vertex from the list of his parent's children.
+                    int newParent = (int)Parent(vertexId);
+                    children[newParent].Remove(vertexId);
+
+                    // In case the deleted vertex has children, their parent is replaced.
+                    if (NbChildren(vertexId) > 0)
+                    {
+                        if (reparentChild)
+                        {
+                            int numberOfChildren = children[vertexId].Count;
+
+                            while (numberOfChildren > 0)
+                            {
+                                int childId = children[vertexId][0];
+                                ReplaceParent(newParent, childId);
+                                numberOfChildren--;
+                            }
+                        }
+                        else
+                            Console.WriteLine(" The vertex identified by " + vertexId + "can not be removed because it has children. ");
+                    }
+
+                    // The vertex no longer has children or a parent.
+                    children.Remove(vertexId);
+                    parent.Remove(vertexId);
+                }
+            }
+        }
+
+        /// <summary>
         ///  Generates a random tree with a specified number of vertices and children per vertex
         /// </summary>
         /// <param name="nbVertices"> The number of tree's vertices </param>
@@ -248,7 +296,7 @@ namespace csMTG
 
         static void Main(String[] args)   
         {
-
+            
         }
     }
 }
