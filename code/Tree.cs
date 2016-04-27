@@ -106,11 +106,19 @@ namespace csMTG
         /// Counts the number of elements in the tree.
         /// </summary>
         /// <returns>Number of vertices</returns>
-        public int Count() {
+        int Count() {
             int count = parent.Count();
             return count;
         }
-        
+
+        /// <summary>
+        /// Counts the number of vertices in the tree.
+        /// </summary>
+        /// <returns> Returns the total number of vertices. </returns>
+        public int NbVertices()
+        {
+            return Count();
+        }
 
         /// <summary>
         /// Function which generates a unique Id.
@@ -118,13 +126,6 @@ namespace csMTG
         private int NewId()
         {
             id = parent.Keys.Max() + 1;
-            /*
-            do
-            {
-                id++;
-            }
-            while (parent.ContainsKey(id));
-            */
             return id;
         }
 
@@ -203,7 +204,7 @@ namespace csMTG
         /// <param name="reparentChild"> 
         /// If it is set to true, all the children of the vertex will get his parent as a parent.
         /// If it is set to false, the vertex can not be suppressed if it has children. </param>
-        void RemoveVertex(int vertexId, bool reparentChild)
+        public void RemoveVertex(int vertexId, bool reparentChild)
         {
             // Root can't be removed.
             if (vertexId == root)

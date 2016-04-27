@@ -18,8 +18,7 @@ namespace csMTG.Tests
         public void Tree_NewTree_RootCreated()
         {
             Tree t = new Tree();
-            int root = t.children.Keys.First();
-            Assert.AreEqual(root, 0);
+            Assert.AreEqual(t.root, 0);
         }
         #endregion
 
@@ -28,7 +27,7 @@ namespace csMTG.Tests
         public void Count_NewTreeCreated_Returns1()
         {
             Tree t = new Tree();
-            Assert.AreEqual(t.Count(), 1);
+            Assert.AreEqual(t.NbVertices(), 1);
         }
         #endregion
         
@@ -143,9 +142,9 @@ namespace csMTG.Tests
 
             int childId = t.id;
 
-            Assert.IsTrue(t.children[0].Contains(childId));
-            Assert.AreEqual(t.children[0].Count(), 1);
-            Assert.AreEqual(t.parent[childId], 0);
+            Assert.IsTrue(t.Children(0).Contains(childId));
+            Assert.AreEqual(t.Children(0).Count(), 1);
+            Assert.AreEqual(t.Parent(childId), 0);
         }
 
         [TestMethod()]
@@ -155,9 +154,9 @@ namespace csMTG.Tests
 
             int childId = t.AddChild(0, 5);
 
-            Assert.IsTrue(t.children[0].Contains(childId));
-            Assert.AreEqual(t.children[0].Count(), 1);
-            Assert.AreEqual(t.parent[childId], 0);
+            Assert.IsTrue(t.Children(0).Contains(childId));
+            Assert.AreEqual(t.Children(0).Count(), 1);
+            Assert.AreEqual(t.Parent(childId), 0);
         }
 
         [TestMethod()]
@@ -170,10 +169,10 @@ namespace csMTG.Tests
             int thirdChild = t.AddChild(t.root); //Should be equal to 3
 
             //All children have been added to the root
-            Assert.AreEqual(t.children[t.root].Count(), 3);
-            Assert.IsTrue(t.children[t.root].Contains(firstChild));
-            Assert.IsTrue(t.children[t.root].Contains(secondChild));
-            Assert.IsTrue(t.children[t.root].Contains(thirdChild));
+            Assert.AreEqual(t.Children(t.root).Count(), 3);
+            Assert.IsTrue(t.Children(t.root).Contains(firstChild));
+            Assert.IsTrue(t.Children(t.root).Contains(secondChild));
+            Assert.IsTrue(t.Children(t.root).Contains(thirdChild));
 
             //All children have the right id (2 isn't repeated)
             Assert.AreEqual(firstChild, 1);
@@ -181,9 +180,9 @@ namespace csMTG.Tests
             Assert.AreEqual(thirdChild, 3);
 
             //All children have the right parent
-            Assert.AreEqual(t.parent[firstChild], t.root);
-            Assert.AreEqual(t.parent[secondChild], t.root);
-            Assert.AreEqual(t.parent[thirdChild], t.root);
+            Assert.AreEqual(t.Parent(firstChild), t.root);
+            Assert.AreEqual(t.Parent(secondChild), t.root);
+            Assert.AreEqual(t.Parent(thirdChild), t.root);
         }
 
         [TestMethod()]
@@ -196,10 +195,10 @@ namespace csMTG.Tests
             int thirdChild = t.AddChild(t.root, secondChild);
 
             //All children have been added to the right parent
-            Assert.AreEqual(t.children[t.root].Count(), 2);
-            Assert.IsTrue(t.children[t.root].Contains(firstChild));
-            Assert.IsTrue(t.children[t.root].Contains(thirdChild));
-            Assert.IsFalse(t.children[firstChild].Contains(secondChild));
+            Assert.AreEqual(t.Children(t.root).Count(), 2);
+            Assert.IsTrue(t.Children(t.root).Contains(firstChild));
+            Assert.IsTrue(t.Children(t.root).Contains(thirdChild));
+            Assert.IsFalse(t.Children(firstChild).Contains(secondChild));
 
             //All children have the right id (2 isn't repeated)
             Assert.AreEqual(firstChild, 1);
@@ -207,9 +206,9 @@ namespace csMTG.Tests
             Assert.AreEqual(thirdChild, 2);
 
             //All children have the right parent
-            Assert.AreEqual(t.parent[firstChild], t.root);
-            Assert.AreEqual(t.parent[secondChild], t.root);
-            Assert.AreEqual(t.parent[thirdChild], t.root);
+            Assert.AreEqual(t.Parent(firstChild), t.root);
+            Assert.AreEqual(t.Parent(secondChild), t.root);
+            Assert.AreEqual(t.Parent(thirdChild), t.root);
         }
 
         [TestMethod()]
@@ -220,7 +219,7 @@ namespace csMTG.Tests
             int childId = t.AddChild(1);
 
             //Child hasn't been added
-            Assert.IsFalse(t.children.ContainsKey(1));
+            Assert.IsNull(t.Children(1));
 
             //An id hasn't been attributed
             Assert.AreEqual(childId, -1);

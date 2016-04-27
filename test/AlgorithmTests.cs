@@ -16,11 +16,11 @@ namespace csMTGTests
             Tree t = new Tree();
             
 
-            int numberOfExpectedVertices = 50;
+            int numberOfExpectedVertices = 50000;
 
             t = algorithm.RandomTree(t, numberOfExpectedVertices);
 
-            Assert.AreEqual(numberOfExpectedVertices, t.Count());
+            Assert.AreEqual(numberOfExpectedVertices, t.NbVertices());
 
         }
 
@@ -29,9 +29,9 @@ namespace csMTGTests
         {
             Tree t = new Tree();
 
-            int maximumNbChildren = 5;
+            int maximumNbChildren = 9;
 
-            t = algorithm.RandomTree(t, 50, maximumNbChildren);
+            t = algorithm.RandomTree(t, 50000, maximumNbChildren);
 
             foreach (int keyId in t.children.Keys)
             {
@@ -45,7 +45,7 @@ namespace csMTGTests
         {
             Tree t = new Tree();
 
-            t = algorithm.RandomTree(t, 50, 5);
+            t = algorithm.RandomTree(t, 50000, 100);
 
             foreach (int childId in t.parent.Keys)
             {
