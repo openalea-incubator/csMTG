@@ -208,12 +208,12 @@ namespace csMTG
         {
             // Root can't be removed.
             if (vertexId == root)
-                Console.WriteLine("The root can't be deleted");
+                throw new ArgumentOutOfRangeException("vertexId", "The root can't be removed.");
             else
             {
                 // Vertex doesn't exist
                 if (!parent.ContainsKey(vertexId))
-                    Console.WriteLine("This vertex doesn't exist ! ");
+                    throw new ArgumentOutOfRangeException("vertexId", "This vertex doesn't exist.");
                 else
                 {
                     // Delete the vertex from the list of his parent's children.
@@ -235,15 +235,15 @@ namespace csMTG
                             }
                         }
                         else
-                            Console.WriteLine(" The vertex identified by " + vertexId + "can not be removed because it has children. ");
+                            throw new ArgumentOutOfRangeException("vertexId", "This vertex has children and so it can't be removed.");
                     }
 
                     // The vertex no longer has children or a parent.
                     children.Remove(vertexId);
                     parent.Remove(vertexId);
                 }
+              }
             }
-        }
 
 
         static void Main(String[] args)   
