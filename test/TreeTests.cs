@@ -13,32 +13,158 @@ namespace csMTG.Tests
     [TestClass()]
     public class TreeTests
     {
+        #region Test of constructor
         [TestMethod()]
         public void Tree_NewTree_RootCreated()
         {
             Tree t = new Tree();
-            int root = t.children.Keys.First();
-            Assert.AreEqual(root, 0);
+            Assert.AreEqual(t.root, 0);
+        }
+        #endregion
+
+        #region Test of function NbVertices
+        [TestMethod()]
+        public void NbVertices_NewTreeCreated_Returns1()
+        {
+            Tree t = new Tree();
+            Assert.AreEqual(t.NbVertices(), 1);
         }
 
         [TestMethod()]
-        public void Count_NewTreeCreated_Returns1()
+        public void NbVertices_ChildrenAdded_ReturnsCorrectNumberOfVertices()
         {
             Tree t = new Tree();
-            Assert.AreEqual(t.Count(), 1);
+
+            // Add 9 new vertices
+
+            t.AddChild(0);
+            t.AddChild(0);
+            t.AddChild(0);
+            t.AddChild(0);
+            t.AddChild(0);
+            t.AddChild(0);
+            t.AddChild(0);
+            t.AddChild(0);
+            t.AddChild(0);
+            
+            Assert.AreEqual(t.NbVertices(), 10);
+        }
+        #endregion
+
+        #region Tests of function NbChildren
+        [TestMethod()]
+        public void NbChildren_NormalCase_ReturnsNumberOfChildren()
+        {
+            Tree t = new Tree();
+
+            t.AddChild(t.root);
+            t.AddChild(t.root);
+            t.AddChild(t.root);
+            t.AddChild(1);
+
+            Assert.AreEqual(t.NbChildren(t.root), 3);
         }
 
+        [TestMethod()]
+        public void NbChildren_NoChildren_ReturnsZero()
+        {
+            Tree t = new Tree();
+
+            Assert.AreEqual(t.NbChildren(t.root), 0);
+        }
+
+        [TestMethod()]
+        public void NbChildren_ParameterDoesntExist_ReturnsZero()
+        {
+            Tree t = new Tree();
+
+            t.AddChild(t.root);
+            t.AddChild(t.root);
+            t.AddChild(t.root);
+
+            Assert.AreEqual(t.NbChildren(100), 0);
+        }
+        #endregion
+
+        #region Tests of getter: Parent
+        [TestMethod()]
+        public void Parent_NormalCase_ReturnsParentId()
+        {
+            Tree t = new Tree();
+
+            t.AddChild(0, 1);
+            t.AddChild(1, 50);
+            int childId = t.AddChild(0);
+
+            Assert.AreEqual(t.Parent(1), 0);
+            Assert.AreEqual(t.Parent(50), 1);
+            Assert.AreEqual(t.Parent(childId), 0);
+        }
+
+        [TestMethod()]
+        public void Parent_ChildIdDoesntExist_ReturnsNull()
+        {
+            Tree t = new Tree();
+
+            t.AddChild(0, 1);
+
+            Assert.IsNull(t.Parent(100));
+
+        }
+        #endregion
+
+        #region Test of getter : Children
+        [TestMethod()]
+        public void Children_NormalCase_ReturnsListOfChildren()
+        {
+            Tree t = new Tree();
+
+            int firstChild = t.AddChild(t.root);
+            int secondChild = t.AddChild(t.root);
+            int thirdChild = t.AddChild(t.root);
+
+            List<int> expectedListOfChildren = new List<int>();
+            expectedListOfChildren.Add(firstChild);
+            expectedListOfChildren.Add(secondChild);
+            expectedListOfChildren.Add(thirdChild);
+
+            CollectionAssert.AreEqual(t.Children(t.root), expectedListOfChildren);
+        }
+
+        [TestMethod()]
+        public void Children_ParameterDoesntExist_ReturnsNull()
+        {
+            Tree t = new Tree();
+
+            List<int> expectedResult = null;
+
+            CollectionAssert.AreEqual(t.Children(10),expectedResult);
+        }
+
+        [TestMethod()]
+        public void Children_NoChildren_EmptyList()
+        {
+            Tree t = new Tree();
+
+            int childId = t.AddChild(t.root);
+
+            List<int> expectedResult = new List<int> { };
+
+            CollectionAssert.AreEqual(t.Children(childId), expectedResult);
+        }
+        #endregion
+
+        #region Tests of function AddChild
         [TestMethod()]
         public void AddChild_NormalScenario_OneChildAdded()
         {
             Tree t = new Tree();
-            t.AddChild(0);
+            
+            int childId = t.AddChild(0);
 
-            int childId = t.id;
-
-            Assert.IsTrue(t.children[0].Contains(childId));
-            Assert.AreEqual(t.children[0].Count(), 1);
-            Assert.AreEqual(t.parent[childId], 0);
+            Assert.IsTrue(t.Children(0).Contains(childId));
+            Assert.AreEqual(t.Children(0).Count(), 1);
+            Assert.AreEqual(t.Parent(childId), 0);
         }
 
         [TestMethod()]
@@ -48,9 +174,10 @@ namespace csMTG.Tests
 
             int childId = t.AddChild(0, 5);
 
-            Assert.IsTrue(t.children[0].Contains(childId));
-            Assert.AreEqual(t.children[0].Count(), 1);
-            Assert.AreEqual(t.parent[childId], 0);
+            Assert.AreEqual(childId, 5);
+            Assert.IsTrue(t.Children(0).Contains(childId));
+            Assert.AreEqual(t.Children(0).Count(), 1);
+            Assert.AreEqual(t.Parent(childId), 0);
         }
 
         [TestMethod()]
@@ -63,10 +190,10 @@ namespace csMTG.Tests
             int thirdChild = t.AddChild(t.root); //Should be equal to 3
 
             //All children have been added to the root
-            Assert.AreEqual(t.children[t.root].Count(), 3);
-            Assert.IsTrue(t.children[t.root].Contains(firstChild));
-            Assert.IsTrue(t.children[t.root].Contains(secondChild));
-            Assert.IsTrue(t.children[t.root].Contains(thirdChild));
+            Assert.AreEqual(t.Children(t.root).Count(), 3);
+            Assert.IsTrue(t.Children(t.root).Contains(firstChild));
+            Assert.IsTrue(t.Children(t.root).Contains(secondChild));
+            Assert.IsTrue(t.Children(t.root).Contains(thirdChild));
 
             //All children have the right id (2 isn't repeated)
             Assert.AreEqual(firstChild, 1);
@@ -74,9 +201,9 @@ namespace csMTG.Tests
             Assert.AreEqual(thirdChild, 3);
 
             //All children have the right parent
-            Assert.AreEqual(t.parent[firstChild], t.root);
-            Assert.AreEqual(t.parent[secondChild], t.root);
-            Assert.AreEqual(t.parent[thirdChild], t.root);
+            Assert.AreEqual(t.Parent(firstChild), t.root);
+            Assert.AreEqual(t.Parent(secondChild), t.root);
+            Assert.AreEqual(t.Parent(thirdChild), t.root);
         }
 
         [TestMethod()]
@@ -89,10 +216,10 @@ namespace csMTG.Tests
             int thirdChild = t.AddChild(t.root, secondChild);
 
             //All children have been added to the right parent
-            Assert.AreEqual(t.children[t.root].Count(), 2);
-            Assert.IsTrue(t.children[t.root].Contains(firstChild));
-            Assert.IsTrue(t.children[t.root].Contains(thirdChild));
-            Assert.IsFalse(t.children[firstChild].Contains(secondChild));
+            Assert.AreEqual(t.Children(t.root).Count(), 2);
+            Assert.IsTrue(t.Children(t.root).Contains(firstChild));
+            Assert.IsTrue(t.Children(t.root).Contains(thirdChild));
+            Assert.IsFalse(t.Children(firstChild).Contains(secondChild));
 
             //All children have the right id (2 isn't repeated)
             Assert.AreEqual(firstChild, 1);
@@ -100,9 +227,9 @@ namespace csMTG.Tests
             Assert.AreEqual(thirdChild, 2);
 
             //All children have the right parent
-            Assert.AreEqual(t.parent[firstChild], t.root);
-            Assert.AreEqual(t.parent[secondChild], t.root);
-            Assert.AreEqual(t.parent[thirdChild], t.root);
+            Assert.AreEqual(t.Parent(firstChild), t.root);
+            Assert.AreEqual(t.Parent(secondChild), t.root);
+            Assert.AreEqual(t.Parent(thirdChild), t.root);
         }
 
         [TestMethod()]
@@ -113,10 +240,92 @@ namespace csMTG.Tests
             int childId = t.AddChild(1);
 
             //Child hasn't been added
-            Assert.IsFalse(t.children.ContainsKey(1));
+            Assert.IsNull(t.Children(1));
 
             //An id hasn't been attributed
             Assert.AreEqual(childId, -1);
         }
+        #endregion
+
+        #region Tests of function RemoveVertex
+
+        [TestMethod()]
+        public void RemoveVertex_NormalScenario_ChildRemoved()
+        {
+            Tree t = new Tree();
+            
+            int childId = t.AddChild(0);
+
+            CollectionAssert.Contains(t.Children(0), childId);
+
+            t.RemoveVertex(childId, true);
+
+            CollectionAssert.DoesNotContain(t.Children(0),childId);
+            Assert.IsNull(t.Parent(childId));
+            Assert.IsNull(t.Children(childId));
+        }
+        
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "The root can't be removed.")]
+        public void RemoveVertex_RemoveRoot_ExceptionThrown()
+        {
+            Tree t = new Tree();
+            
+            t.RemoveVertex(0, false);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "This vertex doesn't exist.")]
+        public void RemoveVertex_VertexDoesntExist_ExceptionThrown()
+        {
+            Tree t = new Tree();
+
+            t.RemoveVertex(10, false);
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "This vertex has children and so it can't be removed.")]
+        public void RemoveVertex_VertexHasChildrenAndReparentIsFalse_ChildNotRemoved()
+        {
+            Tree t = new Tree();
+
+            int childId = t.AddChild(0);
+            t.AddChild(childId, 5);
+
+            t.RemoveVertex(childId, false);
+        }
+
+
+        [TestMethod()]
+        public void RemoveVertex_VertexHasChildrenAndReparentIsTrue_ChildrenHaveNewParentAndVertexRemoved()
+        {
+            Tree t = new Tree();
+
+            t.AddChild(0);
+            t.AddChild(0);
+            t.AddChild(0);
+
+            int reparentedChild1 = t.AddChild(1);
+            int reparentedChild2 = t.AddChild(1);
+
+            Assert.AreEqual(t.Children(0).Count,3);
+            Assert.AreEqual(t.Children(1).Count, 2);
+            Assert.AreEqual(t.Parent(reparentedChild1), 1);
+            Assert.AreEqual(t.Parent(reparentedChild2), 1);
+
+            t.RemoveVertex(1, true);
+
+            Assert.AreEqual(t.Children(0).Count, 4); // Original Children (3) + New children (2) - Deleted Vertex (1)
+            Assert.AreEqual(t.Parent(reparentedChild1), 0);
+            Assert.AreEqual(t.Parent(reparentedChild2), 0);
+            Assert.IsNull(t.Children(1));
+            Assert.IsNull(t.Parent(1));
+            CollectionAssert.Contains(t.Children(0), reparentedChild1);
+            CollectionAssert.Contains(t.Children(0), reparentedChild2);
+
+        }
+
+        #endregion
+
     }
 }
