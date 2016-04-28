@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
+
 namespace csMTG
 {
     /// <summary>
@@ -37,12 +38,86 @@ namespace csMTG
         }
 
         /// <summary>
+        /// Gives the number of children of a vertex.
+        /// </summary>
+        /// <param name="vertexId"> The id of the vertex parent. </param>
+        /// <returns> Returns the number of children vertices (0 if there are none).
+        /// If the vertex parent does not exist, it returns 0 .</returns>
+        public int NbChildren(int vertexId)
+        {
+            int nbChildren = 0;
+
+            if (!children.ContainsKey(vertexId))
+                nbChildren = 0;
+            else
+            {
+                if (children[vertexId] != null)
+                    nbChildren = children[vertexId].Count();
+            }
+
+            return nbChildren;
+        }
+
+        /// <summary>
+        /// Gives the parent of the child in the parameter.
+        /// </summary>
+        /// <param name="vertexId"> The identifier of the child. </param>
+        /// <returns> Returns the identifier of the parent.
+        /// In case the parameter doesn't exist, it raises an exception and returns null. </returns>
+        public int? Parent(int vertexId)
+        {
+            int? parentId;
+
+            try
+            {
+                parentId = parent[vertexId];
+            }catch(KeyNotFoundException)
+            {
+                parentId = null;
+            }
+            
+            return parentId;
+        }
+
+        /// <summary>
+        /// Gives a list of the specified id's Children.
+        /// </summary>
+        /// <param name="vertexId"> The identifier of the parent. </param>
+        /// <returns> Returns a list of the parent's children.
+        /// If the identifier doesn't have children, it returns an empty list.
+        /// If the identifier doesn't exist, it returns null. </returns>
+        public List<int> Children(int vertexId)
+        {
+            List<int> listOfChildren;
+
+            if (!parent.ContainsKey(vertexId))
+                listOfChildren = null;
+            else
+            {
+                if (children[vertexId] != null)
+                    listOfChildren = children[vertexId];
+                else
+                    listOfChildren = new List<int>() { };
+            }
+            return listOfChildren;
+        }
+
+        /// <summary>
         /// Counts the number of elements in the tree.
         /// </summary>
         /// <returns>Number of vertices</returns>
-        public int Count() {
-            int count = children.Count();
+        int Count() {
+            int count = parent.Count();
             return count;
+        }
+
+        /// <summary>
+        /// Counts the number of vertices in the tree.
+        /// </summary>
+        /// <returns> Returns the total number of vertices. </returns>
+        public int NbVertices()
+        {
+            return Count();
         }
 
         /// <summary>
@@ -50,11 +125,7 @@ namespace csMTG
         /// </summary>
         private int NewId()
         {
-            do
-            {
-                id++;
-            }
-            while (children.ContainsKey(id));
+            id = parent.Keys.Max() + 1;
             return id;
         }
 
@@ -63,7 +134,8 @@ namespace csMTG
         /// </summary>
         /// <param name="parentId"> The parent to which the child will be added. </param>
         /// <param name="childId"> The child to add. This parameter is optional. </param>
-        /// <returns> Returns the id of the child added. </returns>
+        /// <returns> Returns the id of the child added.
+        /// If the parent doesn't exist, it returns -1.</returns>
         public int AddChild(int parentId, int childId = -1) {
 
             if (!(children.ContainsKey(parentId)))
@@ -125,10 +197,58 @@ namespace csMTG
             children[oldParent].Remove(childId);
         }
 
+        /// <summary>
+        /// Remove a vertex.
+        /// </summary>
+        /// <param name="vertexId"> The identifier of the vertex to be removed. </param>
+        /// <param name="reparentChild"> 
+        /// If it is set to true, all the children of the vertex will get his parent as a parent.
+        /// If it is set to false, the vertex can not be suppressed if it has children. </param>
+        public void RemoveVertex(int vertexId, bool reparentChild)
+        {
+            // Root can't be removed.
+            if (vertexId == root)
+                throw new ArgumentOutOfRangeException("vertexId", "The root can't be removed.");
+            else
+            {
+                // Vertex doesn't exist
+                if (!parent.ContainsKey(vertexId))
+                    throw new ArgumentOutOfRangeException("vertexId", "This vertex doesn't exist.");
+                else
+                {
+                    // Delete the vertex from the list of his parent's children.
+                    int newParent = (int)Parent(vertexId);
+                    children[newParent].Remove(vertexId);
+
+                    // In case the deleted vertex has children, their parent is replaced.
+                    if (NbChildren(vertexId) > 0)
+                    {
+                        if (reparentChild)
+                        {
+                            int numberOfChildren = children[vertexId].Count;
+
+                            while (numberOfChildren > 0)
+                            {
+                                int childId = children[vertexId][0];
+                                ReplaceParent(newParent, childId);
+                                numberOfChildren--;
+                            }
+                        }
+                        else
+                            throw new ArgumentOutOfRangeException("vertexId", "This vertex has children and so it can't be removed.");
+                    }
+
+                    // The vertex no longer has children or a parent.
+                    children.Remove(vertexId);
+                    parent.Remove(vertexId);
+                }
+              }
+            }
+
+
         static void Main(String[] args)   
         {
             
-
         }
     }
 }
