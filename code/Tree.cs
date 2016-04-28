@@ -244,11 +244,7 @@ namespace csMTG
                 }
               }
             }
-
-
-        static void Main(String[] args)   
-        {
-            
-        }
+    
+      
     }
 }
