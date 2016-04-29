@@ -152,10 +152,10 @@ namespace csMTG.Tests
 
         #endregion
 
-        #region Tests of AddVertexProperty
+        #region Tests of AddVertexProperties
 
         [TestMethod()]
-        public void AddVertexProperty_NewProperty_PropertyAndValueAdded()
+        public void AddVertexProperties_NewProperties_PropertiesAndValueAdded()
         {
             PropertyTree tree = new PropertyTree();
 
@@ -164,7 +164,7 @@ namespace csMTG.Tests
             propertyDict.Add("length", 12.5);
             propertyDict.Add("order", 1);
 
-            tree.AddVertexProperty(1, propertyDict);
+            tree.AddVertexProperties(1, propertyDict);
 
             Dictionary<string, Dictionary<int, dynamic>> expectedResult = new Dictionary<string, Dictionary<int, dynamic>>();
             Dictionary<int, dynamic> firstRow = new Dictionary<int, dynamic>() { { 1, "leaf" } };
@@ -184,7 +184,7 @@ namespace csMTG.Tests
 
         [TestMethod()]
         [ExpectedException(typeof(ArgumentException), "Property already exists for this vertex.")]
-        public void AddVertexProperty_ExistingPropertyForId_ExceptionThrown()
+        public void AddVertexProperties_ExistingPropertyForId_ExceptionThrown()
         {
             PropertyTree tree = new PropertyTree();
             tree.AddProperty("label");
@@ -194,8 +194,63 @@ namespace csMTG.Tests
             propertyDict.Add("label", "leaf");
             propertyDict.Add("length", 12.5);
 
-            tree.AddVertexProperty(1, propertyDict);
+            tree.AddVertexProperties(1, propertyDict);
             
+        }
+
+        #endregion
+
+        #region Tests of RemoveVertexProperties
+
+        [TestMethod()]
+        public void RemoveVertexProperties_NormalCase_NoPropertiesForTheVid()
+        {
+            PropertyTree tree = new PropertyTree();
+
+            Dictionary<string, dynamic> props = new Dictionary<string, dynamic>();
+            props.Add("label", "leaf");
+            props.Add("height", 12.5);
+
+            tree.AddVertexProperties(1,props);
+            tree.AddVertexProperties(2, props);
+
+            CollectionAssert.Contains(tree.properties["label"].Keys, 1);
+
+            tree.RemoveVertexProperties(1);
+            CollectionAssert.DoesNotContain(tree.properties["label"].Keys, 1);
+            CollectionAssert.DoesNotContain(tree.properties["height"].Keys, 1);
+            CollectionAssert.Contains(tree.properties["label"].Keys, 2);
+            CollectionAssert.Contains(tree.properties["height"].Keys, 2);
+
+        }
+        
+        [TestMethod()]
+        public void RemoveVertexProperties_NoProperties_NoProblem()
+        {
+            PropertyTree tree = new PropertyTree();
+
+            tree.RemoveVertexProperties(1);
+
+            CollectionAssert.AreEqual(tree.properties, new Dictionary<string, Dictionary<int, dynamic>>());
+        }
+
+        [TestMethod()]
+        public void RemoveVertexProperties_VertexDoesntExist_NoProblem()
+        {
+            PropertyTree tree = new PropertyTree();
+
+            Dictionary<string, dynamic> props = new Dictionary<string, dynamic>();
+            props.Add("label", "leaf");
+            props.Add("height", 12.5);
+            
+            tree.AddVertexProperties(2, props);
+            
+            tree.RemoveVertexProperties(1);
+
+            CollectionAssert.DoesNotContain(tree.properties["label"].Keys, 1);
+            CollectionAssert.DoesNotContain(tree.properties["height"].Keys, 1);
+            CollectionAssert.Contains(tree.properties["label"].Keys, 2);
+            CollectionAssert.Contains(tree.properties["height"].Keys, 2);
         }
 
         #endregion

@@ -90,7 +90,12 @@ namespace csMTG
                 throw new ArgumentException("Property doesn't exist. ");
         }
 
-        public void AddVertexProperty(int vertexId, Dictionary<string,dynamic> namesValues)
+        /// <summary>
+        ///  Adds a set of properties to the specified vertex.
+        /// </summary>
+        /// <param name="vertexId"> The identifier of the vertex to which properties will be added. </param>
+        /// <param name="namesValues"> A dictionary of names of the properties and their values for the vertex. </param>
+        public void AddVertexProperties(int vertexId, Dictionary<string,dynamic> namesValues)
         {
             foreach(string name in namesValues.Keys)
             {
@@ -105,9 +110,23 @@ namespace csMTG
             }
         }
 
+        /// <summary>
+        /// Removes all properties for a specific vertex.
+        /// </summary>
+        /// <param name="vertexId"> The identifier of the vertex whose properties will be removed.</param>
+        public void RemoveVertexProperties(int vertexId)
+        {
+            foreach(string name in properties.Keys)
+            {
+                Dictionary<int, dynamic> props = properties[name];
+
+                if (props.ContainsKey(vertexId))
+                    properties[name].Remove(vertexId);
+            }
+        }
+
         static void Main(String[] args)
         {
-           
         }
     }
 }
