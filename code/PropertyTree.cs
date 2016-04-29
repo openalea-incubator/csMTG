@@ -125,6 +125,25 @@ namespace csMTG
             }
         }
 
+        /// <summary>
+        /// Returns all properties for a vertex.
+        /// </summary>
+        /// <param name="vertexId"> The identifier of the vertex in question. </param>
+        /// <returns> A dictionary of { name of property : value for the vertex } </returns>
+        public Dictionary<string,dynamic> GetVertexProperty(int vertexId)
+        {
+            Dictionary<string, dynamic> vertexProperties = new Dictionary<string, dynamic>();
+            dynamic value;
+
+            foreach(string name in properties.Keys)
+            {
+                if(properties[name].TryGetValue(vertexId, out value))
+                    vertexProperties.Add(name, value);
+            }
+
+            return vertexProperties;
+        }
+
         static void Main(String[] args)
         {
         }

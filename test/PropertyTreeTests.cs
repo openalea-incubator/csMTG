@@ -254,5 +254,32 @@ namespace csMTG.Tests
         }
 
         #endregion
+
+        #region Tests of GetVertexProperty
+
+        [TestMethod()]
+        public void GetVertexProperty_VertexWithProperties_CorrectDict()
+        {
+            PropertyTree tree = new PropertyTree();
+
+            Dictionary<string, dynamic> props = new Dictionary<string, dynamic>();
+            props.Add("label", "leaf");
+            props.Add("height", 12.5);
+
+            tree.AddVertexProperties(1, props);
+            
+            CollectionAssert.AreEqual(tree.GetVertexProperty(1), props);
+
+        }
+
+        [TestMethod()]
+        public void GetVertexProperty_VertexWithNoProperties_EmptyDict()
+        {
+            PropertyTree tree = new PropertyTree();
+
+            CollectionAssert.AreEqual(tree.GetVertexProperty(1), new Dictionary<string, dynamic>() { });
+
+        }
+        #endregion
     }
 }
