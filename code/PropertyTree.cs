@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 namespace csMTG
 {
 
-    class PropertyTree : Tree
+    public class PropertyTree : Tree
     {
+        // Attribute which carries all properties of the tree
+        public Dictionary<string, Dictionary<int, dynamic>> properties;
 
-        Dictionary<string, Dictionary<int, dynamic>> properties;
-
-        PropertyTree()
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        public PropertyTree()
         {
             properties = new Dictionary<string, Dictionary<int, dynamic>>();
         }
@@ -31,12 +34,8 @@ namespace csMTG
 
         static void Main(String[] args)
         {
-            PropertyTree prop = new PropertyTree();
+            
 
-            prop.properties.Add("label", null);
-            prop.properties.Add("height", null);
-
-            prop.PropertyNames().ForEach(Console.WriteLine);
         }
     }
 }
