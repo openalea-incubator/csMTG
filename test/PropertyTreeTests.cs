@@ -92,6 +92,36 @@ namespace csMTG.Tests
         }
         #endregion
 
+        #region Tests of AddProperty
+
+        [TestMethod()]
+        public void AddProperty_NewProperty_NewKeyAdded()
+        {
+            PropertyTree tree = new PropertyTree();
+
+            CollectionAssert.DoesNotContain(tree.properties.Keys, "label");
+
+            tree.AddProperty("label");
+            CollectionAssert.Contains(tree.properties.Keys, "label");
+
+            Dictionary<int, dynamic> emptyDictionary = new Dictionary<int, dynamic>() { };
+            CollectionAssert.AreEqual(tree.properties["label"], emptyDictionary);
+
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException), "This key already exists.")]
+        public void AddProperty_PropertyAlreadyExists_ExceptionThrown()
+        {
+            PropertyTree tree = new PropertyTree();
+            tree.AddProperty("label");
+
+            CollectionAssert.Contains(tree.properties.Keys, "label");
+            tree.AddProperty("label");
+            
+        }
+
+        #endregion
 
     }
 }

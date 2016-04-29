@@ -49,6 +49,17 @@ namespace csMTG
 
         }
 
+        /// <summary>
+        /// Adds a new key to the properties.
+        /// </summary>
+        /// <param name="name"> The name of the property to add. </param>
+        public void AddProperty(string name)
+        {
+            properties.Add(name, new Dictionary<int, dynamic>());
+        }
+
+
+
         static void Main(String[] args)
         {
            
