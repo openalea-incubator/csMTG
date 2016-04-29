@@ -31,11 +31,27 @@ namespace csMTG
             return names;
         }
         
+        /// <summary>
+        /// Returns a property map between the vid and the data for the property in the parameters
+        /// </summary>
+        /// <param name="name"> Name of the property. </param>
+        /// <returns> A dictionary of { vertexId : value of the property } </returns>
+        public Dictionary<int,dynamic> Property(string name)
+        {
+            Dictionary<int, dynamic> propertyMap;
+
+            if (!properties.TryGetValue(name,out propertyMap))
+            {
+                propertyMap = new Dictionary<int, dynamic>();
+            }
+            
+            return propertyMap;
+
+        }
 
         static void Main(String[] args)
         {
-            
-
+           
         }
     }
 }
