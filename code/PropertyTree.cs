@@ -90,6 +90,21 @@ namespace csMTG
                 throw new ArgumentException("Property doesn't exist. ");
         }
 
+        public void AddVertexProperty(int vertexId, Dictionary<string,dynamic> namesValues)
+        {
+            foreach(string name in namesValues.Keys)
+            {
+
+                // Case there is no property with such a name yet.
+                if (!properties.ContainsKey(name))
+                    AddProperty(name);
+                
+                // ???? In case the vertex already has a value for this propriety: Change it or throw an exception ?
+                properties[name].Add(vertexId, namesValues[name]);
+                
+            }
+        }
+
         static void Main(String[] args)
         {
            

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace csMTG.Tests
 {
@@ -151,5 +152,52 @@ namespace csMTG.Tests
 
         #endregion
 
+        #region Tests of AddVertexProperty
+
+        [TestMethod()]
+        public void AddVertexProperty_NewProperty_PropertyAndValueAdded()
+        {
+            PropertyTree tree = new PropertyTree();
+
+            Dictionary<string, dynamic> propertyDict = new Dictionary<string, dynamic>();
+            propertyDict.Add("label", "leaf");
+            propertyDict.Add("length", 12.5);
+            propertyDict.Add("order", 1);
+
+            tree.AddVertexProperty(1, propertyDict);
+
+            Dictionary<string, Dictionary<int, dynamic>> expectedResult = new Dictionary<string, Dictionary<int, dynamic>>();
+            Dictionary<int, dynamic> firstRow = new Dictionary<int, dynamic>() { { 1, "leaf" } };
+            Dictionary<int, dynamic> secondRow = new Dictionary<int, dynamic>() { { 1, 12.5 } };
+            Dictionary<int, dynamic> thirdRow = new Dictionary<int, dynamic>() { { 1, 1 }};
+
+            expectedResult.Add("label", firstRow);
+            expectedResult.Add("length", secondRow);
+            expectedResult.Add("order", thirdRow);
+
+            CollectionAssert.AreEqual(expectedResult.Keys, tree.properties.Keys);
+            CollectionAssert.AreEqual(expectedResult["label"], tree.properties["label"]);
+            CollectionAssert.AreEqual(expectedResult["length"], tree.properties["length"]);
+            CollectionAssert.AreEqual(expectedResult["order"], tree.properties["order"]);
+
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException), "Property already exists for this vertex.")]
+        public void AddVertexProperty_ExistingPropertyForId_ExceptionThrown()
+        {
+            PropertyTree tree = new PropertyTree();
+            tree.AddProperty("label");
+            tree.properties["label"].Add(1,"wrong");
+
+            Dictionary<string, dynamic> propertyDict = new Dictionary<string, dynamic>();
+            propertyDict.Add("label", "leaf");
+            propertyDict.Add("length", 12.5);
+
+            tree.AddVertexProperty(1, propertyDict);
+            
+        }
+
+        #endregion
     }
 }
