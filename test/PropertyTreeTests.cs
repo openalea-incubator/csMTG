@@ -114,11 +114,39 @@ namespace csMTG.Tests
         public void AddProperty_PropertyAlreadyExists_ExceptionThrown()
         {
             PropertyTree tree = new PropertyTree();
-            tree.AddProperty("label");
+            tree.properties.Add("label", new Dictionary<int, dynamic>());
 
             CollectionAssert.Contains(tree.properties.Keys, "label");
             tree.AddProperty("label");
             
+        }
+
+        #endregion
+
+        #region Tests of RemoveProperty
+
+        [TestMethod()]
+        public void RemoveProperty_PropertyExists_PropertyRemoved()
+        {
+            PropertyTree tree = new PropertyTree();
+
+            tree.AddProperty("label");
+            Assert.IsTrue(tree.properties.ContainsKey("label"));
+
+            tree.properties["label"].Add(1, "element");
+
+            tree.RemoveProperty("label");
+            Assert.IsFalse(tree.properties.ContainsKey("label"));
+            
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(ArgumentException), "Property doesn't exist.")]
+        public void RemoveProperty_PropertyDoesntExist_ExceptionThrown()
+        {
+            PropertyTree tree = new PropertyTree();
+            tree.RemoveProperty("label");
+
         }
 
         #endregion
