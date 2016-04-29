@@ -21,6 +21,15 @@ namespace csMTG
         }
 
         /// <summary>
+        /// Accessor to the attribute properties.
+        /// </summary>
+        /// <returns> Returns all the properties, the vertices and their properties' values. </returns>
+        public Dictionary<string,Dictionary<int,dynamic>> Properties()
+        {
+            return properties;
+        }
+
+        /// <summary>
         /// Lists all the names of the properties in the dictionary.
         /// </summary>
         /// <returns> A list of the properties' names. </returns>
