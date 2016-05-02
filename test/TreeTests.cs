@@ -285,7 +285,7 @@ namespace csMTG.Tests
 
         [TestMethod()]
         [ExpectedException(typeof(ArgumentOutOfRangeException), "This vertex has children and so it can't be removed.")]
-        public void RemoveVertex_VertexHasChildrenAndReparentIsFalse_ChildNotRemoved()
+        public void RemoveVertex_VertexHasChildrenAndReparentIsFalse_VertexNotRemoved()
         {
             Tree t = new Tree();
 

@@ -144,6 +144,23 @@ namespace csMTG
             return vertexProperties;
         }
 
+        /// <summary>
+        /// Adds a child along with its properties
+        /// </summary>
+        /// <param name="parentId"> The parent's identifier. </param>
+        /// <param name="namesValues"> The dictionary containing the names and values of the properties for the child vertex. </param>
+        /// <param name="childId"> The identifier of the child. (Optional) </param>
+        /// <returns> Returns the identifier of the child. </returns>
+        public int AddChild(int parentId, Dictionary<string, dynamic> namesValues, int childId = -1)
+        {
+
+            int child = base.AddChild(parentId,childId);
+            if(child != -1)
+                AddVertexProperties(child, namesValues);
+
+            return child;
+        }
+
         static void Main(String[] args)
         {
         }

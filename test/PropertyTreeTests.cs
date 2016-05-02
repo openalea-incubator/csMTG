@@ -281,5 +281,84 @@ namespace csMTG.Tests
 
         }
         #endregion
+
+        #region Tests of AddChild
+
+        [TestMethod()]
+        public void AddChild_NormalCase_ChildAndPropertiesAdded()
+        {
+            PropertyTree tree = new PropertyTree();
+
+            // The properties to add
+            Dictionary<string, dynamic> propertyDict = new Dictionary<string, dynamic>();
+            propertyDict.Add("label", "leaf");
+            propertyDict.Add("length", 12.5);
+            propertyDict.Add("order", 1);
+
+            int childId = tree.AddChild(tree.root, propertyDict);
+
+            // Make sure the child was added
+            Assert.IsTrue(tree.Children(tree.root).Contains(childId));
+            Assert.AreEqual(tree.Children(tree.root).Count(), 1);
+            Assert.AreEqual(tree.Parent(childId), tree.root);
+
+            // Make sure the properties were correctly added
+            Dictionary<string, Dictionary<int, dynamic>> expectedResult = new Dictionary<string, Dictionary<int, dynamic>>();
+            Dictionary<int, dynamic> firstRow = new Dictionary<int, dynamic>() { { childId, "leaf" } };
+            Dictionary<int, dynamic> secondRow = new Dictionary<int, dynamic>() { { childId, 12.5 } };
+            Dictionary<int, dynamic> thirdRow = new Dictionary<int, dynamic>() { { childId, 1 } };
+
+            expectedResult.Add("label", firstRow);
+            expectedResult.Add("length", secondRow);
+            expectedResult.Add("order", thirdRow);
+
+            CollectionAssert.AreEqual(expectedResult.Keys, tree.properties.Keys);
+            CollectionAssert.AreEqual(expectedResult["label"], tree.properties["label"]);
+            CollectionAssert.AreEqual(expectedResult["length"], tree.properties["length"]);
+            CollectionAssert.AreEqual(expectedResult["order"], tree.properties["order"]);
+        }
+
+        [TestMethod()]
+        public void AddChild_InvalidParent_ReturnsMinusOneAndNoPropertiesAdded()
+        {
+            PropertyTree tree = new PropertyTree();
+
+            // The properties to add
+            Dictionary<string, dynamic> propertyDict = new Dictionary<string, dynamic>();
+            propertyDict.Add("label", "leaf");
+            propertyDict.Add("length", 12.5);
+            propertyDict.Add("order", 1);
+
+            int childId = tree.AddChild(100, propertyDict);
+
+            // Make sure the child wasn't added
+            Assert.IsNull(tree.Children(100));
+            Assert.AreEqual(childId, -1);
+
+            // Make sure no properties were added
+            Dictionary<string, Dictionary<int, dynamic>> expectedProperties = new Dictionary<string, Dictionary<int, dynamic>>() { };
+            CollectionAssert.AreEqual(tree.properties, expectedProperties);
+        }
+
+        [TestMethod()]
+        public void AddChild_NoProperties_ChildAddedAndNoPropertiesForTheChild()
+        {
+            PropertyTree tree = new PropertyTree();
+            
+            Dictionary<string, dynamic> propertyDict = new Dictionary<string, dynamic>() { };
+
+            int childId = tree.AddChild(tree.root, propertyDict);
+
+            // Make sure the child was added
+            Assert.IsTrue(tree.Children(tree.root).Contains(childId));
+            Assert.AreEqual(tree.Children(tree.root).Count(), 1);
+            Assert.AreEqual(tree.Parent(childId), tree.root);
+
+            // Make sure the dictionary is empty
+            Dictionary<string, Dictionary<int, dynamic>> expectedProperties = new Dictionary<string, Dictionary<int, dynamic>>() { };
+            CollectionAssert.AreEqual(tree.properties, expectedProperties);
+        }
+
+        #endregion
     }
 }
