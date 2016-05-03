@@ -97,16 +97,19 @@ namespace csMTG
         /// <param name="namesValues"> A dictionary of names of the properties and their values for the vertex. </param>
         public void AddVertexProperties(int vertexId, Dictionary<string,dynamic> namesValues)
         {
+
             foreach(string name in namesValues.Keys)
             {
 
                 // Case there is no property with such a name yet.
                 if (!properties.ContainsKey(name))
                     AddProperty(name);
-                
-                // ???? In case the vertex already has a value for this propriety: Change it or throw an exception ?
-                properties[name].Add(vertexId, namesValues[name]);
-                
+
+                // Case the vertex already has a property with the same name.
+                if(properties[name].ContainsKey(vertexId))
+                    properties[name][vertexId] = namesValues[name];
+                else
+                    properties[name].Add(vertexId, namesValues[name]);
             }
         }
 
@@ -163,6 +166,7 @@ namespace csMTG
 
         static void Main(String[] args)
         {
+
         }
     }
 }

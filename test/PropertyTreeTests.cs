@@ -22,8 +22,8 @@ namespace csMTG.Tests
             
             test.properties.Add("label", new Dictionary<int, dynamic>());
             test.properties.Add("length", new Dictionary<int, dynamic>());
-            test.properties["label"].Add(1, "hello");
-            test.properties["length"].Add(12, 12.5);
+            test.properties["label"][1]= "hello";
+            test.properties["length"][12] = 12.5;
 
             List<string> listOfProperties = new List<string>() { "label", "length" };
 
@@ -142,6 +142,19 @@ namespace csMTG.Tests
         }
 
         [TestMethod()]
+        public void RemoveProperty_PropertyWithNoValues_PropertyRemoved()
+        {
+            PropertyTree tree = new PropertyTree();
+
+            tree.AddProperty("label");
+            Assert.IsTrue(tree.properties.ContainsKey("label"));
+
+            tree.RemoveProperty("label");
+            Assert.IsFalse(tree.properties.ContainsKey("label"));
+        }
+
+
+        [TestMethod()]
         [ExpectedException(typeof(ArgumentException), "Property doesn't exist.")]
         public void RemoveProperty_PropertyDoesntExist_ExceptionThrown()
         {
@@ -183,19 +196,32 @@ namespace csMTG.Tests
         }
 
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentException), "Property already exists for this vertex.")]
-        public void AddVertexProperties_ExistingPropertyForId_ExceptionThrown()
+        public void AddVertexProperties_ExistingPropertyForId_PropertyChanged()
         {
             PropertyTree tree = new PropertyTree();
             tree.AddProperty("label");
-            tree.properties["label"].Add(1,"wrong");
+            tree.properties["label"].Add(1, "wrong");
 
+            // Check that the value of the label property is < 1 , "wrong" >
+            Assert.IsTrue(tree.properties.ContainsKey("label"));
+            Dictionary<int, dynamic> value = new Dictionary<int, dynamic>();
+            value.Add(1, "wrong");
+
+            CollectionAssert.AreEqual(tree.properties["label"], value);
+
+            // Add the same property for a vertex with a new value
             Dictionary<string, dynamic> propertyDict = new Dictionary<string, dynamic>();
             propertyDict.Add("label", "leaf");
             propertyDict.Add("length", 12.5);
 
             tree.AddVertexProperties(1, propertyDict);
-            
+
+            // Check that the value has been changed
+            Assert.IsTrue(tree.properties["label"].ContainsKey(1));
+            Dictionary<int, dynamic> newValue = new Dictionary<int, dynamic>();
+            newValue.Add(1, "leaf");
+
+            CollectionAssert.AreEqual(tree.properties["label"], newValue);
         }
 
         #endregion
@@ -358,6 +384,7 @@ namespace csMTG.Tests
             Dictionary<string, Dictionary<int, dynamic>> expectedProperties = new Dictionary<string, Dictionary<int, dynamic>>() { };
             CollectionAssert.AreEqual(tree.properties, expectedProperties);
         }
+
 
         #endregion
     }
