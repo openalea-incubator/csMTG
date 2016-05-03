@@ -171,6 +171,7 @@ namespace csMTG.Tests
         public void AddVertexProperties_NewProperties_PropertiesAndValueAdded()
         {
             PropertyTree tree = new PropertyTree();
+            tree.AddChild(tree.root, 1);
 
             Dictionary<string, dynamic> propertyDict = new Dictionary<string, dynamic>();
             propertyDict.Add("label", "leaf");
@@ -196,9 +197,25 @@ namespace csMTG.Tests
         }
 
         [TestMethod()]
+        [ExpectedException(typeof(ArgumentOutOfRangeException), "Property doesn't exist.")]
+        public void AddVertexProperties_VertexDoesntExist_ExceptionThrown()
+        {
+            PropertyTree tree = new PropertyTree();
+            Dictionary<string, dynamic> propertyDict = new Dictionary<string, dynamic>();
+            propertyDict.Add("label", "leaf");
+            propertyDict.Add("length", 12.5);
+            propertyDict.Add("order", 1);
+
+            tree.AddVertexProperties(1, propertyDict);
+
+        }
+
+
+        [TestMethod()]
         public void AddVertexProperties_ExistingPropertyForId_PropertyChanged()
         {
             PropertyTree tree = new PropertyTree();
+            tree.AddChild(tree.root, 1);
             tree.AddProperty("label");
             tree.properties["label"].Add(1, "wrong");
 
@@ -232,6 +249,8 @@ namespace csMTG.Tests
         public void RemoveVertexProperties_NormalCase_NoPropertiesForTheVid()
         {
             PropertyTree tree = new PropertyTree();
+            tree.AddChild(tree.root,1);
+            tree.AddChild(1,2);
 
             Dictionary<string, dynamic> props = new Dictionary<string, dynamic>();
             props.Add("label", "leaf");
@@ -264,6 +283,8 @@ namespace csMTG.Tests
         public void RemoveVertexProperties_VertexDoesntExist_NoProblem()
         {
             PropertyTree tree = new PropertyTree();
+            tree.AddChild(tree.root,1);
+            tree.AddChild(tree.root, 2);
 
             Dictionary<string, dynamic> props = new Dictionary<string, dynamic>();
             props.Add("label", "leaf");
@@ -281,12 +302,13 @@ namespace csMTG.Tests
 
         #endregion
 
-        #region Tests of GetVertexProperty
+        #region Tests of GetVertexProperties
 
         [TestMethod()]
-        public void GetVertexProperty_VertexWithProperties_CorrectDict()
+        public void GetVertexProperties_VertexWithProperties_CorrectDict()
         {
             PropertyTree tree = new PropertyTree();
+            tree.AddChild(tree.root, 1);
 
             Dictionary<string, dynamic> props = new Dictionary<string, dynamic>();
             props.Add("label", "leaf");
@@ -294,16 +316,16 @@ namespace csMTG.Tests
 
             tree.AddVertexProperties(1, props);
             
-            CollectionAssert.AreEqual(tree.GetVertexProperty(1), props);
+            CollectionAssert.AreEqual(tree.GetVertexProperties(1), props);
 
         }
 
         [TestMethod()]
-        public void GetVertexProperty_VertexWithNoProperties_EmptyDict()
+        public void GetVertexProperties_VertexWithNoProperties_EmptyDict()
         {
             PropertyTree tree = new PropertyTree();
 
-            CollectionAssert.AreEqual(tree.GetVertexProperty(1), new Dictionary<string, dynamic>() { });
+            CollectionAssert.AreEqual(tree.GetVertexProperties(1), new Dictionary<string, dynamic>() { });
 
         }
         #endregion

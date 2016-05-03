@@ -97,20 +97,24 @@ namespace csMTG
         /// <param name="namesValues"> A dictionary of names of the properties and their values for the vertex. </param>
         public void AddVertexProperties(int vertexId, Dictionary<string,dynamic> namesValues)
         {
-
-            foreach(string name in namesValues.Keys)
+            if (base.parent.ContainsKey(vertexId))
             {
+                foreach (string name in namesValues.Keys)
+                {
 
-                // Case there is no property with such a name yet.
-                if (!properties.ContainsKey(name))
-                    AddProperty(name);
+                    // Case there is no property with such a name yet.
+                    if (!properties.ContainsKey(name))
+                        AddProperty(name);
 
-                // Case the vertex already has a property with the same name.
-                if(properties[name].ContainsKey(vertexId))
-                    properties[name][vertexId] = namesValues[name];
-                else
-                    properties[name].Add(vertexId, namesValues[name]);
+                    // Case the vertex already has a property with the same name.
+                    if (properties[name].ContainsKey(vertexId))
+                        properties[name][vertexId] = namesValues[name];
+                    else
+                        properties[name].Add(vertexId, namesValues[name]);
+                }
             }
+            else
+                throw new ArgumentOutOfRangeException("vertexId", "This vertex does not exist");
         }
 
         /// <summary>
@@ -133,7 +137,7 @@ namespace csMTG
         /// </summary>
         /// <param name="vertexId"> The identifier of the vertex in question. </param>
         /// <returns> A dictionary of { name of property : value for the vertex } </returns>
-        public Dictionary<string,dynamic> GetVertexProperty(int vertexId)
+        public Dictionary<string,dynamic> GetVertexProperties(int vertexId)
         {
             Dictionary<string, dynamic> vertexProperties = new Dictionary<string, dynamic>();
             dynamic value;
