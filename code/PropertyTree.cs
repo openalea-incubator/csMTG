@@ -168,9 +168,21 @@ namespace csMTG
             return child;
         }
 
+        /// <summary>
+        /// Overrides the function: RemoveVertex in Tree.
+        /// </summary>
+        /// <param name="vertexId"> The identifier of the vertex. </param>
+        /// <param name="reparentChild"> A boolean to indicate whether children should be reparented or not. </param>
+        public new void RemoveVertex(int vertexId, bool reparentChild)
+        {
+            base.RemoveVertex(vertexId, reparentChild);
+            RemoveVertexProperties(vertexId);
+        }
+
+
         static void Main(String[] args)
         {
-
+            
         }
     }
 }
