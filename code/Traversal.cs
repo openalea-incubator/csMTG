@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace csMTG
 {
-    class traversal : PropertyTree
+    public class traversal : PropertyTree
     {
         #region Preorder
 

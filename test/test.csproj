@@ -55,6 +55,7 @@
     <Compile Include="AlgorithmTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyTreeTests.cs" />
+    <Compile Include="traversalTests.cs" />
     <Compile Include="TreeTests.cs" />
   </ItemGroup>
   <ItemGroup>
