@@ -8,6 +8,8 @@ namespace csMTG
 {
     class traversal : PropertyTree
     {
+        #region Preorder
+
         /// <summary>
         /// Iteratively traverse the tree in preorder starting from a vertex.
         /// </summary>
@@ -18,20 +20,20 @@ namespace csMTG
         {
             Dictionary<int, dynamic> edgeType = tree.Property("Edge_Type");
 
-            Queue<int> queue = new Queue<int>();
-            queue.Enqueue(vertexId);
+            Stack<int> stack = new Stack<int>();
+            stack.Push(vertexId);
 
-            while (queue.Count != 0)
+            while (stack.Count != 0)
             {
                 List<int> plus = new List<int>();
                 List<int> successor = new List<int>();
 
-                vertexId = queue.Dequeue();
+                vertexId = stack.Pop();
                 yield return vertexId;
 
                 foreach (int vid in tree.Children(vertexId))
                 {
-                    if (edgeType[vid].Equals('<'))
+                    if (edgeType[vid].Equals('+'))
                         successor.Add(vid);
                     else
                         plus.Add(vid);
@@ -43,12 +45,12 @@ namespace csMTG
 
                 child.Reverse();
 
-                child.ForEach(o => queue.Enqueue(o));
+                child.ForEach(o => stack.Push(o));
             }
         }
 
         /// <summary>
-        /// Traverse recursively the tree in preorder starting from a vertex.
+        /// Recursively traverse the tree in preorder starting from a vertex.
         /// </summary>
         /// <param name="tree"> The tree to be traversed. </param>
         /// <param name="vertexId"> The identifier of the starting vertex. </param>
@@ -82,6 +84,7 @@ namespace csMTG
 
         }
 
+        #endregion
 
         static void Main(String[] args)
         {
