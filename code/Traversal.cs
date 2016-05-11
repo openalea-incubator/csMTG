@@ -33,7 +33,7 @@ namespace csMTG
 
                 foreach (int vid in tree.Children(vertexId))
                 {
-                    if (edgeType[vid].Equals('+'))
+                    if (edgeType[vid].Equals("<"))
                         successor.Add(vid);
                     else
                         plus.Add(vid);
@@ -86,7 +86,89 @@ namespace csMTG
 
         #endregion
 
-        static void Main(String[] args)
+        #region PostOrder
+
+        /// <summary>
+        /// Recursively traverse the tree in postorder starting from a vertex.
+        /// </summary>
+        /// <param name="tree"> The tree to be traversed. </param>
+        /// <param name="vertexId"> The identifier of the starting vertex. </param>
+        /// <returns> Returns an iterator. </returns>
+        public IEnumerable<int> RecursivePostOrder(PropertyTree tree, int vertexId)
+        {
+            foreach(int vid in tree.Children(vertexId))
+            {
+                foreach(int node in RecursivePostOrder(tree, vid))
+                {
+                    yield return node;
+                }
+            }
+            yield return vertexId;
+        }
+
+
+        public IEnumerable<int> IterativePostOrder(PropertyTree tree, int vertexId)
+        {
+            Dictionary<int, dynamic> edgeType = tree.Property("Edge_Type");
+            
+            // Internal function
+            Func<int, List<int>> OrderChildren = new Func<int, List<int>>(vid =>
+            {
+                List<int> plus = new List<int>();
+                List<int> successor = new List<int>();
+
+                foreach(int v in tree.Children(vid))
+                {
+                    if (edgeType[v].Equals("<"))
+                        successor.Add(v);
+                    else
+                        plus.Add(v);
+                }
+
+                plus.AddRange(successor);
+                List<int> child = plus;
+                child.Reverse();
+
+                return child;
+            }
+            );
+
+            List<int> visited = new List<int>();
+
+            Stack<int> stack = new Stack<int>();
+            stack.Push(vertexId);
+
+            while(stack.Count != 0)
+            {
+                vertexId = stack.Peek();
+
+                List<int> listOfChildren = OrderChildren(vertexId);
+
+                if (listOfChildren.Count != 0 && (listOfChildren.Intersect(visited).Count() != listOfChildren.Count()) )
+                {
+                    foreach (int vid in listOfChildren)
+                    {
+                        if (!visited.Contains(vid))
+                        {
+                            stack.Push(vid);
+                            break;
+                        }
+                    }
+                }
+                else
+                    {
+                        visited.Add(vertexId);
+                        stack.Pop();
+                        yield return vertexId;
+                    }
+            }
+
+        }
+        
+
+    #endregion
+
+    static void Main(String[] args)
         {
             PropertyTree tree = new PropertyTree();
 
@@ -121,7 +203,15 @@ namespace csMTG
             foreach (int recursive in t.RecursivePreOrder(tree, 0))
                 Console.WriteLine(recursive);
 
+            Console.WriteLine("PostOrder Recursive results are : ");
 
+            foreach (int recursive in t.RecursivePostOrder(tree, 0))
+                Console.WriteLine(recursive);
+
+            Console.WriteLine("PostOrder Iterative results are : ");
+
+            foreach (int iterative in t.IterativePostOrder(tree, 0))
+                Console.WriteLine(iterative);
         }
 
     }
