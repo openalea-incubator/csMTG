@@ -40,9 +40,17 @@ namespace csMTG
                 // Add the specified number of children to the random parent
                 for (int i = 0; i < childrenToAdd; ++i)
                 {
-                    int newChild = t.AddChild(randomVertex);
+                    int newChild;
+
+                    if (i == childrenToAdd % 2)
+                        newChild = t.AddChild(randomVertex, new Dictionary<string, dynamic>() { { "Edge_Type", "<" } });
+                    else
+                        newChild = t.AddChild(randomVertex, new Dictionary<string, dynamic>() { { "Edge_Type", "+" } });
+
                     randomStack.Add(newChild);
                     nbVertices--;
+                    
+
                 }
 
                 randomStack.Remove(randomVertex);

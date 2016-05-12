@@ -64,7 +64,7 @@ namespace csMTG
 
             foreach (int vid in tree.Children(vertexId))
             {
-                if (edgeType[vid].Equals('<'))
+                if (edgeType[vid].Equals("<"))
                 {
                     successor.Add(vid);
                     continue;
@@ -89,24 +89,11 @@ namespace csMTG
         #region PostOrder
 
         /// <summary>
-        /// Recursively traverse the tree in postorder starting from a vertex.
+        /// Iteratively traverse the tree in postorder starting from a vertex.
         /// </summary>
         /// <param name="tree"> The tree to be traversed. </param>
         /// <param name="vertexId"> The identifier of the starting vertex. </param>
         /// <returns> Returns an iterator. </returns>
-        public IEnumerable<int> RecursivePostOrder(PropertyTree tree, int vertexId)
-        {
-            foreach(int vid in tree.Children(vertexId))
-            {
-                foreach(int node in RecursivePostOrder(tree, vid))
-                {
-                    yield return node;
-                }
-            }
-            yield return vertexId;
-        }
-
-
         public IEnumerable<int> IterativePostOrder(PropertyTree tree, int vertexId)
         {
             Dictionary<int, dynamic> edgeType = tree.Property("Edge_Type");
@@ -127,7 +114,6 @@ namespace csMTG
 
                 plus.AddRange(successor);
                 List<int> child = plus;
-                child.Reverse();
 
                 return child;
             }
@@ -164,11 +150,46 @@ namespace csMTG
             }
 
         }
+
+        /// <summary>
+        /// Recursively traverse the tree in postorder starting from a vertex.
+        /// </summary>
+        /// <param name="tree"> The tree to be traversed. </param>
+        /// <param name="vertexId"> The identifier of the starting vertex. </param>
+        /// <returns> Returns an iterator. </returns>
+        public IEnumerable<int> RecursivePostOrder(PropertyTree tree, int vertexId)
+        {
+            Dictionary<int, dynamic> edgeType = tree.Property("Edge_Type");
+
+            List<int> successor = new List<int>();
+
+            foreach (int v in tree.Children(vertexId))
+            {
+                if (edgeType[v].Equals("<"))
+                {
+                    successor.Add(v);
+                    continue;
+                }
+
+                foreach (int node in RecursivePostOrder(tree, v))
+                {
+                    yield return node;
+                }
+            }
+
+            foreach (int vid in successor)
+            {
+                foreach (int node in RecursivePostOrder(tree, vid))
+                    yield return node;
+            }
+
+            yield return vertexId;
+            
+        }
         
+        #endregion
 
-    #endregion
-
-    static void Main(String[] args)
+        static void Main(String[] args)
         {
             PropertyTree tree = new PropertyTree();
 
@@ -176,13 +197,16 @@ namespace csMTG
             Dictionary<string, dynamic> edges2 = new Dictionary<string, dynamic>() { { "Edge_Type", "+" } };
 
             tree.AddChild(0, edges1);
-            tree.AddChild(0, edges2);
+            //tree.AddChild(0, edges2);
+            tree.AddChild(0, edges1);
 
-            tree.AddChild(1, edges2);
+            //tree.AddChild(1, edges2);
+            tree.AddChild(1, edges1);
             tree.AddChild(1, edges1);
 
             tree.AddChild(4, edges1);
-            tree.AddChild(4, edges2);
+            //tree.AddChild(4, edges2);
+            tree.AddChild(4, edges1);
 
             tree.AddChild(2, edges1);
             tree.AddChild(2, edges1);
@@ -203,6 +227,8 @@ namespace csMTG
             foreach (int recursive in t.RecursivePreOrder(tree, 0))
                 Console.WriteLine(recursive);
 
+            System.Diagnostics.Debug.Assert(Enumerable.SequenceEqual<int>(t.IterativePreOrder(tree, 0), t.RecursivePreOrder(tree, 0)));
+
             Console.WriteLine("PostOrder Recursive results are : ");
 
             foreach (int recursive in t.RecursivePostOrder(tree, 0))
@@ -212,6 +238,9 @@ namespace csMTG
 
             foreach (int iterative in t.IterativePostOrder(tree, 0))
                 Console.WriteLine(iterative);
+
+            System.Diagnostics.Debug.Assert(Enumerable.SequenceEqual<int>(t.IterativePostOrder(tree, 0), t.RecursivePostOrder(tree, 0)));
+
         }
 
     }
