@@ -189,58 +189,90 @@ namespace csMTG
         
         #endregion
 
+        /// <summary>
+        /// Saves the PropertyTree into a file (.tlp)
+        /// </summary>
+        /// <param name="tree"> The property tree to save. </param>
+        /// <param name="path"> Contains the path and the name of the file (Do not mention the extension). </param>
+        public void SaveToFile(PropertyTree tree, string path)
+        {
+            
+            using (System.IO.StreamWriter file =
+                new System.IO.StreamWriter(@path+".tlp"))
+            {
+                // First line
+                file.WriteLine("(tlp \"2.0\"");
+
+                // List of all nodes
+                file.Write("(nodes");
+                foreach (int node in tree.parent.Keys)
+                {
+                    file.Write(" " + node);
+                }
+                file.WriteLine(")");
+
+                // List of all edges
+                int countEdges = 0;
+
+                foreach (int edge in tree.parent.Keys)
+                {
+                    if (edge != 0)
+                    {
+                        countEdges++;
+
+                        file.WriteLine("(edge " + countEdges + " " + (int)tree.Parent(edge) + " " + edge + ")");
+                    }
+                }
+
+                // List of all clusters
+                int clusterId = 1;
+
+                foreach (string name in tree.PropertyNames())
+                {
+                    file.WriteLine("(cluster " + clusterId + " " + name);
+
+                    file.Write("(nodes");
+                    foreach (int node in tree.Property(name).Keys)
+                    {
+                        file.Write(" " + node);
+                    }
+                    file.WriteLine("))");
+
+                    clusterId++;
+                }
+
+                // List of all properties
+                int propertyId = 1;
+
+                foreach (string name in tree.PropertyNames())
+                {
+                    file.WriteLine("(property " + propertyId + " string \"" + name + "\"");
+
+                    Dictionary<int, dynamic> property = tree.Property(name);
+
+                    foreach (int id in property.Keys)
+                    {
+                        file.WriteLine("(node " + id + " " + property[id] + ")");
+                    }
+
+                    file.WriteLine(")");
+                    propertyId++;
+                }
+            }
+        }
+
         static void Main(String[] args)
         {
             PropertyTree tree = new PropertyTree();
+            Algorithm a = new Algorithm();
 
-            Dictionary<string, dynamic> edges1 = new Dictionary<string, dynamic>() { { "Edge_Type", "<" } };
-            Dictionary<string, dynamic> edges2 = new Dictionary<string, dynamic>() { { "Edge_Type", "+" } };
-
-            tree.AddChild(0, edges1);
-            //tree.AddChild(0, edges2);
-            tree.AddChild(0, edges1);
-
-            //tree.AddChild(1, edges2);
-            tree.AddChild(1, edges1);
-            tree.AddChild(1, edges1);
-
-            tree.AddChild(4, edges1);
-            //tree.AddChild(4, edges2);
-            tree.AddChild(4, edges1);
-
-            tree.AddChild(2, edges1);
-            tree.AddChild(2, edges1);
-
-            tree.AddChild(7, edges1);
-
-            tree.AddChild(8, edges1);
+            tree = a.RandomTree(tree, 200);
+            tree.AddVertexProperties(5, new Dictionary<string, dynamic>() { { "Height", 12 } });
 
             traversal t = new traversal();
 
-            Console.WriteLine("Iterative results are : ");
-
-            foreach (int iter in t.IterativePreOrder(tree, 0))
-                Console.WriteLine(iter);
-
-            Console.WriteLine("Recursive results are : ");
-
-            foreach (int recursive in t.RecursivePreOrder(tree, 0))
-                Console.WriteLine(recursive);
-
-            System.Diagnostics.Debug.Assert(Enumerable.SequenceEqual<int>(t.IterativePreOrder(tree, 0), t.RecursivePreOrder(tree, 0)));
-
-            Console.WriteLine("PostOrder Recursive results are : ");
-
-            foreach (int recursive in t.RecursivePostOrder(tree, 0))
-                Console.WriteLine(recursive);
-
-            Console.WriteLine("PostOrder Iterative results are : ");
-
-            foreach (int iterative in t.IterativePostOrder(tree, 0))
-                Console.WriteLine(iterative);
-
-            System.Diagnostics.Debug.Assert(Enumerable.SequenceEqual<int>(t.IterativePostOrder(tree, 0), t.RecursivePostOrder(tree, 0)));
-
+            t.SaveToFile(tree,"C:\\Users\\aannaque\\Desktop\\tulip");
+           
         }
 
     }
