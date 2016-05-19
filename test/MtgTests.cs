@@ -134,6 +134,57 @@ namespace csMTG.Tests
 
         #endregion
 
+        #region Test of vertices
+
+        [TestMethod()]
+        public void Vertices_NormalMtg_ReturnsListOfVertices()
+        {
+            mtg tree = new mtg();
+
+            tree.scale.Add(1, 1);
+            tree.scale.Add(2, 1);
+            tree.scale.Add(3, 3);
+            tree.scale.Add(4, 5);
+
+            CollectionAssert.AreEqual(tree.Vertices(1), new List<int>() { 1, 2 });
+            CollectionAssert.AreEqual(tree.Vertices(3), new List<int>() { 3 });
+
+        }
+
+        [TestMethod()]
+        public void Vertices_EmptyMtg_ReturnsEmptyList()
+        {
+            mtg tree = new mtg();
+
+            CollectionAssert.AreEqual(tree.Vertices(1), new List<int>() { });
+        }
+
+        [TestMethod()]
+        public void NbVertices_NormalMtg_CorrectNumberForEachScale()
+        {
+            mtg tree = new mtg();
+
+            tree.scale.Add(1, 1);
+            tree.scale.Add(2, 1);
+            tree.scale.Add(3, 3);
+            tree.scale.Add(4, 5);
+
+            // Counts all vertices since scale isn't specified.
+            Assert.AreEqual(tree.NbVertices(), 5);
+
+            // Gives the right count for vertices by scale.
+            Assert.AreEqual(tree.NbVertices(0), 1);
+            Assert.AreEqual(tree.NbVertices(1), 2);
+            Assert.AreEqual(tree.NbVertices(3), 1);
+            Assert.AreEqual(tree.NbVertices(5), 1);
+
+            // Gives answer zero for a scale which doesn't exist.
+            Assert.AreEqual(tree.NbVertices(2), 0);
+
+        }
+
+        #endregion
+
     }
 }
 

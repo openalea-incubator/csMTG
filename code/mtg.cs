@@ -93,6 +93,55 @@ namespace csMTG
 
         #endregion
 
+        #region Vertices
+
+        /// <summary>
+        /// The set of all vertices is returned.
+        /// </summary>
+        /// <param name="scale"> Optional. If specified, only vertices
+        /// belonging to the scale will be listed. Otherwise, all vertices are listed.</param>
+        /// <returns> An iterator of the MTG's vertices according to their scale. </returns>
+        IEnumerable<int> VerticesIterator(int scale = -1)
+        {
+            if (scale < 0)
+            {
+                foreach (int vid in this.scale.Keys)
+                {
+                    yield return vid;
+                }
+            }
+            else
+            {
+                foreach (int vid in this.scale.Keys)
+                {
+                    if (this.scale[vid] == scale)
+                       yield return vid;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns a list of all vertices in a specific scale.
+        /// </summary>
+        /// <param name="scale"> Optional parameter. </param>
+        /// <returns> A list of the previous function. </returns>
+        public List<int> Vertices(int scale = -1)
+        {
+            return VerticesIterator(scale).ToList();
+        }
+
+        public int NbVertices(int scale = -1)
+        {
+            if(scale < 0)
+                return this.scale.Keys.Count;
+            else
+                return Vertices(scale).Count;
+        }
+
+
+
+        #endregion
+
         static void Main(String[] args)
         {
            
