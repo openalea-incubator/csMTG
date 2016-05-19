@@ -57,6 +57,7 @@
     <Compile Include="PropertyTreeTests.cs" />
     <Compile Include="traversalTests.cs" />
     <Compile Include="TreeTests.cs" />
+    <Compile Include="MtgTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\code\code.csproj">
