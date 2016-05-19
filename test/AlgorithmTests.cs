@@ -13,7 +13,7 @@ namespace csMTGTests
         [TestMethod()]
         public void RandomTree_NumberOfVerticesCreated_SameAsParameter()
         {
-            Tree t = new Tree();
+            PropertyTree t = new PropertyTree();
             
 
             int numberOfExpectedVertices = 50000;
@@ -27,7 +27,7 @@ namespace csMTGTests
         [TestMethod()]
         public void RandomTree_NumberOfChildrenRespected_LessOrEqualToTheParameter()
         {
-            Tree t = new Tree();
+            PropertyTree t = new PropertyTree();
 
             int maximumNbChildren = 9;
 
@@ -43,7 +43,7 @@ namespace csMTGTests
         [TestMethod()]
         public void RandomTree_DoChildrenAndParentCorrespond_CoherenceBetweenParentAndChildren()
         {
-            Tree t = new Tree();
+            PropertyTree t = new PropertyTree();
 
             t = algorithm.RandomTree(t, 50000, 100);
 

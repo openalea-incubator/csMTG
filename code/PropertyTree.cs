@@ -180,9 +180,9 @@ namespace csMTG
         }
 
 
-        static void Main(String[] args)
-        {
+        //static void Main(String[] args)
+        //{
             
-        }
+        //}
     }
 }

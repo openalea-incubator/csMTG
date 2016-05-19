@@ -45,6 +45,7 @@
     <Compile Include="Algorithm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyTree.cs" />
+    <Compile Include="Traversal.cs" />
     <Compile Include="Tree.cs" />
   </ItemGroup>
   <ItemGroup>

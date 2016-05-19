@@ -15,7 +15,7 @@ namespace csMTG
     public class Tree
     {
          // Every vertex has a unique id
-        public int id { get; private set; } = 0;
+        public int id { get; private set; }// = 0;
         
         // Root attribute
         public int root { get; private set; }
@@ -32,6 +32,7 @@ namespace csMTG
         /// <para>When created, a root of the tree is defined. Its id is zero and it has no children.</para>
         /// </summary>
         public Tree() {
+            id = 0;
             root = id;
             parent.Add(root, -1);
             children.Add(root,null);
