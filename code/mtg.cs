@@ -40,5 +40,63 @@ namespace csMTG
 
         }
 
+        #region Querying scale information
+
+        /// <summary>
+        /// Returns a list of the different scales of the mtg.
+        /// </summary>
+        /// <returns> A distinct list of the mtg's scales. </returns>
+        public List<int> Scales()
+        {
+            return scale.Values.Distinct().ToList<int>();
+        }
+
+        /// <summary>
+        ///  Maps the scale corresponding to the vertex in the parameter.
+        /// </summary>
+        /// <param name="vertexId"> The vertex identifier. </param>
+        /// <returns> The scale to which the vertex belongs. </returns>
+        public int? Scale(int vertexId)
+        {
+            int? returnedScale;
+
+            try
+            {
+                returnedScale = scale[vertexId];
+            }
+            catch (KeyNotFoundException)
+            {
+                returnedScale = null;
+            }
+
+            return returnedScale;
+
+        }
+
+        /// <summary>
+        /// Counts the number of scales in the mtg.
+        /// </summary>
+        /// <returns> The number of scales. </returns>
+        public int NbScales()
+        {
+            return Scales().Count;
+        }
+
+        /// <summary>
+        /// Calculates the highest scale identifier.
+        /// </summary>
+        /// <returns> The maximum scale. </returns>
+        public int MaxScale()
+        {
+            return scale.Values.Max();
+        }
+
+        #endregion
+
+        static void Main(String[] args)
+        {
+           
+        }
     }
 }
+

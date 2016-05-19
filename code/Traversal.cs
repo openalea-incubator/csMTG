@@ -261,19 +261,19 @@ namespace csMTG
             }
         }
 
-        static void Main(String[] args)
-        {
-            PropertyTree tree = new PropertyTree();
-            Algorithm a = new Algorithm();
+        //static void Main(String[] args)
+        //{
+        //    PropertyTree tree = new PropertyTree();
+        //    Algorithm a = new Algorithm();
 
-            tree = a.RandomTree(tree, 200);
-            tree.AddVertexProperties(5, new Dictionary<string, dynamic>() { { "Height", 12 } });
+        //    tree = a.RandomTree(tree, 200);
+        //    tree.AddVertexProperties(5, new Dictionary<string, dynamic>() { { "Height", 12 } });
 
-            traversal t = new traversal();
+        //    traversal t = new traversal();
 
-            t.SaveToFile(tree,"C:\\Users\\aannaque\\Desktop\\tulip");
+        //    t.SaveToFile(tree,"C:\\Users\\aannaque\\Desktop\\tulip");
            
-        }
+        //}
 
     }
 }
