@@ -40,7 +40,7 @@ namespace csMTG
 
         }
 
-        #region Querying scale information
+        #region Querying scale information (Functions: Scales, Scale, NbScales, MaxScale)
 
         /// <summary>
         /// Returns a list of the different scales of the mtg.
@@ -93,7 +93,7 @@ namespace csMTG
 
         #endregion
 
-        #region Vertices
+        #region Vertices (Functions: VerticesIterator, Vertices, NbVertices)
 
         /// <summary>
         /// The set of all vertices is returned.
@@ -145,7 +145,7 @@ namespace csMTG
 
         #endregion
 
-        #region Edges
+        #region Edges (Functions: HasVertex, IterEdges, Edges)
 
         /// <summary>
         /// Verifies that a vertex belongs to the MTG.
@@ -170,7 +170,7 @@ namespace csMTG
             {
                 foreach (KeyValuePair<int, int> childParent in parent)
                 {
-                    if (childParent.Key != 0)
+                    if (childParent.Value >= 0)
                     {
                         KeyValuePair<int, int> edges = new KeyValuePair<int, int>(childParent.Value, childParent.Key);
 
@@ -183,7 +183,7 @@ namespace csMTG
             {
                 foreach (KeyValuePair<int, int> childParent in parent)
                 {
-                    if (childParent.Key != 0)
+                    if (childParent.Value >= 0)
                     {
                         if (this.scale[childParent.Value] == scale)
                         {
@@ -209,6 +209,33 @@ namespace csMTG
 
         #endregion
 
+        #region Roots (Functions: RootsIterator, Roots)
+
+        /// <summary>
+        /// Returns an iterator of the roots of the tree graphs at a given scale.
+        /// </summary>
+        /// <param name="scale"> The specified scale (Optional). If not specified, all roots of the MTG will be listed. </param>
+        /// <returns> iterator on vertex identifiers of root vertices at a given scale. </returns>
+        IEnumerable<int> RootsIterator(int scale = 0)
+        {
+            foreach (int vertexId in Vertices(scale))
+            {
+                if (Parent(vertexId) == -1)
+                    yield return vertexId;
+            }
+        }
+
+        /// <summary>
+        /// Returns a list of the roots of the tree graphs at a given scale.
+        /// </summary>
+        /// <param name="scale"> The specified scale (Optional). If not specified, all MTG's roots will be listed. </param>
+        /// <returns> List on vertex identifiers of root vertices at a given scale. </returns>
+        public List<int> Roots(int scale = 0)
+        {
+            return RootsIterator(scale).ToList();
+        }
+
+        #endregion
 
 
         static void Main(String[] args)
