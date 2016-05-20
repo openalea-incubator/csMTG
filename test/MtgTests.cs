@@ -254,5 +254,39 @@ namespace csMTG.Tests
 
         #endregion
 
+        #region Test of complex
+
+        [TestMethod()]
+        public void Complex_NormalMtg_ComplexReturned()
+        {
+            mtg tree = new mtg();
+
+            // Add 4 children. Parents/children are : (0 => 1), (1 => 2,3) , (3 => 4).
+            int firstChild = tree.AddChild(0);
+            int secondChild = tree.AddChild(firstChild);
+            int thirdChild = tree.AddChild(firstChild);
+            int fourthChild = tree.AddChild(thirdChild);
+            int fifthChild = tree.AddChild(0);
+
+            // Assign a scale to each vertex.
+            tree.scale.Add(firstChild, 1);
+            tree.scale.Add(secondChild, 1);
+            tree.scale.Add(thirdChild, 2);
+            tree.scale.Add(fourthChild, 2);
+
+            // Assign a complex to the firstChild
+            tree.complex.Add(firstChild, 0);
+
+            Assert.AreEqual(tree.Complex(firstChild), 0);
+            Assert.AreEqual(tree.Complex(secondChild), 0);
+            Assert.AreEqual(tree.Complex(thirdChild), 0);
+            Assert.AreEqual(tree.Complex(fourthChild), 0);
+
+            Assert.IsNull(tree.Complex(fifthChild));
+
+        }
+
+        #endregion
+
     }
 }

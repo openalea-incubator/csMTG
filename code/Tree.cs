@@ -113,6 +113,16 @@ namespace csMTG
         }
 
         /// <summary>
+        /// Tests whether a vertex belongs to the graph or not.
+        /// </summary>
+        /// <param name="vertexId"> The vertex identifier to test. </param>
+        /// <returns> A boolean to assert the belonging. </returns>
+        public bool HasVertex(int vertexId)
+        {
+            return parent.ContainsKey(vertexId);
+        }
+
+        /// <summary>
         /// Counts the number of vertices in the tree.
         /// </summary>
         /// <returns> Returns the total number of vertices. </returns>

@@ -22,6 +22,8 @@ namespace csMTG
 
         #endregion
 
+        #region Constructor
+
         /// <summary>
         /// Constructor of the MTG.
         /// </summary>
@@ -39,6 +41,8 @@ namespace csMTG
             AddProperty("label");
 
         }
+
+        #endregion
 
         #region Querying scale information (Functions: Scales, Scale, NbScales, MaxScale)
 
@@ -233,6 +237,48 @@ namespace csMTG
         public List<int> Roots(int scale = 0)
         {
             return RootsIterator(scale).ToList();
+        }
+
+        #endregion
+
+        #region Complex
+
+        /// <summary>
+        /// Gets the complex value for a key.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier.</param>
+        /// <returns> Returns the vertex's complex. If it doesn't have a complex, it returns null. </returns>
+        int? GetComplex(int vertexId)
+        {
+            if (complex.ContainsKey(vertexId))
+                return complex[vertexId];
+            else
+                return null;
+        }
+
+        /// <summary>
+        /// Returns the complex of a vertex.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <returns> The complex of the vertex or null. </returns>
+        public int? Complex(int vertexId)
+        {
+            if (HasVertex(vertexId))
+            {
+                int? complexId = GetComplex(vertexId);
+
+                while (complexId == null)
+                {
+                    vertexId = (int)Parent(vertexId);
+                    if(vertexId == -1)
+                        break;
+                    complexId = GetComplex(vertexId);
+                }
+
+                return complexId;
+            }
+            else
+                return null;
         }
 
         #endregion
