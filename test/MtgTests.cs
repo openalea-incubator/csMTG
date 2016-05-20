@@ -185,6 +185,74 @@ namespace csMTG.Tests
 
         #endregion
 
+        #region Test of edges
+
+        [TestMethod()]
+        public void HasVertex_VertexExists_ReturnsTrue()
+        {
+            mtg tree = new mtg();
+
+            tree.scale.Add(1, 12);
+
+            Assert.IsTrue(tree.HasVertex(1));
+            Assert.IsTrue(tree.HasVertex(0));
+        }
+
+        [TestMethod()]
+        public void HasVertex_VertexDoesntExist_ReturnsFalse()
+        {
+            mtg tree = new mtg();
+
+            tree.scale.Add(1, 12);
+
+            Assert.IsFalse(tree.HasVertex(2));
+        }
+
+        [TestMethod()]
+        public void Edges_NormalTree_ListOfKeyValues()
+        {
+            mtg tree = new mtg();
+
+            // Add 4 children. Parents/children are : (0 => 1), (1 => 2,3) , (3 => 4).
+            int firstChild = tree.AddChild(0);
+            int secondChild = tree.AddChild(firstChild);
+            int thirdChild = tree.AddChild(firstChild);
+            int fourthChild = tree.AddChild(thirdChild);
+
+            // Assign a scale to each vertex.
+            tree.scale.Add(firstChild, 1);
+            tree.scale.Add(secondChild, 1);
+            tree.scale.Add(thirdChild, 2);
+            tree.scale.Add(fourthChild, 2);
+
+            // Without specifying the scale
+            List<KeyValuePair<int, int>> expectedResult = new List<KeyValuePair<int, int>>();
+            expectedResult.Add(new KeyValuePair<int,int>(0,1));
+            expectedResult.Add(new KeyValuePair<int, int>(1,2));
+            expectedResult.Add(new KeyValuePair<int, int>(1, 3));
+            expectedResult.Add(new KeyValuePair<int, int>(3, 4));
+
+            CollectionAssert.AreEqual(expectedResult, tree.Edges());
+
+            // Scale 0
+            List<KeyValuePair<int, int>> expectedResult2 = new List<KeyValuePair<int, int>>();
+            expectedResult2.Add(new KeyValuePair<int, int>(0, 1));
+            CollectionAssert.AreEqual(expectedResult2, tree.Edges(0));
+
+            // Scale 1
+            List<KeyValuePair<int, int>> expectedResult3 = new List<KeyValuePair<int, int>>();
+            expectedResult3.Add(new KeyValuePair<int, int>(1, 2));
+            expectedResult3.Add(new KeyValuePair<int, int>(1, 3));
+            CollectionAssert.AreEqual(expectedResult3, tree.Edges(1));
+
+            // Scale 2
+            List<KeyValuePair<int, int>> expectedResult4 = new List<KeyValuePair<int, int>>();
+            expectedResult4.Add(new KeyValuePair<int, int>(3, 4));
+            CollectionAssert.AreEqual(expectedResult4, tree.Edges(2));
+
+        }
+
+        #endregion
+
     }
 }
-

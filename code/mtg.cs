@@ -130,6 +130,11 @@ namespace csMTG
             return VerticesIterator(scale).ToList();
         }
 
+        /// <summary>
+        /// Counts the number of vertices in a scale.
+        /// </summary>
+        /// <param name="scale"> Optional. If the scale isn't specified, the total number of vertices is counted. </param>
+        /// <returns> The number of vertices in a scale. </returns>
         public int NbVertices(int scale = -1)
         {
             if(scale < 0)
@@ -138,13 +143,77 @@ namespace csMTG
                 return Vertices(scale).Count;
         }
 
+        #endregion
 
+        #region Edges
+
+        /// <summary>
+        /// Verifies that a vertex belongs to the MTG.
+        /// </summary>
+        /// <param name="vertexId"> The vertex identifier to verify. </param>
+        /// <returns> A boolean. </returns>
+        public bool HasVertex(int vertexId)
+        {
+            return scale.ContainsKey(vertexId);
+        }
+
+        /// <summary>
+        /// Iterates on the edges of the MTG at a given scale.
+        /// </summary>
+        /// <param name="scale"> Optional parameter. In case it's not specified, the function iterates on the whole MTG.
+        /// If it is specified, it returns an iterator of {parent , child } where the parent belongs to the specified scale. </param>
+        /// <returns> An iterator on the MTG's edges. </returns>
+        IEnumerable<KeyValuePair<int, int>> IterEdges(int scale = -1)
+        {
+            
+            if (scale < 0)
+            {
+                foreach (KeyValuePair<int, int> childParent in parent)
+                {
+                    if (childParent.Key != 0)
+                    {
+                        KeyValuePair<int, int> edges = new KeyValuePair<int, int>(childParent.Value, childParent.Key);
+
+                        yield return edges;
+
+                    }
+                }
+            }
+            else
+            {
+                foreach (KeyValuePair<int, int> childParent in parent)
+                {
+                    if (childParent.Key != 0)
+                    {
+                        if (this.scale[childParent.Value] == scale)
+                        {
+                            KeyValuePair<int, int> edges = new KeyValuePair<int, int>(childParent.Value, childParent.Key);
+
+                            yield return edges;
+                        }
+                    }
+                    
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns a list of edges at a scale.
+        /// </summary>
+        /// <param name="scale"> Optional. If it's specified, it returns all parents which belong to the scale and their children.</param>
+        /// <returns> A list of edges at a scale. </returns>
+        public List<KeyValuePair<int, int>> Edges(int scale = -1)
+        {
+            return IterEdges(scale).ToList();
+        }
 
         #endregion
 
+
+
         static void Main(String[] args)
         {
-           
+
         }
     }
 }
