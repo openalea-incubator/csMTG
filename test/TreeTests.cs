@@ -327,5 +327,83 @@ namespace csMTG.Tests
 
         #endregion
 
+        #region Tests of Siblings
+
+        [TestMethod()]
+        public void Siblings_VertexWithSiblings_ReturnsListOfSiblings()
+        {
+            Tree t = new Tree();
+
+            int firstChild = t.AddChild(t.root);
+            int secondChild = t.AddChild(t.root);
+            int thirdChild = t.AddChild(t.root);
+            int fourthChild = t.AddChild(firstChild);
+
+            List<int> expectedListOfChildren = new List<int>();
+            expectedListOfChildren.Add(secondChild);
+            expectedListOfChildren.Add(thirdChild);
+
+            CollectionAssert.AreEqual(t.Siblings(1), expectedListOfChildren);
+        }
+
+        [TestMethod()]
+        public void Siblings_VertexWithoutSiblings_ReturnsEmptyList()
+        {
+            Tree t = new Tree();
+
+            int firstChild = t.AddChild(t.root);
+            List<int> expectedList = new List<int>();
+
+            CollectionAssert.AreEqual(expectedList, t.Siblings(firstChild));
+
+        }
+
+        [TestMethod()]
+        public void Siblings_VertexDoesntExist_ReturnsEmptyList()
+        {
+            Tree t = new Tree();
+
+            List<int> expectedList = new List<int>();
+
+            CollectionAssert.AreEqual(expectedList, t.Siblings(5));
+
+        }
+
+        [TestMethod()]
+        public void NbSiblings_VertexWithTwoSiblings_ReturnsTwo()
+        {
+            Tree t = new Tree();
+
+            int firstChild = t.AddChild(t.root);
+            int secondChild = t.AddChild(t.root);
+            int thirdChild = t.AddChild(t.root);
+            int fourthChild = t.AddChild(firstChild);
+
+            Assert.AreEqual(t.NbSiblings(firstChild), 2);
+
+        }
+
+        [TestMethod()]
+        public void NbSiblings_VertexWithNoSiblings_ReturnsZero()
+        {
+            Tree t = new Tree();
+
+            int firstChild = t.AddChild(t.root);
+
+            Assert.AreEqual(t.NbSiblings(firstChild), 0);
+
+        }
+
+        [TestMethod()]
+        public void NbSiblings_VertexDoesntExist_ReturnsZero()
+        {
+            Tree t = new Tree();
+
+            Assert.AreEqual(t.NbSiblings(10), 0);
+
+        }
+
+        #endregion
+
     }
 }

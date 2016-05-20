@@ -245,7 +245,59 @@ namespace csMTG
                 }
               }
             }
-    
-      
+
+        /// <summary>
+        /// An iterator of the vertex's siblings. The vertex in question is not included in the siblings.
+        /// </summary>
+        /// <param name="vertexId"> The vertex identifier. </param>
+        /// <returns> An iterator of the siblings. </returns>
+        IEnumerable<int> SiblingsIterator(int vertexId)
+        {
+            int? parent = Parent(vertexId);
+
+            if (parent == -1 || parent == null)
+                yield break;
+            else
+            {
+                foreach(int child in Children((int)parent))
+                {
+                    if (child != vertexId)
+                        yield return child;
+                }
+            }
+        }
+
+        /// <summary>
+        /// A list of the siblings of the vertex in the parameter.
+        /// </summary>
+        /// <param name="vertexId"> The vertex identifier. </param>
+        /// <returns> A list of the previous function. </returns>
+        public List<int> Siblings(int vertexId)
+        {
+            return SiblingsIterator(vertexId).ToList();
+        }
+
+        /// <summary>
+        /// Returns the number of siblings of the specified vertex. If the latter doesn't exist, it returns zero.
+        /// </summary>
+        /// <param name="vertexId"> Vertex Identifier. </param>
+        /// <returns> Number of siblings. </returns>
+        public int NbSiblings(int vertexId)
+        {
+            int? parent = Parent(vertexId);
+
+            if (parent == null)
+                return 0;
+            else
+            {
+                int n = NbChildren((int)parent);
+
+                if (n > 0)
+                    return n - 1;
+                else
+                    return 0;
+            }
+
+        }
     }
 }
