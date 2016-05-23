@@ -281,6 +281,29 @@ namespace csMTG
                 return null;
         }
 
+        /// <summary>
+        /// Returns the complex of a vertex at a specific scale.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="scale"> Scale. </param>
+        /// <returns> The complex of a vertex at a scale. </returns>
+        public int ComplexAtScale(int vertexId, int scale)
+        {
+            int complexId = vertexId;
+            int? currentScale = Scale(complexId);
+
+            if (currentScale != null)
+            {
+                for (int i = scale; i < currentScale; i++)
+                {
+                    complexId = (int)Complex(complexId);
+                }
+                return complexId;
+            }
+            else
+                throw new ArgumentException("This vertex does not exist.");
+        }
+
         #endregion
 
         #region Components (Functions: ComponentsRootsIter, ComponentsIterator, Components, NbComponents)
@@ -344,6 +367,8 @@ namespace csMTG
         {
             return Components(vertexId).Count;
         }
+
+
 
         #endregion
 
