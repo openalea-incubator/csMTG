@@ -15,7 +15,7 @@ namespace csMTG
         /// <param name="nbVertices"> The number of tree's vertices </param>
         /// <param name="nbChildren"> The maximum number for a vertex </param>
         /// <returns> Returns the generated tree </returns>
-        public PropertyTree RandomTree(PropertyTree t, int nbVertices, int nbChildren = 4)
+        public mtg RandomTree(mtg t, int nbVertices, int nbChildren = 4)
         {
             int childrenToAdd;
 

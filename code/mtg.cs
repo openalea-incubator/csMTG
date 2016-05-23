@@ -156,7 +156,7 @@ namespace csMTG
         /// </summary>
         /// <param name="vertexId"> The vertex identifier to verify. </param>
         /// <returns> A boolean. </returns>
-        public bool HasVertex(int vertexId)
+        public new bool HasVertex(int vertexId)
         {
             return scale.ContainsKey(vertexId);
         }
@@ -279,6 +279,70 @@ namespace csMTG
             }
             else
                 return null;
+        }
+
+        #endregion
+
+        #region Components (Functions: ComponentsRootsIter, ComponentsIterator, Components, NbComponents)
+
+        /// <summary>
+        /// For the vertex in question, go over the tree graphs that compose it
+        /// and return their roots.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <returns> Iterator over the roots of the trees that compose the vertex. </returns>
+        IEnumerable<int> ComponentRootsIter(int vertexId)
+        {
+            List<int> components = this.components[vertexId];
+
+            foreach (int ci in components)
+            {
+                int p = (int)Parent(ci);
+                if (p == -1 || Complex(p) != vertexId)
+                    yield return ci;
+            }
+
+        }
+
+        /// <summary>
+        /// Iterate the components of a vertex.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <returns> Iterator over the components. </returns>
+        IEnumerable<int> ComponentsIterator(int vertexId)
+        {
+            traversal t = new traversal();
+
+            if (components.ContainsKey(vertexId))
+            {
+                foreach (int v in ComponentRootsIter(vertexId))
+                {
+                    foreach (int vertex in t.IterativePostOrder(this, v, vertexId))
+                    {
+                        yield return vertex;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Lists the components of a vertex.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <returns> List of components. </returns>
+        public List<int> Components(int vertexId)
+        {
+            return ComponentsIterator(vertexId).ToList();
+        }
+
+        /// <summary>
+        /// Counts the number of components for a specific vertex.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <returns> Number of vertex's components. </returns>
+        public int NbComponents(int vertexId)
+        {
+            return Components(vertexId).Count;
         }
 
         #endregion

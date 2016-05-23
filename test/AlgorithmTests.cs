@@ -10,24 +10,24 @@ namespace csMTGTests
         Algorithm algorithm = new Algorithm();
 
         #region Tests of the random tree generator
+
         [TestMethod()]
         public void RandomTree_NumberOfVerticesCreated_SameAsParameter()
         {
-            PropertyTree t = new PropertyTree();
+            mtg t = new mtg();
             
-
             int numberOfExpectedVertices = 50000;
 
             t = algorithm.RandomTree(t, numberOfExpectedVertices);
 
-            Assert.AreEqual(numberOfExpectedVertices, t.NbVertices());
+            Assert.AreEqual(numberOfExpectedVertices, ((Tree)t).NbVertices());
 
         }
 
         [TestMethod()]
         public void RandomTree_NumberOfChildrenRespected_LessOrEqualToTheParameter()
         {
-            PropertyTree t = new PropertyTree();
+            mtg t = new mtg();
 
             int maximumNbChildren = 9;
 
@@ -43,7 +43,7 @@ namespace csMTGTests
         [TestMethod()]
         public void RandomTree_DoChildrenAndParentCorrespond_CoherenceBetweenParentAndChildren()
         {
-            PropertyTree t = new PropertyTree();
+            mtg t = new mtg();
 
             t = algorithm.RandomTree(t, 50000, 100);
 
