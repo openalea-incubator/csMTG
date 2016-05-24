@@ -328,6 +328,17 @@ namespace csMTG
         }
 
         /// <summary>
+        /// For the vertex in question, go over the tree graphs that compose it
+        /// and return their roots.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <returns> A list of roots of the trees that compose the vertex. </returns>
+        public List<int> ComponentRoots(int vertexId)
+        {
+            return ComponentRootsIter(vertexId).ToList();
+        }
+
+        /// <summary>
         /// Iterate the components of a vertex.
         /// </summary>
         /// <param name="vertexId"> Vertex identifier. </param>
