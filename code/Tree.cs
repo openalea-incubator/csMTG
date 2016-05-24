@@ -14,7 +14,9 @@ namespace csMTG
     /// </summary>
     public class Tree
     {
-         // Every vertex has a unique id
+        #region Attributes
+
+        // Every vertex has a unique id
         public int id { get; private set; }// = 0;
         
         // Root attribute
@@ -26,6 +28,9 @@ namespace csMTG
         // Parent corresponds to : child_id => parent_id
         public Dictionary<int, int> parent = new Dictionary<int, int>();
 
+        #endregion
+
+        #region Constructor
 
         /// <summary>
         /// Constructor of the class.
@@ -37,6 +42,10 @@ namespace csMTG
             parent.Add(root, -1);
             children.Add(root,null);
         }
+
+        #endregion
+
+        #region Children
 
         /// <summary>
         /// Gives the number of children of a vertex.
@@ -57,27 +66,6 @@ namespace csMTG
             }
 
             return nbChildren;
-        }
-
-        /// <summary>
-        /// Gives the parent of the child in the parameter.
-        /// </summary>
-        /// <param name="vertexId"> The identifier of the child. </param>
-        /// <returns> Returns the identifier of the parent.
-        /// In case the parameter doesn't exist, it raises an exception and returns null. </returns>
-        public int? Parent(int vertexId)
-        {
-            int? parentId;
-
-            try
-            {
-                parentId = parent[vertexId];
-            }catch(KeyNotFoundException)
-            {
-                parentId = null;
-            }
-            
-            return parentId;
         }
 
         /// <summary>
@@ -102,6 +90,49 @@ namespace csMTG
             }
             return listOfChildren;
         }
+
+        #endregion
+
+        #region Parent
+
+        /// <summary>
+        /// Gives the parent of the child in the parameter.
+        /// </summary>
+        /// <param name="vertexId"> The identifier of the child. </param>
+        /// <returns> Returns the identifier of the parent.
+        /// In case the parameter doesn't exist, it raises an exception and returns null. </returns>
+        public int? Parent(int vertexId)
+        {
+            int? parentId;
+
+            try
+            {
+                parentId = parent[vertexId];
+            }
+            catch (KeyNotFoundException)
+            {
+                parentId = null;
+            }
+
+            return parentId;
+        }
+
+
+        /// <summary>
+        /// Replace an existing parent with the one specified in the parameters.
+        /// </summary>
+        /// <param name="parentId">The new parent.</param>
+        /// <param name="childId">The child for which the parent will be changed.</param>
+        void ReplaceParent(int parentId, int childId)
+        {
+            int oldParent = parent[childId];
+            NewChild(parentId, childId);
+            children[oldParent].Remove(childId);
+        }
+
+        #endregion
+
+        #region Vertices
 
         /// <summary>
         /// Counts the number of elements in the tree.
@@ -130,6 +161,10 @@ namespace csMTG
         {
             return Count();
         }
+
+        #endregion
+
+        #region Add a vertex
 
         /// <summary>
         /// Function which generates a unique Id.
@@ -196,17 +231,9 @@ namespace csMTG
             parent[childId] = parentId;
         }
 
-        /// <summary>
-        /// Replace an existing parent with the one specified in the parameters.
-        /// </summary>
-        /// <param name="parentId">The new parent.</param>
-        /// <param name="childId">The child for which the parent will be changed.</param>
-        void ReplaceParent(int parentId, int childId)
-        {
-            int oldParent = parent[childId];
-            NewChild(parentId, childId);
-            children[oldParent].Remove(childId);
-        }
+        #endregion
+
+        #region Remove a vertex
 
         /// <summary>
         /// Remove a vertex.
@@ -255,6 +282,10 @@ namespace csMTG
                 }
               }
             }
+
+        #endregion
+
+        #region siblings
 
         /// <summary>
         /// An iterator of the vertex's siblings. The vertex in question is not included in the siblings.
@@ -309,5 +340,8 @@ namespace csMTG
             }
 
         }
+
+        #endregion
+
     }
 }
