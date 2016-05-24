@@ -12,12 +12,17 @@ namespace csMTG
 
         /// <summary>
         /// Iteratively traverse the tree in preorder starting from a vertex.
+        /// (Equivalent of pre_order2 in Python file)
         /// </summary>
         /// <param name="tree"> The tree to be traversed. </param>
         /// <param name="vertexId"> The identifier of the starting vertex. </param>
         /// <returns> Returns an iterator. </returns>
-        public IEnumerable<int> IterativePreOrder(PropertyTree tree, int vertexId)
+        public IEnumerable<int> IterativePreOrder(mtg tree, int vertexId, int complex = -1)
         {
+
+            if (complex != -1 && tree.Complex(vertexId) != complex)
+                yield break;
+
             Dictionary<int, dynamic> edgeType = tree.Property("Edge_Type");
 
             Stack<int> stack = new Stack<int>();
@@ -33,6 +38,9 @@ namespace csMTG
 
                 foreach (int vid in tree.Children(vertexId))
                 {
+                    if (complex != -1 && tree.Complex(vid) != complex)
+                        continue;
+
                     if (edgeType[vid].Equals("<"))
                         successor.Add(vid);
                     else
@@ -51,12 +59,16 @@ namespace csMTG
 
         /// <summary>
         /// Recursively traverse the tree in preorder starting from a vertex.
+        /// (Equivalent of pre_order in Python file)
         /// </summary>
         /// <param name="tree"> The tree to be traversed. </param>
         /// <param name="vertexId"> The identifier of the starting vertex. </param>
         /// <returns> Returns an iterator. </returns>
-        public IEnumerable<int> RecursivePreOrder(PropertyTree tree, int vertexId)
+        public IEnumerable<int> RecursivePreOrder(mtg tree, int vertexId, int complex = -1)
         {
+            if (complex != -1 && tree.Complex(vertexId) != complex)
+                yield break;
+
             Dictionary<int, dynamic> edgeType = tree.Property("Edge_Type");
 
             List<int> successor = new List<int>();
@@ -70,7 +82,7 @@ namespace csMTG
                     continue;
                 }
 
-                foreach (int node in RecursivePreOrder(tree, vid))
+                foreach (int node in RecursivePreOrder(tree, vid, complex))
                 {
                     yield return node;
                 }
@@ -78,7 +90,7 @@ namespace csMTG
 
             foreach (int vid in successor)
             {
-                foreach (int node in RecursivePreOrder(tree, vid))
+                foreach (int node in RecursivePreOrder(tree, vid, complex))
                     yield return node;
             }
 
@@ -90,11 +102,12 @@ namespace csMTG
 
         /// <summary>
         /// Iteratively traverse the tree in postorder starting from a vertex.
+        /// (Equivalent of post_order2 in Python file)
         /// </summary>
         /// <param name="tree"> The tree to be traversed. </param>
         /// <param name="vertexId"> The identifier of the starting vertex. </param>
         /// <returns> Returns an iterator. </returns>
-        public IEnumerable<int> IterativePostOrder(PropertyTree tree, int vertexId)
+        public IEnumerable<int> IterativePostOrder(mtg tree, int vertexId, int complex = -1)
         {
             Dictionary<int, dynamic> edgeType = tree.Property("Edge_Type");
             
@@ -106,6 +119,9 @@ namespace csMTG
 
                 foreach(int v in tree.Children(vid))
                 {
+                    if (complex != -1 && tree.Complex(v) != complex)
+                        continue;
+
                     if (edgeType[v].Equals("<"))
                         successor.Add(v);
                     else
@@ -153,12 +169,16 @@ namespace csMTG
 
         /// <summary>
         /// Recursively traverse the tree in postorder starting from a vertex.
+        /// (Equivalent of function post_order in Python file).
         /// </summary>
         /// <param name="tree"> The tree to be traversed. </param>
         /// <param name="vertexId"> The identifier of the starting vertex. </param>
         /// <returns> Returns an iterator. </returns>
-        public IEnumerable<int> RecursivePostOrder(PropertyTree tree, int vertexId)
+        public IEnumerable<int> RecursivePostOrder(mtg tree, int vertexId, int complex = -1)
         {
+            if (complex != -1 && tree.Complex(vertexId) != complex)
+                yield break;
+
             Dictionary<int, dynamic> edgeType = tree.Property("Edge_Type");
 
             List<int> successor = new List<int>();
@@ -171,7 +191,7 @@ namespace csMTG
                     continue;
                 }
 
-                foreach (int node in RecursivePostOrder(tree, v))
+                foreach (int node in RecursivePostOrder(tree, v, complex))
                 {
                     yield return node;
                 }
@@ -179,7 +199,7 @@ namespace csMTG
 
             foreach (int vid in successor)
             {
-                foreach (int node in RecursivePostOrder(tree, vid))
+                foreach (int node in RecursivePostOrder(tree, vid, complex))
                     yield return node;
             }
 
