@@ -406,9 +406,30 @@ namespace csMTG
 
         #endregion
 
+        #region Siblings (InsertSibling)
+
+        /// <summary>
+        /// Add a sibling with its properties before the vertex in the parameters.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="namesValues"> The properties of the new vertex. </param>
+        /// <param name="vertexToInsert"> The new vertex to add. </param>
+        /// <returns> The identifier of the new sibling. </returns>
+        public new int InsertSibling(int vertexId, Dictionary<string, dynamic> namesValues, int vertexToInsert = -1)
+        {
+            vertexToInsert = base.InsertSibling(vertexId, namesValues, vertexToInsert);
+
+            scale.Add(vertexToInsert, scale[vertexId]);
+
+            return vertexToInsert;
+
+        }
+
+        #endregion
+
         static void Main(String[] args)
         {
-
+            
         }
     }
 }

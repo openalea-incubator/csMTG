@@ -403,6 +403,49 @@ namespace csMTG.Tests
 
         }
 
+        [TestMethod()]
+        public void InsertSibling_AddSiblingToATree_SiblingInserted()
+        {
+            // Tree: {0 => 1 , 2} and {1 => 3 , 4}
+
+            Tree tree = new Tree();
+
+            int firstChild = tree.AddChild(tree.root);
+            int secondChild = tree.AddChild(tree.root);
+
+            int thirdChild = tree.AddChild(firstChild);
+            int fourthChild = tree.AddChild(firstChild);
+
+            // Assertions before inserting the sibling
+
+            Assert.AreEqual(tree.root, tree.Parent(firstChild));
+            Assert.AreEqual(tree.root, tree.Parent(secondChild));
+            Assert.AreEqual(firstChild, tree.Parent(thirdChild));
+            Assert.AreEqual(firstChild, tree.Parent(fourthChild));
+
+            CollectionAssert.AreEqual(new List<int>() { firstChild, secondChild }, tree.Children(tree.root));
+            CollectionAssert.AreEqual(new List<int>() { thirdChild, fourthChild }, tree.Children(firstChild));
+
+            // Insert 2 siblings so that we have: {0 => 1,5,2} & {1 => 6,3,4}
+
+            int firstSibling = tree.InsertSibling(secondChild);
+            int secondSibling = tree.InsertSibling(thirdChild);
+
+            // Verification of the parents
+
+            Assert.AreEqual(tree.root, tree.Parent(firstSibling));
+            Assert.AreEqual(tree.root, tree.Parent(secondChild));
+            Assert.AreEqual(firstChild, tree.Parent(secondSibling));
+            Assert.AreEqual(firstChild, tree.Parent(thirdChild));
+
+            // Verification of the children (and the correct order)
+
+            CollectionAssert.AreEqual(new List<int>() { firstChild, firstSibling, secondChild }, tree.Children(tree.root));
+            CollectionAssert.AreEqual(new List<int>() { secondSibling, thirdChild, fourthChild }, tree.Children(firstChild));
+
+
+        }
+
         #endregion
 
         #region Tests of InsertParent

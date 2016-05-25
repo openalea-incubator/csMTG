@@ -132,7 +132,6 @@ namespace csMTG
                 List<int> children = Children(oldParent);
                 int index = children.IndexOf(childId);
                 children.RemoveAt(index);
-                this.children[oldParent] = children;
             }
 
         }
@@ -163,7 +162,6 @@ namespace csMTG
 
                 children[index] = parentId;
                 parent[parentId] = oldParent;
-                this.children[oldParent] = children; // Are you sure ?
             }
 
             return parentId;
@@ -322,7 +320,7 @@ namespace csMTG
 
         #endregion
 
-        #region Siblings (Functions: Siblings, NbSiblings)
+        #region Siblings (Functions: Siblings, NbSiblings, InsertSibling)
 
         /// <summary>
         /// An iterator of the vertex's siblings. The vertex in question is not included in the siblings.
@@ -376,6 +374,27 @@ namespace csMTG
                     return 0;
             }
 
+        }
+
+        /// <summary>
+        /// Insert a sibling before the vertex specified in the parameters.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="vertexToInsert"> The vertex to insert. (Optional, if id isn't specified, a new one is attributed). </param>
+        /// <returns> The id of the new sibling. </returns>
+        public int InsertSibling(int vertexId, int vertexToInsert = -1)
+        {
+            if (vertexToInsert == -1)
+                vertexToInsert = NewId();
+
+            int parent = (int)Parent(vertexId);
+            List<int> siblings = Children(parent);
+            int index = siblings.IndexOf(vertexId);
+
+            siblings.Insert(index, vertexToInsert);
+            this.parent.Add(vertexToInsert, parent);
+
+            return vertexToInsert;
         }
 
         #endregion
