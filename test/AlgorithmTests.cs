@@ -16,7 +16,7 @@ namespace csMTGTests
         {
             mtg t = new mtg();
             
-            int numberOfExpectedVertices = 50000;
+            int numberOfExpectedVertices = 5000;
 
             t = algorithm.RandomTree(t, numberOfExpectedVertices);
 
@@ -31,7 +31,7 @@ namespace csMTGTests
 
             int maximumNbChildren = 9;
 
-            t = algorithm.RandomTree(t, 50000, maximumNbChildren);
+            t = algorithm.RandomTree(t, 5000, maximumNbChildren);
 
             foreach (int keyId in t.children.Keys)
             {
@@ -45,7 +45,7 @@ namespace csMTGTests
         {
             mtg t = new mtg();
 
-            t = algorithm.RandomTree(t, 50000, 100);
+            t = algorithm.RandomTree(t, 5000, 100);
 
             foreach (int childId in t.parent.Keys)
             {

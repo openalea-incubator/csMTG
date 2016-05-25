@@ -383,6 +383,28 @@ namespace csMTG
 
         #endregion
 
+        #region Functions related to vertices (InsertParent)
+
+        /// <summary>
+        /// Insert a parent between a vertex and its old parent.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="namesValues"> Properties of the new parent. </param>
+        /// <param name="parentId"> The new parent's identifier. (Optional. If not specified, it will be added automatically.) </param>
+        /// <returns> The new parent's identifier. </returns>
+        public new int InsertParent(int vertexId, Dictionary<string, dynamic> namesValues, int parentId = -1)
+        {
+            if (parentId == -1)
+                parentId = NewId();
+
+            scale[parentId] = scale[vertexId];
+
+            parentId = base.InsertParent(vertexId, namesValues, parentId);
+
+            return parentId;
+        }
+
+        #endregion
 
         static void Main(String[] args)
         {

@@ -9,8 +9,15 @@ namespace csMTG
 
     public class PropertyTree : Tree
     {
+
+        #region Attributes
+
         // Attribute which carries all properties of the tree
         public Dictionary<string, Dictionary<int, dynamic>> properties;
+
+        #endregion
+
+        #region Constructor
 
         /// <summary>
         /// Constructor.
@@ -19,6 +26,10 @@ namespace csMTG
         {
             properties = new Dictionary<string, Dictionary<int, dynamic>>();
         }
+
+        #endregion
+
+        #region Properties' accessors (Functions: Properties, PropertyNames, Property(name))
 
         /// <summary>
         /// Accessor to the attribute properties.
@@ -58,6 +69,10 @@ namespace csMTG
 
         }
 
+        #endregion
+
+        #region Add and remove a property
+
         /// <summary>
         /// Adds a new key to the properties.
         /// <para> If the name already exists, it throws an exception.</para>
@@ -89,6 +104,10 @@ namespace csMTG
             else
                 throw new ArgumentException("Property doesn't exist. ");
         }
+
+        #endregion
+
+        #region Add, remove and get the properties of a vertex
 
         /// <summary>
         ///  Adds a set of properties to the specified vertex.
@@ -151,6 +170,10 @@ namespace csMTG
             return vertexProperties;
         }
 
+        #endregion
+
+        #region Functions related to vertices (AddChild, RemoveVertex, InsertParent)
+
         /// <summary>
         /// Adds a child along with its properties
         /// </summary>
@@ -179,10 +202,23 @@ namespace csMTG
             RemoveVertexProperties(vertexId);
         }
 
+        /// <summary>
+        /// Insert a parent with properties between a vertex and its actual parent.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="namesValues"> The new parent's properties. </param>
+        /// <param name="parentId"> Parent identifier. </param>
+        /// <returns> The new parent's identifier. </returns>
+        public int InsertParent(int vertexId, Dictionary<string, dynamic> namesValues, int parentId = -1)
+        {
+            parentId = base.InsertParent(vertexId, parentId);
 
-        //static void Main(String[] args)
-        //{
-            
-        //}
+            AddVertexProperties(parentId, namesValues);
+
+            return parentId;
+        }
+
+        #endregion
+
     }
 }

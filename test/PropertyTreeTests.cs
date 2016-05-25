@@ -366,27 +366,27 @@ namespace csMTG.Tests
             CollectionAssert.AreEqual(expectedResult["order"], tree.properties["order"]);
         }
 
-        [TestMethod()]
-        public void AddChild_InvalidParent_ReturnsMinusOneAndNoPropertiesAdded()
-        {
-            PropertyTree tree = new PropertyTree();
+        //[TestMethod()]
+        //public void AddChild_InvalidParent_ReturnsMinusOneAndNoPropertiesAdded()
+        //{
+        //    PropertyTree tree = new PropertyTree();
 
-            // The properties to add
-            Dictionary<string, dynamic> propertyDict = new Dictionary<string, dynamic>();
-            propertyDict.Add("label", "leaf");
-            propertyDict.Add("length", 12.5);
-            propertyDict.Add("order", 1);
+        //    // The properties to add
+        //    Dictionary<string, dynamic> propertyDict = new Dictionary<string, dynamic>();
+        //    propertyDict.Add("label", "leaf");
+        //    propertyDict.Add("length", 12.5);
+        //    propertyDict.Add("order", 1);
 
-            int childId = tree.AddChild(100, propertyDict);
+        //    int childId = tree.AddChild(100, propertyDict);
 
-            // Make sure the child wasn't added
-            Assert.IsNull(tree.Children(100));
-            Assert.AreEqual(childId, -1);
+        //    // Make sure the child wasn't added
+        //    Assert.IsNull(tree.Children(100));
+        //    Assert.AreEqual(childId, -1);
 
-            // Make sure no properties were added
-            Dictionary<string, Dictionary<int, dynamic>> expectedProperties = new Dictionary<string, Dictionary<int, dynamic>>() { };
-            CollectionAssert.AreEqual(tree.properties, expectedProperties);
-        }
+        //    // Make sure no properties were added
+        //    Dictionary<string, Dictionary<int, dynamic>> expectedProperties = new Dictionary<string, Dictionary<int, dynamic>>() { };
+        //    CollectionAssert.AreEqual(tree.properties, expectedProperties);
+        //}
 
         [TestMethod()]
         public void AddChild_NoProperties_ChildAddedAndNoPropertiesForTheChild()

@@ -40,12 +40,11 @@ namespace csMTG
             id = 0;
             root = id;
             parent.Add(root, -1);
-            children.Add(root,null);
         }
 
         #endregion
 
-        #region Children
+        #region Children (Functions: NbChildren, Children(vertex) )
 
         /// <summary>
         /// Gives the number of children of a vertex.
@@ -55,17 +54,10 @@ namespace csMTG
         /// If the vertex parent does not exist, it returns 0 .</returns>
         public int NbChildren(int vertexId)
         {
-            int nbChildren = 0;
-
-            if (!children.ContainsKey(vertexId))
-                nbChildren = 0;
+            if (Children(vertexId) != null)
+                return Children(vertexId).Count;
             else
-            {
-                if (children[vertexId] != null)
-                    nbChildren = children[vertexId].Count();
-            }
-
-            return nbChildren;
+                return 0;
         }
 
         /// <summary>
@@ -83,17 +75,24 @@ namespace csMTG
                 listOfChildren = null;
             else
             {
-                if (children[vertexId] != null)
-                    listOfChildren = children[vertexId];
-                else
+                if (!children.ContainsKey(vertexId))
+                {
                     listOfChildren = new List<int>() { };
+                }
+                else
+                {
+                    if (children[vertexId] != null)
+                        listOfChildren = children[vertexId];
+                    else
+                        listOfChildren = new List<int>() { };
+                }
             }
             return listOfChildren;
         }
 
         #endregion
 
-        #region Parent
+        #region Parent (Functions : Parent(vertex), ReplaceParent, InsertParent)
 
         /// <summary>
         /// Gives the parent of the child in the parameter.
@@ -117,7 +116,6 @@ namespace csMTG
             return parentId;
         }
 
-
         /// <summary>
         /// Replace an existing parent with the one specified in the parameters.
         /// </summary>
@@ -125,22 +123,63 @@ namespace csMTG
         /// <param name="childId">The child for which the parent will be changed.</param>
         void ReplaceParent(int parentId, int childId)
         {
-            int oldParent = parent[childId];
-            NewChild(parentId, childId);
-            children[oldParent].Remove(childId);
+            int oldParent = (int)Parent(childId);
+
+            AddChild(parentId, childId);
+
+            if (oldParent != -1)
+            {
+                List<int> children = Children(oldParent);
+                int index = children.IndexOf(childId);
+                children.RemoveAt(index);
+                this.children[oldParent] = children;
+            }
+
+        }
+
+        /// <summary>
+        /// Insert a parent between the vertex and its original parent.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="parentId"> Parent identifier. </param>
+        /// <returns> The id of the new parent. </returns>
+        public int InsertParent(int vertexId, int parentId = -1)
+        {
+            List<int> children = new List<int>();
+
+            if (parentId == -1)
+                parentId = NewId();
+
+            int oldParent = (int)Parent(vertexId);
+
+            if (oldParent != -1)
+                children = Children(oldParent);
+
+            AddChild(parentId, vertexId);
+
+            if (oldParent != -1)
+            {
+                int index = children.IndexOf(vertexId);
+
+                children[index] = parentId;
+                parent[parentId] = oldParent;
+                this.children[oldParent] = children; // Are you sure ?
+            }
+
+            return parentId;
         }
 
         #endregion
 
-        #region Vertices
+        #region Vertices (Functions: Count, HasVertex, NbVertices)
 
         /// <summary>
         /// Counts the number of elements in the tree.
         /// </summary>
         /// <returns>Number of vertices</returns>
-        int Count() {
-            int count = parent.Count();
-            return count;
+        int Count()
+        {
+            return parent.Count();
         }
 
         /// <summary>
@@ -169,7 +208,7 @@ namespace csMTG
         /// <summary>
         /// Function which generates a unique Id.
         /// </summary>
-        private int NewId()
+        protected int NewId()
         {
             id = parent.Keys.Max() + 1;
             return id;
@@ -182,34 +221,13 @@ namespace csMTG
         /// <param name="childId"> The child to add. This parameter is optional. </param>
         /// <returns> Returns the id of the child added.
         /// If the parent doesn't exist, it returns -1.</returns>
-        public int AddChild(int parentId, int childId = -1) {
-
-            if (!(children.ContainsKey(parentId)))
-                Console.WriteLine("Parent number "+parentId+" does not exist!");
-            else
-            {
-                // Case where the child wasn't specified
-                if (childId == -1)
-                {
-                    childId = NewId();
-                    NewChild(parentId, childId);
-                    children.Add(childId, null);
-                }
-                // Case where the child is specified
-                else
-                {
-                    //If the child exists already, change his parent
-                    if (parent.ContainsKey(childId))
-                    {
-                        ReplaceParent(parentId, childId);
-                    }
-                    else
-                    {
-                        NewChild(parentId, childId);
-                        children.Add(childId, null);
-                    }
-                }
-            }
+        public int AddChild(int parentId, int childId = -1)
+        {
+            if (childId == -1)
+                childId = NewId();
+            
+            NewChild(parentId, childId);
+            
             return childId;
         }
 
@@ -218,16 +236,25 @@ namespace csMTG
         /// </summary>
         void NewChild(int parentId, int childId)
         {
-            if (children[parentId] != null)
+            if (parentId != -1)
             {
-                children[parentId].Add(childId);
+                if (children.ContainsKey(parentId))
+                {
+                    if (children[parentId] != null)
+                    {
+                        children[parentId].Add(childId);
+                    }
+                    else
+                    {
+                        List<int> tmpList = new List<int>();
+                        tmpList.Add(childId);
+                        children[parentId] = tmpList;
+                    }
+                }
+                else
+                    children.Add(parentId, new List<int>() { childId });
             }
-            else
-            {
-                List<int> tmpList = new List<int>();
-                tmpList.Add(childId);
-                children[parentId] = tmpList;
-            }
+
             parent[childId] = parentId;
         }
 
@@ -244,48 +271,58 @@ namespace csMTG
         /// If it is set to false, the vertex can not be suppressed if it has children. </param>
         public void RemoveVertex(int vertexId, bool reparentChild)
         {
-            // Root can't be removed.
-            if (vertexId == root)
+            if(vertexId == root)
                 throw new ArgumentOutOfRangeException("vertexId", "The root can't be removed.");
             else
             {
-                // Vertex doesn't exist
                 if (!parent.ContainsKey(vertexId))
                     throw new ArgumentOutOfRangeException("vertexId", "This vertex doesn't exist.");
                 else
                 {
-                    // Delete the vertex from the list of his parent's children.
-                    int newParent = (int)Parent(vertexId);
-                    children[newParent].Remove(vertexId);
-
-                    // In case the deleted vertex has children, their parent is replaced.
-                    if (NbChildren(vertexId) > 0)
+                    if (reparentChild && NbChildren(vertexId) != 0)
                     {
-                        if (reparentChild)
-                        {
-                            int numberOfChildren = children[vertexId].Count;
+                        int newParentId = (int)Parent(vertexId);
+                        children[newParentId].Remove(vertexId);
 
-                            while (numberOfChildren > 0)
+                        int numberOfChildren = NbChildren(vertexId);
+
+                        while (numberOfChildren > 0)
+                        {
+                            int child = children[vertexId][0];
+                            ReplaceParent(newParentId, child);
+                            numberOfChildren--;
+                        }
+
+                        children.Remove(vertexId);
+                        parent.Remove(vertexId);
+                    }
+                    else
+                    {
+                        if (NbChildren(vertexId) == 0)
+                        {
+                            int p = (int)Parent(vertexId);
+
+                            if (p != -1)
                             {
-                                int childId = children[vertexId][0];
-                                ReplaceParent(newParent, childId);
-                                numberOfChildren--;
+                                children[p].Remove(vertexId);
+                                parent.Remove(vertexId);
                             }
+
+                            if (children.ContainsKey(vertexId))
+                                children.Remove(vertexId);
                         }
                         else
+                        {
                             throw new ArgumentOutOfRangeException("vertexId", "This vertex has children and so it can't be removed.");
+                        }
                     }
-
-                    // The vertex no longer has children or a parent.
-                    children.Remove(vertexId);
-                    parent.Remove(vertexId);
                 }
-              }
             }
+        }
 
         #endregion
 
-        #region siblings
+        #region Siblings (Functions: Siblings, NbSiblings)
 
         /// <summary>
         /// An iterator of the vertex's siblings. The vertex in question is not included in the siblings.
