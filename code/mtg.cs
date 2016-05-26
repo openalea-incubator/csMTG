@@ -412,6 +412,12 @@ namespace csMTG
             return componentId;
         }
 
+        /// <summary>
+        /// Iterate the components up to a scale.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier.</param>
+        /// <param name="scale"> Scale. </param>
+        /// <returns> Iterator. </returns>
         IEnumerable<int> ComponentsAtScaleIterator(int vertexId, int scale)
         {
             int currentScale = this.scale[vertexId];
@@ -433,6 +439,12 @@ namespace csMTG
             }
         }
 
+        /// <summary>
+        /// Lists the components of the vertex in the parameters up to a specific scale.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier.</param>
+        /// <param name="scale"> Scale. </param>
+        /// <returns> List of components. </returns>
         public List<int> ComponentsAtScale(int vertexId, int scale)
         {
             return ComponentsAtScaleIterator(vertexId, scale).ToList();
@@ -440,7 +452,7 @@ namespace csMTG
 
         #endregion
 
-        #region Functions related to vertices (InsertParent, AddChild)
+        #region Functions related to vertices (InsertParent, AddChild, AddChildAndComplex)
 
         /// <summary>
         /// Insert a parent between a vertex and its old parent.
@@ -477,6 +489,53 @@ namespace csMTG
             return childId;
         }
 
+        /// <summary>
+        /// Add a child and a complex. The child will become a component of this complex.
+        /// </summary>
+        /// <param name="parentId"> Parent identifier. </param>
+        /// <param name="childId"> New child identifier. </param>
+        /// <param name="complexId"> New complex identifier. </param>
+        /// <param name="namesValues"> Dictionary of properties. </param>
+        /// <returns> A list which contains: { childId, complexId } </returns>
+        public List<int> AddChildAndComplex(int parentId, int childId = -1, int complexId = -1, Dictionary<string, dynamic> namesValues = null)
+        {
+            List<int> childAndComplexIds = new List<int>();
+
+            if (Children(parentId).Contains(childId))
+            {
+                if(namesValues != null)
+                    AddVertexProperties(childId, namesValues);
+            }
+            else
+                childId = AddChild(parentId, namesValues, childId);
+
+            scale[childId] = scale[parentId];
+
+            int parentComplex = (int)Complex(parentId);
+
+            if (complexId == -1)
+                complexId = NewId();
+
+            if (!Children(parentComplex).Contains(complexId))
+                AddChild(parentComplex, complexId);
+            scale[complexId] = scale[parentComplex];
+
+            if (components.ContainsKey(complexId))
+                components[complexId].Add(childId);
+            else
+                components.Add(complexId, new List<int>(){childId});
+
+            if (complex.ContainsKey(childId))
+                complex[childId] = complexId;
+            else
+                complex.Add(childId, complexId);
+
+            childAndComplexIds.Add(childId);
+            childAndComplexIds.Add(complexId);
+
+            return childAndComplexIds;
+        }
+
         #endregion
 
         #region Siblings (InsertSibling)
@@ -502,19 +561,7 @@ namespace csMTG
 
         static void Main(String[] args)
         {
-            mtg tree = new mtg();
-            int root = tree.root;
 
-            // Scale 1
-
-            int root1 = tree.AddComponent(root);
-            int vertex1 = tree.AddChild(root1);
-            int vertex2 = tree.AddChild(root1);
-            int vertex3 = tree.AddChild(root1);
-            int vertex4 = tree.AddChild(root1);
-            int vertex5 = tree.AddChild(root1);
-
-            tree.Components(root).ForEach(Console.WriteLine);
         }
     }
 }

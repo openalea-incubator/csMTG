@@ -363,6 +363,29 @@ namespace csMTG.Tests
 
         }
 
+        [TestMethod()]
+        public void AddChildAndComplex()
+        {
+            mtg tree = new mtg();
+            int root = tree.root;
+
+            int root1 = tree.AddComponent(root);
+            int root2 = tree.AddComponent(root1);
+
+            int vertex12 = tree.AddChild(root2);
+            int vertex22 = tree.AddChild(vertex12);
+
+            List<int> vertexAndComplex32 = tree.AddChildAndComplex(vertex22);
+
+            int vertex32 = vertexAndComplex32[0];
+            int vertex32complex = vertexAndComplex32[1];
+
+            Assert.AreEqual(7, tree.NbVertices());
+            CollectionAssert.Contains(tree.Children(vertex22), vertex32);
+            CollectionAssert.Contains(tree.Children(root1), vertex32complex);
+
+        }
+
         #endregion
 
     }
