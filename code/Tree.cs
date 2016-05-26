@@ -169,6 +169,23 @@ namespace csMTG
 
         #endregion
 
+        #region Root (SetRoot)
+
+        /// <summary>
+        /// Sets a vertex as a root, meaning it gets -1 as a parent.
+        /// Keep in mind that we can have many roots in the mtg.
+        /// </summary>
+        /// <param name="vertexId"> The root identifier. </param>
+        public void SetRoot(int vertexId)
+        {
+            if (parent.ContainsKey(vertexId))
+                ReplaceParent(-1, vertexId);
+            else
+                parent.Add(vertexId, -1);
+        }
+
+        #endregion
+
         #region Vertices (Functions: Count, HasVertex, NbVertices)
 
         /// <summary>

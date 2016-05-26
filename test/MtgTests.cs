@@ -220,10 +220,10 @@ namespace csMTG.Tests
             int fourthChild = tree.AddChild(thirdChild);
 
             // Assign a scale to each vertex.
-            tree.scale.Add(firstChild, 1);
-            tree.scale.Add(secondChild, 1);
-            tree.scale.Add(thirdChild, 2);
-            tree.scale.Add(fourthChild, 2);
+            tree.scale[firstChild] = 1;
+            tree.scale[secondChild] = 1;
+            tree.scale[thirdChild] = 2;
+            tree.scale[fourthChild] = 2;
 
             // Without specifying the scale
             List<KeyValuePair<int, int>> expectedResult = new List<KeyValuePair<int, int>>();
@@ -268,12 +268,6 @@ namespace csMTG.Tests
             int fourthChild = tree.AddChild(thirdChild);
             int fifthChild = tree.AddChild(0);
 
-            // Assign a scale to each vertex.
-            tree.scale.Add(firstChild, 1);
-            tree.scale.Add(secondChild, 1);
-            tree.scale.Add(thirdChild, 2);
-            tree.scale.Add(fourthChild, 2);
-
             // Assign a complex to the firstChild
             tree.complex.Add(firstChild, 0);
 
@@ -283,6 +277,61 @@ namespace csMTG.Tests
             Assert.AreEqual(tree.Complex(fourthChild), 0);
 
             Assert.IsNull(tree.Complex(fifthChild));
+
+        }
+
+        #endregion
+
+        #region Global test
+
+        [TestMethod()]
+        public void MtgTest()
+        {
+            mtg tree = new mtg();
+
+            int root = tree.root;
+
+            Assert.AreEqual(0, root);
+
+            // Scale 1
+
+            int root1 = tree.AddComponent(root, new Dictionary<string, dynamic>() { });
+            int vertex1 = tree.AddChild(root1);
+            int vertex2 = tree.AddChild(root1);
+            int vertex3 = tree.AddChild(root1);
+
+            int vertex4 = tree.AddChild(vertex1);
+            int vertex5 = tree.AddChild(vertex1);
+
+            // Verify complex
+
+            Assert.AreEqual(root, tree.Complex(root1));
+            Assert.AreEqual(root, tree.Complex(vertex1));
+            Assert.AreEqual(root, tree.Complex(vertex2));
+            Assert.AreEqual(root, tree.Complex(vertex3));
+            Assert.AreEqual(root, tree.Complex(vertex4));
+            Assert.AreEqual(root, tree.Complex(vertex5));
+
+            // Verify parents
+
+            Assert.AreEqual(vertex1, tree.Parent(vertex5));
+            Assert.AreEqual(vertex1, tree.Parent(vertex4));
+            Assert.AreEqual(root1, tree.Parent(vertex3));
+            Assert.AreEqual(root1, tree.Parent(vertex2));
+            Assert.AreEqual(root1, tree.Parent(vertex1));
+
+            // Verify children
+
+            CollectionAssert.AreEqual(new List<int>(){vertex1, vertex2, vertex3}, tree.Children(root1));
+            CollectionAssert.AreEqual(new List<int>() {vertex4, vertex5 }, tree.Children(vertex1));
+            Assert.IsFalse(tree.children.ContainsKey(vertex2));
+            Assert.IsFalse(tree.children.ContainsKey(vertex3));
+            Assert.IsFalse(tree.children.ContainsKey(vertex4));
+            Assert.IsFalse(tree.children.ContainsKey(vertex5));
+
+            // Verify length of the mtg
+
+            Assert.AreEqual(7, tree.NbVertices());
 
         }
 

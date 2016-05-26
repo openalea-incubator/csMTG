@@ -379,11 +379,36 @@ namespace csMTG
             return Components(vertexId).Count;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="complexId"></param>
+        /// <param name="namesValues"></param>
+        /// <param name="componentId"></param>
+        /// <returns></returns>
+        public int AddComponent(int complexId, Dictionary<string, dynamic> namesValues, int componentId = -1)
+        {
+            if (componentId == -1)
+                componentId = NewId();
 
+            SetRoot(componentId);
+
+            AddVertexProperties(componentId, namesValues);
+
+            if (components.ContainsKey(complexId))
+                components[complexId].Add(componentId);
+            else
+                components.Add(complexId, new List<int>() { componentId });
+
+            complex.Add(componentId, complexId);
+            scale.Add(componentId, scale[complexId] + 1);
+
+            return componentId;
+        }
 
         #endregion
 
-        #region Functions related to vertices (InsertParent)
+        #region Functions related to vertices (InsertParent, AddChild)
 
         /// <summary>
         /// Insert a parent between a vertex and its old parent.
@@ -402,6 +427,22 @@ namespace csMTG
             parentId = base.InsertParent(vertexId, namesValues, parentId);
 
             return parentId;
+        }
+
+        /// <summary>
+        /// Add a child (And assign a scale to the new child).
+        /// </summary>
+        /// <param name="parentId"> Parent identifier. </param>
+        /// <param name="namesValues"> Dictionary of properties. </param>
+        /// <param name="childId"> New child identifier. (Optional) </param>
+        /// <returns> The new child. </returns>
+        public new int AddChild(int parentId, Dictionary<string, dynamic> namesValues = null, int childId = -1)
+        {
+            childId = base.AddChild(parentId, namesValues, childId);
+
+            scale.Add(childId, scale[parentId]);
+
+            return childId;
         }
 
         #endregion
@@ -429,7 +470,7 @@ namespace csMTG
 
         static void Main(String[] args)
         {
-            
+
         }
     }
 }
