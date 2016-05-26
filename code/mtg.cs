@@ -306,7 +306,7 @@ namespace csMTG
 
         #endregion
 
-        #region Components (Functions: ComponentsRootsIter, ComponentsIterator, Components, NbComponents)
+        #region Components (Functions: ComponentsRoots, Components, NbComponents, ComponentsAtScale)
 
         /// <summary>
         /// For the vertex in question, go over the tree graphs that compose it
@@ -412,6 +412,32 @@ namespace csMTG
             return componentId;
         }
 
+        IEnumerable<int> ComponentsAtScaleIterator(int vertexId, int scale)
+        {
+            int currentScale = this.scale[vertexId];
+
+            List<int> gen = new List<int>() { vertexId };
+
+            yield return vertexId;
+
+            for (int i = currentScale; i < scale; i++)
+            {
+                foreach (int vtx in gen)
+                {
+                    foreach (int vid in ComponentsIterator(vtx))
+                    {
+                        gen.Add(vid);
+                        yield return vid;
+                    }
+                }
+            }
+        }
+
+        public List<int> ComponentsAtScale(int vertexId, int scale)
+        {
+            return ComponentsAtScaleIterator(vertexId, scale).ToList();
+        }
+
         #endregion
 
         #region Functions related to vertices (InsertParent, AddChild)
@@ -423,7 +449,7 @@ namespace csMTG
         /// <param name="namesValues"> Properties of the new parent. </param>
         /// <param name="parentId"> The new parent's identifier. (Optional. If not specified, it will be added automatically.) </param>
         /// <returns> The new parent's identifier. </returns>
-        public new int InsertParent(int vertexId, Dictionary<string, dynamic> namesValues, int parentId = -1)
+        public new int InsertParent(int vertexId, Dictionary<string, dynamic> namesValues = null, int parentId = -1)
         {
             if (parentId == -1)
                 parentId = NewId();
@@ -462,7 +488,7 @@ namespace csMTG
         /// <param name="namesValues"> The properties of the new vertex. </param>
         /// <param name="vertexToInsert"> The new vertex to add. </param>
         /// <returns> The identifier of the new sibling. </returns>
-        public new int InsertSibling(int vertexId, Dictionary<string, dynamic> namesValues, int vertexToInsert = -1)
+        public new int InsertSibling(int vertexId, Dictionary<string, dynamic> namesValues = null, int vertexToInsert = -1)
         {
             vertexToInsert = base.InsertSibling(vertexId, namesValues, vertexToInsert);
 
@@ -492,4 +518,3 @@ namespace csMTG
         }
     }
 }
-

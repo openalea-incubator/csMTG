@@ -209,11 +209,12 @@ namespace csMTG
         /// <param name="namesValues"> The new parent's properties. </param>
         /// <param name="parentId"> Parent identifier. </param>
         /// <returns> The new parent's identifier. </returns>
-        public int InsertParent(int vertexId, Dictionary<string, dynamic> namesValues, int parentId = -1)
+        public int InsertParent(int vertexId, Dictionary<string, dynamic> namesValues = null, int parentId = -1)
         {
             parentId = base.InsertParent(vertexId, parentId);
 
-            AddVertexProperties(parentId, namesValues);
+            if(namesValues != null)
+                AddVertexProperties(parentId, namesValues);
 
             return parentId;
         }
@@ -229,11 +230,12 @@ namespace csMTG
         /// <param name="namesValues"> The properties of the new vertex. </param>
         /// <param name="vertexToInsert"> The new vertex to add. </param>
         /// <returns> The identifier of the new sibling. </returns>
-        public int InsertSibling(int vertexId, Dictionary<string, dynamic> namesValues, int vertexToInsert = -1)
+        public int InsertSibling(int vertexId, Dictionary<string, dynamic> namesValues = null, int vertexToInsert = -1)
         {
             vertexToInsert = base.InsertSibling(vertexId, vertexToInsert);
 
-            AddVertexProperties(vertexToInsert, namesValues);
+            if(namesValues != null)
+                AddVertexProperties(vertexToInsert, namesValues);
 
             return vertexToInsert;
         }
