@@ -282,7 +282,7 @@ namespace csMTG.Tests
 
         #endregion
 
-        #region Global test
+        #region Global tests
 
         [TestMethod()]
         public void MtgTest()
@@ -332,6 +332,34 @@ namespace csMTG.Tests
             // Verify length of the mtg
 
             Assert.AreEqual(7, tree.NbVertices());
+
+        }
+
+        [TestMethod()]
+        public void Components()
+        {
+            mtg tree = new mtg();
+            int root = tree.root;
+
+            // Scale 1
+
+            int root1 = tree.AddComponent(root);
+            int vertex1 = tree.AddChild(root1);
+            int vertex2 = tree.AddChild(root1);
+            int vertex3 = tree.AddChild(root1);
+            int vertex4 = tree.AddChild(root1);
+            int vertex5 = tree.AddChild(root1);
+
+            // Verifications
+
+            Assert.AreEqual(6, tree.NbComponents(root));
+
+            List<int> expectedListOfComponents = new List<int>(){root1, vertex1, vertex2, vertex3, vertex4, vertex5};
+            CollectionAssert.AreEqual(expectedListOfComponents, tree.Components(root));
+
+            Assert.AreEqual(tree.NbComponents(root1), 0);
+            Assert.AreEqual(tree.NbComponents(vertex1), 0);
+            Assert.AreEqual(tree.NbComponents(vertex2), 0);
 
         }
 

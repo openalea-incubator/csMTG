@@ -351,12 +351,14 @@ namespace csMTG
             {
                 foreach (int v in ComponentRootsIter(vertexId))
                 {
-                    foreach (int vertex in t.IterativePostOrder(this, v, vertexId))
+                    foreach (int vertex in t.IterativePreOrder(this, v, vertexId))
                     {
                         yield return vertex;
                     }
                 }
             }
+            else
+                yield break;
         }
 
         /// <summary>
@@ -376,7 +378,10 @@ namespace csMTG
         /// <returns> Number of vertex's components. </returns>
         public int NbComponents(int vertexId)
         {
-            return Components(vertexId).Count;
+            if (components.ContainsKey(vertexId))
+                return Components(vertexId).Count;
+            else
+                return 0;
         }
 
         /// <summary>
@@ -386,14 +391,15 @@ namespace csMTG
         /// <param name="namesValues"></param>
         /// <param name="componentId"></param>
         /// <returns></returns>
-        public int AddComponent(int complexId, Dictionary<string, dynamic> namesValues, int componentId = -1)
+        public int AddComponent(int complexId, Dictionary<string, dynamic> namesValues = null, int componentId = -1)
         {
             if (componentId == -1)
                 componentId = NewId();
 
             SetRoot(componentId);
 
-            AddVertexProperties(componentId, namesValues);
+            if(namesValues != null)
+                AddVertexProperties(componentId, namesValues);
 
             if (components.ContainsKey(complexId))
                 components[complexId].Add(componentId);
@@ -470,7 +476,19 @@ namespace csMTG
 
         static void Main(String[] args)
         {
+            mtg tree = new mtg();
+            int root = tree.root;
 
+            // Scale 1
+
+            int root1 = tree.AddComponent(root);
+            int vertex1 = tree.AddChild(root1);
+            int vertex2 = tree.AddChild(root1);
+            int vertex3 = tree.AddChild(root1);
+            int vertex4 = tree.AddChild(root1);
+            int vertex5 = tree.AddChild(root1);
+
+            tree.Components(root).ForEach(Console.WriteLine);
         }
     }
 }

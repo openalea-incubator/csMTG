@@ -41,10 +41,16 @@ namespace csMTG
                     if (complex != -1 && tree.Complex(vid) != complex)
                         continue;
 
-                    if (edgeType[vid].Equals("<"))
+                    if (!edgeType.ContainsKey(vid))
                         successor.Add(vid);
                     else
-                        plus.Add(vid);
+                    {
+                        if (edgeType[vid].Equals("<"))
+                            successor.Add(vid);
+                        else
+                            plus.Add(vid);
+
+                    }
                 }
 
                 plus.AddRange(successor);
@@ -110,7 +116,8 @@ namespace csMTG
         public IEnumerable<int> IterativePostOrder(mtg tree, int vertexId, int complex = -1)
         {
             Dictionary<int, dynamic> edgeType = tree.Property("Edge_Type");
-            
+            Dictionary<int, dynamic> emptyDictionary = new Dictionary<int, dynamic>();
+
             // Internal function
             Func<int, List<int>> OrderChildren = new Func<int, List<int>>(vid =>
             {
@@ -122,10 +129,16 @@ namespace csMTG
                     if (complex != -1 && tree.Complex(v) != complex)
                         continue;
 
-                    if (edgeType[v].Equals("<"))
+                    if (!edgeType.ContainsKey(v))
                         successor.Add(v);
                     else
-                        plus.Add(v);
+                    {
+                        if (edgeType[v].Equals("<"))
+                            successor.Add(v);
+                        else
+                            plus.Add(v);
+                    }
+
                 }
 
                 plus.AddRange(successor);
