@@ -20,9 +20,9 @@ namespace csMTGTests
             
             int numberOfExpectedVertices = 5000;
 
-            t = algorithm.RandomTree(t, numberOfExpectedVertices);
+            int lastVertex = algorithm.RandomTree(t, t.root, numberOfExpectedVertices);
 
-            Assert.AreEqual(numberOfExpectedVertices, ((Tree)t).NbVertices());
+            Assert.AreEqual(numberOfExpectedVertices+1, ((Tree)t).NbVertices());
 
         }
 
@@ -33,7 +33,7 @@ namespace csMTGTests
 
             int maximumNbChildren = 9;
 
-            t = algorithm.RandomTree(t, 5000, maximumNbChildren);
+            int lastVertex = algorithm.RandomTree(t, t.root, 5000, maximumNbChildren);
 
             foreach (int keyId in t.children.Keys)
             {
@@ -47,7 +47,7 @@ namespace csMTGTests
         {
             mtg t = new mtg();
 
-            t = algorithm.RandomTree(t, 5000, 100);
+            int lastVertex = algorithm.RandomTree(t, t.root, 5000, 100);
 
             foreach (int childId in t.parent.Keys)
             {

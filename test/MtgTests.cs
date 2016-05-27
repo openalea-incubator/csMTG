@@ -347,14 +347,14 @@ namespace csMTG.Tests
             int vertex1 = tree.AddChild(root1);
             int vertex2 = tree.AddChild(root1);
             int vertex3 = tree.AddChild(root1);
-            int vertex4 = tree.AddChild(root1);
-            int vertex5 = tree.AddChild(root1);
+            int vertex4 = tree.AddChild(vertex1);
+            int vertex5 = tree.AddChild(vertex1);
 
             // Verifications
 
             Assert.AreEqual(6, tree.NbComponents(root));
 
-            List<int> expectedListOfComponents = new List<int>(){root1, vertex1, vertex2, vertex3, vertex4, vertex5};
+            List<int> expectedListOfComponents = new List<int>(){root1, vertex1, vertex4, vertex5, vertex2, vertex3};
             CollectionAssert.AreEqual(expectedListOfComponents, tree.Components(root));
 
             Assert.AreEqual(tree.NbComponents(root1), 0);
@@ -403,8 +403,74 @@ namespace csMTG.Tests
             Assert.AreEqual(vertex1, vertex2);
         }
 
+        [TestMethod()]
+        public void RandomTree()
+        {
+            Algorithm a = new Algorithm();
+
+            mtg tree = new mtg();
+            int root = tree.root;
+
+            int root1 = tree.AddComponent(root);
+            root1 = tree.AddComponent(root1);
+            int vid = a.RandomTree(tree, root1, 18);
+
+            List<int> childAndComplex = tree.AddChildAndComplex(vid);
+            vid = a.RandomTree(tree, childAndComplex[0], 18);
+
+            List<int> childAndComplex2 = tree.AddChildAndComplex(vid);
+            vid = a.RandomTree(tree, childAndComplex2[0], 18);
+
+            Assert.AreEqual(61, tree.NbVertices());
+
+        }
+
+        [TestMethod()]
+        public void Properties()
+        {
+            Algorithm a = new Algorithm();
+
+            mtg tree = new mtg();
+            int root = tree.root;
+
+            int root1 = tree.AddComponent(root);
+            int vid = a.RandomTree(tree, root1, 18);
+
+            List<int> childAndComplex = tree.AddChildAndComplex(vid);
+            vid = a.RandomTree(tree, childAndComplex[0], 18);
+
+            List<int> childAndComplex2 = tree.AddChildAndComplex(vid);
+            vid = a.RandomTree(tree, childAndComplex2[0], 18);
+
+            Assert.IsTrue(tree.PropertyNames().Contains("Edge_Type"));
+            Assert.AreEqual(18 * 3, tree.Property("Edge_Type").Count);
+        }
+
+        [TestMethod()]
+        public void RemoveVertex()
+        {
+            mtg tree = new mtg();
+            int root = tree.root;
+
+            // Scale 1
+
+            int root1 = tree.AddComponent(root);
+            int vertex1 = tree.AddChild(root1);
+            int vertex2 = tree.AddChild(root1);
+            int vertex3 = tree.AddChild(root1);
+            int vertex4 = tree.AddChild(vertex1);
+            int vertex5 = tree.AddChild(vertex1);
+
+            int numberVertices = tree.NbVertices();
+
+            tree.RemoveVertex(vertex5);
+            tree.RemoveVertex(vertex1, true);
+
+            Assert.AreEqual(numberVertices - 2, tree.NbVertices());
+
+        }
+
         #endregion
 
     }
 }
-

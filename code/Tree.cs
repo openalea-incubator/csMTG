@@ -121,7 +121,7 @@ namespace csMTG
         /// </summary>
         /// <param name="parentId">The new parent.</param>
         /// <param name="childId">The child for which the parent will be changed.</param>
-        void ReplaceParent(int parentId, int childId)
+        protected void ReplaceParent(int parentId, int childId)
         {
             int oldParent = (int)Parent(childId);
 

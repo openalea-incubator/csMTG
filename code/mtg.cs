@@ -577,12 +577,80 @@ namespace csMTG
 
         #endregion
 
-        #region Functions related to removing vertices (Clear)
+        #region Functions related to removing vertices (RemoveVertex, Clear)
+
+        public new void RemoveVertex(int vertexId, bool reparentChild = false)
+        {
+            if (reparentChild && NbComponents(vertexId) != 0)
+            {
+                int newParentId = (int)Parent(vertexId);
+                List<int> children = Children(vertexId);
+
+                foreach (int cid in children)
+                {
+                    ReplaceParent(cid, newParentId);
+                }
+
+                children.Remove(vertexId);
+                parent.Remove(vertexId);
+
+                if (scale.ContainsKey(vertexId))
+                    scale.Remove(vertexId);
+
+                if (complex.ContainsKey(vertexId))
+                {
+                    int cid = complex[vertexId];
+                    List<int> l = components[cid];
+                    try
+                    {
+                        int i = l.IndexOf(vertexId);
+                        l.RemoveAt(i);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    complex.Remove(vertexId);
+                }
+
+            }
+            else
+            {
+                if (NbComponents(vertexId) == 0)
+                {
+                    base.RemoveVertex(vertexId, reparentChild);
+
+                    if (components.ContainsKey(vertexId))
+                        components.Remove(vertexId);
+
+                    if (scale.ContainsKey(vertexId))
+                        scale.Remove(vertexId);
+
+                    if (complex.ContainsKey(vertexId))
+                    {
+                        int cid = complex[vertexId];
+                        List<int> l = components[cid];
+                        try
+                        {
+                            int i = l.IndexOf(vertexId);
+                            l.RemoveAt(i);
+                        }
+                        catch(Exception)
+                        {
+                        }
+                        complex.Remove(vertexId);
+                    }
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("vertexId", "This vertex has components and so it can't be removed.");
+                }
+            }
+        }
 
         /// <summary>
         /// Remove all vertices from the MTG.
         /// </summary>
-        public void Clear()
+        public new void Clear()
         {
             base.Clear();
 

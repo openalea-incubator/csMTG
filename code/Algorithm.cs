@@ -10,20 +10,20 @@ namespace csMTG
     {
 
         /// <summary>
-        ///  Generates a random tree with a specified number of vertices and children per vertex
+        ///  Generates a random tree with a specified number of vertices and children per vertex.
+        ///  The generated tree is added to the root in the parameters.
         /// </summary>
         /// <param name="nbVertices"> The number of tree's vertices </param>
         /// <param name="nbChildren"> The maximum number for a vertex </param>
         /// <returns> Returns the generated tree </returns>
-        public mtg RandomTree(mtg t, int nbVertices, int nbChildren = 4)
+        public int RandomTree(mtg t, int root, int nbVertices, int nbChildren = 4)
         {
             int childrenToAdd;
 
             List<int> randomStack = new List<int>();
             Random r = new Random();
             Random r2 = new Random();
-            randomStack.Add(t.root);
-            nbVertices--;
+            randomStack.Add(root);
 
             while (nbVertices > 0)
             {
@@ -57,7 +57,7 @@ namespace csMTG
 
             }
 
-            return t;
+            return randomStack.Last();
         }
 
         /// <summary>
