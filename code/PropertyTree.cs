@@ -172,7 +172,7 @@ namespace csMTG
 
         #endregion
 
-        #region Functions related to vertices (AddChild, RemoveVertex, InsertParent)
+        #region Functions related to vertices (AddChild, RemoveVertex, InsertParent, Clear)
 
         /// <summary>
         /// Adds a child along with its properties
@@ -217,6 +217,16 @@ namespace csMTG
                 AddVertexProperties(parentId, namesValues);
 
             return parentId;
+        }
+
+        /// <summary>
+        /// Remove all properties.
+        /// </summary>
+        public void Clear()
+        {
+            base.Clear();
+
+            properties.Clear();
         }
 
         #endregion

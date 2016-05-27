@@ -275,7 +275,7 @@ namespace csMTG
 
         #endregion
 
-        #region Remove a vertex
+        #region Remove (RemoveVertex, Clear)
 
         /// <summary>
         /// Remove a vertex.
@@ -333,6 +333,19 @@ namespace csMTG
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Remove all vertices and edges. 
+        /// </summary>
+        public void Clear()
+        {
+            root = 0;
+            id = 0;
+
+            parent.Clear();
+            children.Clear();
+            parent.Add(root, -1);
         }
 
         #endregion

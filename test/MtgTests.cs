@@ -386,7 +386,25 @@ namespace csMTG.Tests
 
         }
 
+        [TestMethod()]
+        public void Clear()
+        {
+            mtg tree = new mtg();
+
+            Assert.AreEqual(1, tree.NbVertices());
+
+            int vertex1 = tree.AddComponent(tree.root);
+            Assert.AreEqual(2, tree.NbVertices());
+
+            tree.Clear();
+            Assert.AreEqual(1, tree.NbVertices());
+
+            int vertex2 = tree.AddComponent(tree.root);
+            Assert.AreEqual(vertex1, vertex2);
+        }
+
         #endregion
 
     }
 }
+

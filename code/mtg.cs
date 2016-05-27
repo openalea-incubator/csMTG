@@ -452,7 +452,7 @@ namespace csMTG
 
         #endregion
 
-        #region Functions related to vertices (InsertParent, AddChild, AddChildAndComplex, AddChildTree)
+        #region Functions related to adding vertices (InsertParent, AddChild, AddChildAndComplex, AddChildTree)
 
         /// <summary>
         /// Insert a parent between a vertex and its old parent.
@@ -573,6 +573,24 @@ namespace csMTG
             }
 
             return renumberedTree;
+        }
+
+        #endregion
+
+        #region Functions related to removing vertices (Clear)
+
+        /// <summary>
+        /// Remove all vertices from the MTG.
+        /// </summary>
+        public void Clear()
+        {
+            base.Clear();
+
+            scale.Clear();
+            scale.Add(0, 0);
+
+            complex.Clear();
+            components.Clear();
         }
 
         #endregion
