@@ -60,5 +60,36 @@ namespace csMTG
             return t;
         }
 
+        /// <summary>
+        /// Generate and add a regular tree to an existing one at a given vertex.
+        /// </summary>
+        /// <param name="tree"> The tree that will be modified. </param>
+        /// <param name="vertexId"> Vertex on which the subtree will be added. </param>
+        /// <param name="NbChildren"> Number of children per parent. </param>
+        /// <param name="NbVertices"> Number of vertices of the new tree. </param>
+        /// <returns> The tree after being modified. </returns>
+        public mtg SimpleTree(mtg tree, int vertexId, int NbChildren = 3, int NbVertices = 20)
+        {
+            int vid = vertexId;
+            List<int> l = new List<int>() { vid };
+
+            while (NbVertices > 0)
+            {
+                int n = Math.Min(NbChildren, NbVertices);
+                vid = l[0];
+                l.RemoveAt(0);
+
+                for (int i = 0; i < n; i++)
+                {
+                    int v = tree.AddChild(vid);
+                    NbVertices--;
+                    l.Add(v);
+                }
+
+            }
+
+            return tree;
+        }
+
     }
 }

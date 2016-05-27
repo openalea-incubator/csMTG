@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using csMTG;
+using System.Collections.Generic;
 
 namespace csMTGTests
 {
@@ -8,6 +9,7 @@ namespace csMTGTests
     public class AlgorithmTests
     {
         Algorithm algorithm = new Algorithm();
+        traversal t = new traversal();
 
         #region Tests of the random tree generator
 
@@ -66,6 +68,34 @@ namespace csMTGTests
                 }
             }
 
+        }
+
+        #endregion
+
+        #region Test of SimpleTree
+
+        [TestMethod()]
+        public void SimpleTree()
+        {
+            mtg tree = new mtg();
+            tree = algorithm.SimpleTree(tree, tree.root);
+
+            IEnumerable<int> s1 = t.IterativePreOrder(tree, tree.root);
+            IEnumerable<int> s2 = t.IterativePostOrder(tree, tree.root);
+
+            Func<IEnumerable<int>, int> Counter = new Func<IEnumerable<int>, int>(source =>
+            {
+                int res = 0;
+
+                foreach (var item in source)
+                    res++;
+
+                return res;
+            });
+
+            Assert.AreEqual(21, tree.NbVertices());
+            Assert.AreEqual(Counter(s1), Counter(s2));
+            Assert.AreEqual(21, Counter(s1));
         }
 
         #endregion
