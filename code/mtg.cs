@@ -452,7 +452,7 @@ namespace csMTG
 
         #endregion
 
-        #region Functions related to vertices (InsertParent, AddChild, AddChildAndComplex)
+        #region Functions related to vertices (InsertParent, AddChild, AddChildAndComplex, AddChildTree)
 
         /// <summary>
         /// Insert a parent between a vertex and its old parent.
@@ -534,6 +534,45 @@ namespace csMTG
             childAndComplexIds.Add(complexId);
 
             return childAndComplexIds;
+        }
+
+        /// <summary>
+        /// Add a tree as a child to the specified parent.
+        /// </summary>
+        /// <param name="parentId"> Parent identifier. </param>
+        /// <param name="tree"> The tree to add. </param>
+        /// <returns> A dictionary of the correspondance between ids in the tree and the new Ids once the tree is added. </returns>
+        public Dictionary<int, int> AddChildTree(int parentId, mtg tree)
+        {
+            traversal t = new traversal();
+
+            Dictionary<int, int> renumberedTree = new Dictionary<int, int>();
+            int vId;
+
+            int root = tree.root;
+
+            int rootId = AddChild(parentId);
+            renumberedTree.Add(root, rootId);
+
+            // PreOrder traversal from root and renumbering all subtree vertices
+
+            foreach (int vertexId in t.IterativePreOrder(tree, root))
+            {
+                if (vertexId == root)
+                    continue;
+
+                parentId = (int)Parent(vertexId);
+
+                if (parentId != -1)
+                    parentId = renumberedTree[(int)Parent(vertexId)];
+
+                vId = AddChild(parentId);
+
+                renumberedTree.Add(vertexId, vId);
+
+            }
+
+            return renumberedTree;
         }
 
         #endregion
