@@ -446,6 +446,17 @@ namespace csMTG
             return vertexToInsert;
         }
 
+        /// <summary>
+        /// Determines if a vertex is a leaf or not.
+        /// It is to note that a leaf is a vertex which doesn't have any children.
+        /// </summary>
+        /// <param name="vertexId"> The vertex identifier. </param>
+        /// <returns> Boolean (whether it's a leaf or not). </returns>
+        public bool IsLeaf(int vertexId)
+        {
+            return (NbChildren(vertexId) == 0);
+        }
+
         #endregion
 
     }
