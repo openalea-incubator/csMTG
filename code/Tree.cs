@@ -186,7 +186,7 @@ namespace csMTG
 
         #endregion
 
-        #region Vertices (Functions: Count, HasVertex, NbVertices)
+        #region Vertices (Functions: Count, HasVertex, NbVertices, Vertices)
 
         /// <summary>
         /// Counts the number of elements in the tree.
@@ -214,6 +214,25 @@ namespace csMTG
         public int NbVertices()
         {
             return Count();
+        }
+
+        /// <summary>
+        /// An iterator on the vertices.
+        /// </summary>
+        /// <returns> An iterator on the vertices of the tree. </returns>
+        IEnumerable<int> VerticesIterator()
+        {
+            foreach (int vertexId in parent.Keys)
+                yield return vertexId;
+        }
+
+        /// <summary>
+        /// A list of the tree's vertices.
+        /// </summary>
+        /// <returns> A list of the vertices composing the tree. </returns>
+        public List<int> Vertices()
+        {
+            return VerticesIterator().ToList();
         }
 
         #endregion
