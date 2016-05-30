@@ -121,7 +121,7 @@ namespace csMTG
         /// </summary>
         /// <param name="parentId">The new parent.</param>
         /// <param name="childId">The child for which the parent will be changed.</param>
-        protected void ReplaceParent(int parentId, int childId)
+        protected void ReplaceParent(int childId, int parentId)
         {
             int oldParent = (int)Parent(childId);
 
@@ -179,7 +179,7 @@ namespace csMTG
         public void SetRoot(int vertexId)
         {
             if (parent.ContainsKey(vertexId))
-                ReplaceParent(-1, vertexId);
+                ReplaceParent(vertexId, -1);
             else
                 parent.Add(vertexId, -1);
         }
@@ -323,7 +323,7 @@ namespace csMTG
                         while (numberOfChildren > 0)
                         {
                             int child = children[vertexId][0];
-                            ReplaceParent(newParentId, child);
+                            ReplaceParent(child, newParentId);
                             numberOfChildren--;
                         }
 
