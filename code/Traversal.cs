@@ -309,4 +309,17 @@ namespace csMTG
         //}
 
     }
+
+    public class Visitor
+    {
+        public void PreOrder(int vertexId)
+        {
+
+        }
+
+        public void PostOrder(int vertexId)
+        {
+
+        }
+    }
 }

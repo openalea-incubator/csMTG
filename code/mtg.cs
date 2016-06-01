@@ -213,7 +213,7 @@ namespace csMTG
 
         #endregion
 
-        #region Roots (Functions: RootsIterator, Roots)
+        #region Roots (Functions: Roots)
 
         /// <summary>
         /// Returns an iterator of the roots of the tree graphs at a given scale.
@@ -680,6 +680,17 @@ namespace csMTG
 
             return vertexToInsert;
 
+        }
+
+        #endregion
+
+        #region Ancestors
+
+        public List<int> Ancestors(int vertexId, string EdgeType = "*", string RestrictedTo = "NoRestriction", int containedIn = -1)
+        {
+            Algorithm a = new Algorithm();
+
+            return a.FullAncestors(this, vertexId, RestrictedTo, EdgeType, containedIn).ToList();
         }
 
         #endregion
