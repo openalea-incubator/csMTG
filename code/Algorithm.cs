@@ -483,5 +483,56 @@ namespace csMTG
         }
 
         #endregion
+
+        #region Displays (Tree & MTG)
+
+        /// <summary>
+        /// Display the tree structure.
+        /// </summary>
+        /// <returns> A string that represents the tree structure. </returns>
+        public IEnumerable<string> DisplayTree(mtg tree, int vertexId, string tab = "", Dictionary<int, dynamic> labels = null, Dictionary<int, dynamic> edgeType = null)
+        {
+            if (labels == null)
+                labels = tree.Property("label");
+            if (edgeType == null)
+                edgeType = tree.Property("Edge_Type");
+
+            string edgeT;
+
+            if (edgeType.ContainsKey(vertexId))
+                edgeT = edgeType[vertexId];
+            else
+                edgeT = "/";
+
+            string label;
+
+            if(labels.ContainsKey(vertexId))
+                label = labels[vertexId];
+            else
+                label = vertexId.ToString();
+
+            yield return tab + edgeT + label;
+
+            foreach (int child in tree.Children(vertexId))
+            {
+                if (edgeType.ContainsKey(child))
+                {
+                    if (edgeType[child] == "+")
+                        tab += "\t";
+
+                    foreach (string s in DisplayTree(tree, child, tab, labels, edgeType))
+                    {
+                        yield return s;
+                    }
+
+                    //if (edgeType[child] == "+")
+                    //    tab=tab[:-1] ??
+                }
+            }
+
+        }
+
+        #endregion
+
     }
 }
