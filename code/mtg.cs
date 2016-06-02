@@ -306,7 +306,7 @@ namespace csMTG
 
         #endregion
 
-        #region Components (Functions: ComponentsRoots, Components, NbComponents, AddComponent, ComponentsAtScale)
+        #region Components (Functions: ComponentsRoots, Components, NbComponents, AddComponent, ComponentsAtScale, ComponentRootsAtScale)
 
         /// <summary>
         /// For the vertex in question, go over the tree graphs that compose it
@@ -448,6 +448,54 @@ namespace csMTG
         public List<int> ComponentsAtScale(int vertexId, int scale)
         {
             return ComponentsAtScaleIterator(vertexId, scale).ToList();
+        }
+
+        /// <summary>
+        /// Returns the set of roots of the tree graph that compose the vertex.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="scale"> Scale. </param>
+        /// <returns> Roots composing the vertex at a specific scale. </returns>
+        IEnumerable<int> ComponentRootsAtScaleIterator(int vertexId, int scale)
+        {
+            int currentScale = (int)this.Scale(vertexId);
+
+            if (scale == -1 || scale == currentScale + 1)
+            {
+                foreach (int root in ComponentRootsIter(vertexId))
+                    yield return root;
+            }
+            else
+            {
+                if (scale > currentScale + 1)
+                {
+                    List<int> gen = new List<int>() { vertexId };
+                    yield return vertexId;
+
+                    for (int i = currentScale; i < scale; i++)
+                    {
+                        foreach (int vtx in gen)
+                        {
+                            foreach (int vid in ComponentRootsIter(vtx))
+                            {
+                                gen.Add(vid);
+                                yield return vid;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns a list of roots of the tree graph that compose the vertex.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="scale"> Specified scale. </param>
+        /// <returns> A list of the roots that compose the vertex. </returns>
+        public List<int> ComponentRootsAtScale(int vertexId, int scale)
+        {
+            return ComponentRootsAtScaleIterator(vertexId, scale).ToList();
         }
 
         #endregion
