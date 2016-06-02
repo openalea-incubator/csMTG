@@ -306,7 +306,7 @@ namespace csMTG
 
         #endregion
 
-        #region Components (Functions: ComponentsRoots, Components, NbComponents, ComponentsAtScale)
+        #region Components (Functions: ComponentsRoots, Components, NbComponents, AddComponent, ComponentsAtScale)
 
         /// <summary>
         /// For the vertex in question, go over the tree graphs that compose it

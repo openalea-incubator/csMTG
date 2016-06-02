@@ -168,6 +168,12 @@ namespace csMTG
             }
         }
 
+        /// <summary>
+        /// Return the vertices from the vertex in the parameters up to the root.
+        /// </summary>
+        /// <param name="g"> The MTG. </param>
+        /// <param name="vertexId"> The vertex identifier. </param>
+        /// <returns> An iterator on the ancestors of the vertexId up to the root. </returns>
         public IEnumerable<int> FullAncestors(mtg g, int vertexId, string restrictedTo = "NoRestriction", string edgeType = "*", int containedIn = -1)
         {
             Dictionary<int, dynamic> edgeT = g.Property("Edge_Type");
@@ -215,6 +221,15 @@ namespace csMTG
 
         #endregion
 
+        /// <summary>
+        /// Compute missing edges at each scale of the slimMtg. It is based
+        /// on the explicit edges that are defined at finer scales and
+        /// decomposition relantionships.
+        /// </summary>
+        /// <param name="slimMtg"></param>
+        /// <param name="preserveOrder"> If true, the order of the children at the coarsest scales
+        /// is deduced from the order of children at finest scale. </param>
+        /// <returns> Computed tree. </returns>
         public mtg FatMtg(mtg slimMtg, bool preserveOrder = false)
         {
             int maxScale = slimMtg.MaxScale();
@@ -259,7 +274,11 @@ namespace csMTG
                                     ch.Add(cmpDic[c]);
                             }
 
-                            slimMtg.children[v] = ch;
+                            if (slimMtg.children.ContainsKey(v))
+                                slimMtg.children[v] = ch;
+                            else
+                                slimMtg.children.Add(v, ch);
+
                         }
 
                     }
@@ -269,6 +288,12 @@ namespace csMTG
             return slimMtg;
         }
 
+        /// <summary>
+        /// Compute an mtg from a tree and the list of vertices to be quotiented.
+        /// </summary>
+        /// <param name="tree"></param>
+        /// <param name="colors"></param>
+        /// <returns></returns>
         public List<dynamic> ColoredTree(mtg tree, Dictionary<int, List<int>> colors)
         {
             int nbScales = colors.Keys.Max() + 1;
@@ -319,7 +344,13 @@ namespace csMTG
                     else
                     {
                         if (componentId != -1)
-                            g.scale.Add(componentId, scale);
+                        {
+                            if(g.scale.ContainsKey(componentId))
+                                g.scale[componentId] = scale;
+                            else
+                                g.scale.Add(componentId, scale);
+                        }
+                            
                     }
 
                 }
@@ -350,7 +381,10 @@ namespace csMTG
                             childrenToAdd.Add(indexScale[id]);
                         }
 
-                        g.children[indexScale[parent]] = childrenToAdd;
+                        if (g.children.ContainsKey(indexScale[parent]))
+                            g.children[indexScale[parent]] = childrenToAdd;
+                        else
+                            g.children.Add(indexScale[parent],childrenToAdd);
 
                     }
                 }
@@ -373,16 +407,23 @@ namespace csMTG
                     {
                         childrenToAdd.Add(indexScale[id]);
                     }
-                    
-                    g.children[indexScale[parent]] = childrenToAdd;
+
+                    if (g.children.ContainsKey(indexScale[parent]))
+                        g.children[indexScale[parent]] = childrenToAdd;
+                    else
+                        g.children.Add(indexScale[parent], childrenToAdd);
                 }
             }
 
-            // Copy the properties of the tree
+            // 4- Copy the properties of the tree
 
             foreach (string propertyName in tree.Properties().Keys)
             {
-                g.properties.Add(propertyName, new Dictionary<int, dynamic>());
+
+                if (!g.properties.ContainsKey(propertyName))
+                {
+                    g.properties.Add(propertyName, new Dictionary<int, dynamic>());
+                }
 
                 Dictionary<int, dynamic> props = tree.properties[propertyName];
 
@@ -405,6 +446,12 @@ namespace csMTG
             return returnedValue;
         }
 
+        /// <summary>
+        /// Convert a tree into an MTG of NbScales.
+        /// </summary>
+        /// <param name="tree"></param>
+        /// <param name="nbScales"></param>
+        /// <returns></returns>
         public mtg RandomMtg(mtg tree, int nbScales)
         {
             int n = tree.NbVertices();
