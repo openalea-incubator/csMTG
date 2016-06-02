@@ -222,6 +222,8 @@ namespace csMTG
         
         #endregion
 
+        #region Save to file
+
         /// <summary>
         /// Saves the PropertyTree into a file (.tlp)
         /// </summary>
@@ -294,19 +296,56 @@ namespace csMTG
             }
         }
 
-        //static void Main(String[] args)
-        //{
-        //    PropertyTree tree = new PropertyTree();
-        //    Algorithm a = new Algorithm();
+        #endregion
 
-        //    tree = a.RandomTree(tree, 200);
-        //    tree.AddVertexProperties(5, new Dictionary<string, dynamic>() { { "Height", 12 } });
+        #region MTG iterators
 
-        //    traversal t = new traversal();
+        /// <summary>
+        /// Iterate all components of the vertexId.
+        /// </summary>
+        /// <param name="tree"> The MTG. </param>
+        /// <param name="vertexId"> The vertex from which the iteration begins. </param>
+        /// <returns> Iterator on components of the MTG starting from a vertex. </returns>
+        public IEnumerable<int> MtgIterator(mtg tree, int vertexId)
+        {
+            Dictionary<int, bool> visited = new Dictionary<int, bool>();
+            visited.Add(vertexId, true);
 
-        //    t.SaveToFile(tree,"C:\\Users\\aannaque\\Desktop\\tulip");
-           
-        //}
+            int complexId = vertexId;
+
+            int maxScale = tree.MaxScale();
+
+            yield return vertexId;
+
+            foreach(int vertex in tree.ComponentRootsAtScale(complexId,maxScale))
+            {
+                foreach(int vid in IterativePreOrder(tree,vertex))
+                {
+                    foreach (int node in ScaleIterator(tree, vid, complexId, visited))
+                        yield return node;
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Internal method used by MtgIterator.
+        /// </summary>
+        IEnumerable<int> ScaleIterator(mtg tree, int vertexId, int complexId, Dictionary<int, bool> visited)
+        {
+            if(vertexId != -1 && !visited.ContainsKey(vertexId) && ( tree.ComplexAtScale(vertexId,(int)tree.Scale(complexId)) == complexId))
+            {
+                foreach (int v in ScaleIterator(tree, (int)tree.Complex(vertexId), complexId, visited))
+                {
+                    yield return v;
+                }
+
+                visited.Add(vertexId, true);
+                yield return vertexId;
+            }
+        }
+
+        #endregion
 
     }
 

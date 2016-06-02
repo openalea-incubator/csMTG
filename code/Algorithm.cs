@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -531,6 +532,100 @@ namespace csMTG
             }
 
         }
+
+        /// <summary>
+        /// Display an MTG.
+        /// </summary>
+        /// <param name="tree"></param>
+        /// <param name="vertexId"></param>
+        /// <returns></returns>
+        public IEnumerable<string> DisplayMtg(mtg tree, int vertexId)
+        {
+            Dictionary<int, dynamic> label = tree.Property("label");
+            Dictionary<int, dynamic> edgeType = tree.Property("Edge_Type");
+
+            traversal t = new traversal();
+            string edgeT;
+
+            int currentVertex = vertexId;
+
+            int tab = 0;
+
+            foreach (int vertex in t.MtgIterator(tree, vertexId))
+            {
+                edgeT = "/";
+                if (vertex != currentVertex)
+                {
+                    int scale1 = (int)tree.Scale(currentVertex);
+                    int scale2 = (int)tree.Scale(vertex);
+
+                    if (scale1 >= scale2)
+                    {
+                        try
+                        {
+                            edgeT = edgeType[vertex];
+                        }
+                        catch (KeyNotFoundException)
+                        {
+
+                        }
+
+                        if (scale1 == scale2)
+                        {
+                            if (tree.Parent(vertex) != currentVertex)
+                            {
+                                tab = -1;
+                                edgeT = "^" + edgeT;
+                            }
+                            else
+                                edgeT = "^" + edgeT;
+                        }
+                        else
+                        {
+                            if (scale1 > scale2)
+                            {
+                                int v = currentVertex;
+
+                                for (int i = 0; i < scale1 - scale2; i++)
+                                {
+                                    v = (int)tree.Complex(v);
+                                }
+                                if (tree.Parent(vertex) == v)
+                                    edgeT = "^" + edgeT;
+                                else
+                                {
+                                    tab -= 1;
+                                    edgeT = "^" + edgeT;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Debug.Assert(scale2 - scale1 == 1);
+                        tab += 1;
+                    }
+
+                    string tabs ="";
+
+                    for (int i = 0; i < tab; i++)
+                        tabs = tabs + "\t";
+
+                    string labelVertex;
+
+                    if (label.ContainsKey(vertex))
+                        labelVertex = label[vertex];
+                    else
+                        labelVertex = vertex.ToString();
+
+                    yield return tabs + edgeT + labelVertex;
+                }
+
+                currentVertex = vertex;
+            }
+
+        }
+
 
         #endregion
 
