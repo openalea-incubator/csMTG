@@ -526,8 +526,8 @@ namespace csMTG
                         yield return s;
                     }
 
-                    //if (edgeType[child] == "+")
-                    //    tab=tab[:-1] ??
+                    if (edgeType[child] == "+")
+                        tab.Remove(tab.Length - 1);
                 }
             }
 
