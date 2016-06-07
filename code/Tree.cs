@@ -584,6 +584,26 @@ namespace csMTG
 
         }
 
+        /// <summary>
+        /// Remove the subtree rooted on the vertex in the parameters.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        public void RemoveTree(int vertexId)
+        {
+            int vid = vertexId;
+
+            List<int> vertices = new List<int>();
+
+            traversal t = new traversal();
+
+            foreach (int vertex in t.RecursivePostOrder((mtg)this, vid))
+            {
+                RemoveVertex(vertex);
+                vertices.Add(vertex);
+            }
+
+        }
+
         #endregion
     }
 }
