@@ -36,9 +36,11 @@ namespace csMTG
         /// Constructor of the class.
         /// <para>When created, a root of the tree is defined. Its id is zero and it has no children.</para>
         /// </summary>
-        public Tree() {
-            id = 0;
-            root = id;
+        public Tree(int root = 0) 
+        {
+            this.root = root;
+            id = root;
+            
             parent.Add(root, -1);
         }
 
@@ -303,7 +305,7 @@ namespace csMTG
         /// <param name="reparentChild"> 
         /// If it is set to true, all the children of the vertex will get his parent as a parent.
         /// If it is set to false, the vertex can not be suppressed if it has children. </param>
-        public void RemoveVertex(int vertexId, bool reparentChild)
+        public void RemoveVertex(int vertexId, bool reparentChild = false)
         {
             if(vertexId == root)
                 throw new ArgumentOutOfRangeException("vertexId", "The root can't be removed.");
@@ -459,5 +461,59 @@ namespace csMTG
 
         #endregion
 
+        #region SubTree
+
+        public Tree SubTree(int vertexId, bool copy = true)
+        {
+            traversal t = new traversal();
+
+            if (!copy)
+            {
+                // Remove all vertices not in the Sub-tree
+
+                IEnumerable<int> bunch = t.RecursivePreOrder((mtg)this, vertexId);
+
+                foreach (int vid in parent.Keys)
+                {
+                    if (!bunch.Contains(vid))
+                        RemoveVertex(vid);
+                }
+
+                root = vertexId;
+
+                if (parent.ContainsKey(root))
+                    parent[root] = -1;
+                else
+                    parent.Add(root, -1);
+
+                return this;
+            }
+            else
+            {
+                Dictionary<int, int> renumberedTree = new Dictionary<int, int>();
+                Tree tree = new Tree();
+
+                tree.root = 0;
+
+                renumberedTree.Add(vertexId, tree.root);
+
+                IEnumerable<int> subTree = t.RecursivePreOrder((mtg)this, vertexId);
+
+                foreach (int vid in subTree)
+                {
+                    if (vid != vertexId)
+                    {
+                        int parent = renumberedTree[(int)Parent(vid)];
+                        int v = tree.AddChild(parent);
+                        renumberedTree.Add(vid, v);
+                    }
+                }
+
+                return tree;
+
+            }
+        }
+
+        #endregion
     }
 }
