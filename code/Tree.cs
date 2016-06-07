@@ -463,6 +463,13 @@ namespace csMTG
 
         #region SubTree
 
+        /// <summary>
+        /// Returns the subtree which is rooted in the vertex in the parameters.
+        /// </summary>
+        /// <param name="vertexId"> The root of the subtree. </param>
+        /// <param name="copy"> If true: A new tree is returned.
+        /// If false: The subtree is created using the original tree. </param>
+        /// <returns> The subtree. </returns>
         public Tree SubTree(int vertexId, bool copy = true)
         {
             traversal t = new traversal();
@@ -512,6 +519,37 @@ namespace csMTG
                 return tree;
 
             }
+        }
+
+        /// <summary>
+        /// Insert a tree before the specified vertex.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="tree"> The tree to be inserted. </param>
+        /// <returns> The new identifiers after the sibling has been added. </returns>
+        public Dictionary<int, int> InsertSiblingTree(int vertexId, Tree tree)
+        {
+            Dictionary<int, int> renumberedTree = new Dictionary<int, int>();
+
+            int root = tree.root;
+            int rootId = InsertSibling(vertexId);
+
+            renumberedTree.Add(root, rootId);
+
+            // PreOrder traversal from root and renumbering the sibling's vertices.
+
+            traversal t = new traversal();
+
+            foreach (int vertex in t.RecursivePreOrder((mtg)tree, vertexId))
+            {
+                int parent = renumberedTree[(int)tree.Parent(vertex)];
+                int v = AddChild(parent);
+
+                renumberedTree.Add(vertex, v);
+            }
+
+            return renumberedTree;
+
         }
 
         #endregion
