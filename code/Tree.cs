@@ -461,7 +461,7 @@ namespace csMTG
 
         #endregion
 
-        #region SubTree
+        #region SubTree, InsertSiblingTree, AddChildTree, RemoveTree
 
         /// <summary>
         /// Returns the subtree which is rooted in the vertex in the parameters.

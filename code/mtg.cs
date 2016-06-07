@@ -720,9 +720,9 @@ namespace csMTG
         /// <param name="namesValues"> The properties of the new vertex. </param>
         /// <param name="vertexToInsert"> The new vertex to add. </param>
         /// <returns> The identifier of the new sibling. </returns>
-        public new int InsertSibling(int vertexId, Dictionary<string, dynamic> namesValues = null, int vertexToInsert = -1)
+        public new int InsertSibling(int vertexId, int vertexToInsert = -1, Dictionary<string, dynamic> namesValues = null)
         {
-            vertexToInsert = base.InsertSibling(vertexId, namesValues, vertexToInsert);
+            vertexToInsert = base.InsertSibling(vertexId, vertexToInsert, namesValues);
 
             scale.Add(vertexToInsert, scale[vertexId]);
 
