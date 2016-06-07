@@ -552,6 +552,38 @@ namespace csMTG
 
         }
 
+        /// <summary>
+        /// Add a tree after the children of the parent specified in the parameters.
+        /// </summary>
+        /// <param name="parentId"> Vertex identifier. </param>
+        /// <param name="tree"> A rooted tree. </param>
+        /// <returns> The dictionary which makes a correspondance between old identifier and new identifier. </returns>
+        public Dictionary<int, int> AddChildTree(int parentId, Tree tree)
+        {
+            Dictionary<int, int> renumberedTree = new Dictionary<int, int>();
+            int root = tree.root;
+            int rootId = AddChild(parentId);
+
+            renumberedTree.Add(root, rootId);
+
+            // PreOrder traversal from root and renumbering new children.
+
+            traversal t = new traversal();
+
+            foreach (int vertexId in t.RecursivePreOrder((mtg)tree, root))
+            {
+                if (vertexId == root)
+                    continue;
+
+                parentId = renumberedTree[(int)tree.Parent(vertexId)];
+                int vid = AddChild(parentId);
+                renumberedTree.Add(vertexId, vid);
+            }
+
+            return renumberedTree;
+
+        }
+
         #endregion
     }
 }
