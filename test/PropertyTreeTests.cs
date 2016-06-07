@@ -427,8 +427,8 @@ namespace csMTG.Tests
 
             // Add siblings so that: {0 => 1,5,2} & {1 => 6,3,4}
 
-            int firstSibling = tree.InsertSibling(secondChild, new Dictionary<string, dynamic>() { { "Edge_Type", "<" } });
-            int secondSibling = tree.InsertSibling(thirdChild, new Dictionary<string, dynamic>() { { "Edge_Type", "+" } });
+            int firstSibling = tree.InsertSibling(secondChild, namesValues: new Dictionary<string, dynamic>() { { "Edge_Type", "<" } });
+            int secondSibling = tree.InsertSibling(thirdChild, namesValues: new Dictionary<string, dynamic>() { { "Edge_Type", "+" } });
 
             // Verification of the parents
 

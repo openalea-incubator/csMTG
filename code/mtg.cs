@@ -509,14 +509,14 @@ namespace csMTG
         /// <param name="namesValues"> Properties of the new parent. </param>
         /// <param name="parentId"> The new parent's identifier. (Optional. If not specified, it will be added automatically.) </param>
         /// <returns> The new parent's identifier. </returns>
-        public new int InsertParent(int vertexId, Dictionary<string, dynamic> namesValues = null, int parentId = -1)
+        public new int InsertParent(int vertexId, int parentId = -1, Dictionary<string, dynamic> namesValues = null)
         {
             if (parentId == -1)
                 parentId = NewId();
 
             scale[parentId] = scale[vertexId];
 
-            parentId = base.InsertParent(vertexId, namesValues, parentId);
+            parentId = base.InsertParent(vertexId, parentId, namesValues);
 
             return parentId;
         }
