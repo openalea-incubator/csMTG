@@ -396,7 +396,7 @@ namespace csMTG
             if (componentId == -1)
                 componentId = NewId();
 
-            SetRoot(componentId);
+            SetARoot(componentId);
 
             if(namesValues != null)
                 AddVertexProperties(componentId, namesValues);

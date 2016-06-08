@@ -178,12 +178,19 @@ namespace csMTG
         /// Keep in mind that we can have many roots in the mtg.
         /// </summary>
         /// <param name="vertexId"> The root identifier. </param>
-        public void SetRoot(int vertexId)
+        public void SetARoot(int vertexId)
         {
             if (parent.ContainsKey(vertexId))
                 ReplaceParent(vertexId, -1);
             else
                 parent.Add(vertexId, -1);
+        }
+
+        protected void SetRoot(int vertexId)
+        {
+            root = vertexId;
+            if (!parent.ContainsKey(root))
+                parent.Add(root, -1);
         }
 
         #endregion

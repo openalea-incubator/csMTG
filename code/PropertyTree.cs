@@ -253,5 +253,89 @@ namespace csMTG
 
         #endregion
 
+        #region SubTree
+
+        /// <summary>
+        /// Return the subtree rooted on the vertex in the parameters.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="copy"> If true: return a new tree holding the subtree.
+        /// If false: The subtree is created using the original tree. </param>
+        public new PropertyTree SubTree(int vertexId, bool copy = true)
+        {
+            traversal t = new traversal();
+
+            if (!copy)
+            {
+                IEnumerable<int> bunch = t.RecursivePreOrder((mtg)this, vertexId);
+                IEnumerable<int> removeBunch = this.Vertices().Except(bunch);
+
+                foreach (int vid in removeBunch)
+                {
+                    RemoveVertexProperties(vid);
+
+                    // Remove parent edge
+
+                    int parentId = (int)Parent(vid);
+
+                    if (parentId != -1)
+                    {
+                        children[parentId].Remove(vid);
+                        parent.Remove(vid);
+                    }
+
+                    // Remove children edges
+
+                    foreach (int child in Children(vid))
+                        parent[child] = -1;
+
+                    if (children.ContainsKey(vid))
+                        children.Remove(vid);
+                }
+
+                SetRoot(vertexId);
+
+                return this;
+            }
+            else
+            {
+                Dictionary<int, int> renumberedTree = new Dictionary<int, int>();
+
+                PropertyTree tree = new PropertyTree();
+                SetRoot(0);
+
+                foreach (string name in Properties().Keys)
+                    tree.AddProperty(name);
+
+                renumberedTree.Add(vertexId, tree.root);
+                tree.AddVertexProperties(tree.root, GetVertexProperties(vertexId));
+
+                IEnumerable<int> subTree = t.RecursivePreOrder((mtg)this, vertexId);
+
+                foreach (int vid in subTree)
+                {
+                    if (vid != vertexId)
+                    {
+                        int parentId = (int)Parent(vid);
+
+                        if (parentId != -1)
+                        {
+                            int parent = renumberedTree[parentId];
+                            int v = tree.AddChild(parent);
+                            renumberedTree.Add(vid, v);
+                        }
+
+                        tree.AddVertexProperties(vid, GetVertexProperties(vid));
+
+                    }
+                }
+
+                return tree;
+
+            }
+        }
+
+        #endregion
+
     }
 }
