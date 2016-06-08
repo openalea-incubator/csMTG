@@ -253,7 +253,7 @@ namespace csMTG
 
         #endregion
 
-        #region SubTree
+        #region SubTree, InsertSiblingTree, AddChildTree
 
         /// <summary>
         /// Return the subtree rooted on the vertex in the parameters.
@@ -354,7 +354,7 @@ namespace csMTG
                         int v = tree.Property(name)[key];
 
                         if (v != -1)
-                            properties[name].Add(vertexId, v);
+                            properties[name].Add(renumberedTree[key], v);
 
                     }
                 }
@@ -362,6 +362,33 @@ namespace csMTG
 
             return renumberedTree;
 
+        }
+
+        /// <summary>
+        /// Add a tree after the children of the parent vertex.
+        /// </summary>
+        /// <param name="parent"> Parent identifier. </param>
+        /// <param name="tree"> The tree to add. </param>
+        /// <returns> A dictionary of the equivalence between identifiers of the tree in the parameters and their new value once added to the tree. </returns>
+        public Dictionary<int, int> AddChildTree(int parent, PropertyTree tree)
+        {
+            Dictionary<int, int> renumberedTree = base.AddChildTree(parent, tree);
+
+            foreach (int key in renumberedTree.Keys)
+            {
+                foreach (string name in tree.Properties().Keys)
+                {
+                    if (tree.Property(name).ContainsKey(key))
+                    {
+                        int v = tree.Property(name)[key];
+
+                        if (v != -1)
+                            properties[name].Add(renumberedTree[key], v);
+                    }
+                }
+            }
+
+            return renumberedTree;
         }
 
         #endregion
