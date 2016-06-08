@@ -253,7 +253,7 @@ namespace csMTG
 
         #endregion
 
-        #region SubTree, InsertSiblingTree, AddChildTree
+        #region SubTree, InsertSiblingTree, AddChildTree, RemoveTree
 
         /// <summary>
         /// Return the subtree rooted on the vertex in the parameters.
@@ -389,6 +389,21 @@ namespace csMTG
             }
 
             return renumberedTree;
+        }
+
+        /// <summary>
+        /// Remove the subtree rooted on the vertex in the parameters.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <returns> A list of the deleted vertices. </returns>
+        public List<int> RemoveTree(int vertexId)
+        {
+            List<int> deletedVertices = base.RemoveTree(vertexId);
+
+            foreach (int vertex in deletedVertices)
+                RemoveVertexProperties(vertex);
+
+            return deletedVertices;
         }
 
         #endregion

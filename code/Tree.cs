@@ -595,7 +595,8 @@ namespace csMTG
         /// Remove the subtree rooted on the vertex in the parameters.
         /// </summary>
         /// <param name="vertexId"> Vertex identifier. </param>
-        public void RemoveTree(int vertexId)
+        /// <returns> A list of the deleted vertices. </returns>
+        public List<int> RemoveTree(int vertexId)
         {
             int vid = vertexId;
 
@@ -608,6 +609,8 @@ namespace csMTG
                 RemoveVertex(vertex);
                 vertices.Add(vertex);
             }
+
+            return vertices;
 
         }
 
