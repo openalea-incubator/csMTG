@@ -335,6 +335,35 @@ namespace csMTG
             }
         }
 
+        /// <summary>
+        /// Insert a tree before the vertex.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="tree"> The tree to add. </param>
+        /// <returns> A dictionary of the new identifiers. </returns>
+        public Dictionary<int, int> InsertSiblingTree(int vertexId, PropertyTree tree)
+        {
+            Dictionary<int, int> renumberedTree = base.InsertSiblingTree(vertexId, tree);
+
+            foreach (int key in renumberedTree.Keys)
+            {
+                foreach (string name in tree.Properties().Keys)
+                {
+                    if (tree.Property(name).ContainsKey(key))
+                    {
+                        int v = tree.Property(name)[key];
+
+                        if (v != -1)
+                            properties[name].Add(vertexId, v);
+
+                    }
+                }
+            }
+
+            return renumberedTree;
+
+        }
+
         #endregion
 
     }
