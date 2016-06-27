@@ -385,12 +385,12 @@ namespace csMTG
         }
 
         /// <summary>
-        /// 
+        /// Add a component at the end of the components.   
         /// </summary>
-        /// <param name="complexId"></param>
-        /// <param name="namesValues"></param>
-        /// <param name="componentId"></param>
-        /// <returns></returns>
+        /// <param name="complexId"> The complex to which the component will be added. </param>
+        /// <param name="namesValues"> Dictionary of properties. </param>
+        /// <param name="componentId"> Optional. If defined, we set the component identifier to this parameter. </param>
+        /// <returns> The identifier of the new component. </returns>
         public int AddComponent(int complexId, Dictionary<string, dynamic> namesValues = null, int componentId = -1)
         {
             if (componentId == -1)
@@ -514,7 +514,10 @@ namespace csMTG
             if (parentId == -1)
                 parentId = NewId();
 
-            scale[parentId] = scale[vertexId];
+            if (scale.ContainsKey(parentId))
+                scale[parentId] = scale[vertexId];
+            else
+                scale.Add(parentId, scale[vertexId]);
 
             parentId = base.InsertParent(vertexId, parentId, namesValues);
 
@@ -557,7 +560,10 @@ namespace csMTG
             else
                 childId = AddChild(parentId, namesValues, childId);
 
-            scale[childId] = scale[parentId];
+            if (scale.ContainsKey(childId))
+                scale[childId] = scale[parentId];
+            else
+                scale.Add(childId, scale[parentId]);
 
             int parentComplex = (int)Complex(parentId);
 
@@ -566,7 +572,11 @@ namespace csMTG
 
             if (!Children(parentComplex).Contains(complexId))
                 AddChild(parentComplex, complexId);
-            scale[complexId] = scale[parentComplex];
+
+            if (scale.ContainsKey(complexId))
+                scale[complexId] = scale[parentComplex];
+            else
+                scale.Add(complexId, scale[parentComplex]);
 
             if (components.ContainsKey(complexId))
                 components[complexId].Add(childId);
@@ -745,6 +755,21 @@ namespace csMTG
 
         static void Main(String[] args)
         {
+            Algorithm a = new Algorithm();
+            traversal t = new traversal();
+
+            mtg tree1 = new mtg();
+
+            int whatever = a.RandomTree(tree1, tree1.root, 200);
+
+            t.SaveToFile(tree1, "C:\\Users\\aannaque\\Desktop\\tulip1.tlp");
+
+            mtg tree2 = new mtg();
+
+            int whatever2 = a.RandomTree(tree2, tree2.root, 200);
+
+            t.SaveToFile(tree2, "C:\\Users\\aannaque\\Desktop\\tulip2.tlp");
+
 
         }
     }
