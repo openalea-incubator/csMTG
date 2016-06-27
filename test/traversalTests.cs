@@ -17,9 +17,9 @@ namespace csMTG.Tests
         [TestMethod()]
         public void IterativePreOrderTest()
         {
-            PropertyTree tree = new PropertyTree();
+            mtg tree = new mtg();
 
-            tree = a.RandomTree(tree, 2000);
+            int lastVertex = a.RandomTree(tree, tree.root, 2000);
             IEnumerable<int> iterativeList = t.IterativePreOrder(tree, 0);
             
         }
@@ -27,18 +27,19 @@ namespace csMTG.Tests
         [TestMethod()]
         public void RecursivePreOrderTest()
         {
-            PropertyTree tree = new PropertyTree();
+            mtg tree = new mtg();
 
-            tree = a.RandomTree(tree, 2000);
+            int lastVertex = a.RandomTree(tree, tree.root, 2000);
             IEnumerable<int> iterativeList = t.RecursivePreOrder(tree, 0);
+
         }
 
         [TestMethod()]
         public void PreOrderResultsAreTheSame()
         {
-            PropertyTree tree = new PropertyTree();
+            mtg tree = new mtg();
 
-            tree = a.RandomTree(tree, 2000);
+            int lastVertex = a.RandomTree(tree, tree.root, 2000);
             
             Assert.IsTrue(Enumerable.SequenceEqual<int>(t.IterativePreOrder(tree, 0), t.RecursivePreOrder(tree, 0)));
 
@@ -47,9 +48,9 @@ namespace csMTG.Tests
         [TestMethod()]
         public void IterativePostOrderTest()
         {
-            PropertyTree tree = new PropertyTree();
+            mtg tree = new mtg();
 
-            tree = a.RandomTree(tree, 7000);
+            int lastVertex = a.RandomTree(tree, tree.root, 7000);
             IEnumerable<int> iterativeList = t.IterativePostOrder(tree, 0);
 
         }
@@ -57,18 +58,18 @@ namespace csMTG.Tests
         [TestMethod()]
         public void RecursivePostOrderTest()
         {
-            PropertyTree tree = new PropertyTree();
+            mtg tree = new mtg();
 
-            tree = a.RandomTree(tree, 7000);
+            int lastVertex = a.RandomTree(tree, tree.root, 7000);
             IEnumerable<int> iterativeList = t.RecursivePostOrder(tree, 0);
         }
 
         [TestMethod()]
         public void PostOrderResultsAreTheSame()
         {
-            PropertyTree tree = new PropertyTree();
+            mtg tree = new mtg();
 
-            tree = a.RandomTree(tree, 2000);
+            int lastVertex = a.RandomTree(tree, tree.root, 2000);
 
             Assert.IsTrue(Enumerable.SequenceEqual<int>(t.IterativePostOrder(tree, 0), t.RecursivePostOrder(tree, 0)));
 

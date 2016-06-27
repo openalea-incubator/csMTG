@@ -366,27 +366,27 @@ namespace csMTG.Tests
             CollectionAssert.AreEqual(expectedResult["order"], tree.properties["order"]);
         }
 
-        [TestMethod()]
-        public void AddChild_InvalidParent_ReturnsMinusOneAndNoPropertiesAdded()
-        {
-            PropertyTree tree = new PropertyTree();
+        //[TestMethod()]
+        //public void AddChild_InvalidParent_ReturnsMinusOneAndNoPropertiesAdded()
+        //{
+        //    PropertyTree tree = new PropertyTree();
 
-            // The properties to add
-            Dictionary<string, dynamic> propertyDict = new Dictionary<string, dynamic>();
-            propertyDict.Add("label", "leaf");
-            propertyDict.Add("length", 12.5);
-            propertyDict.Add("order", 1);
+        //    // The properties to add
+        //    Dictionary<string, dynamic> propertyDict = new Dictionary<string, dynamic>();
+        //    propertyDict.Add("label", "leaf");
+        //    propertyDict.Add("length", 12.5);
+        //    propertyDict.Add("order", 1);
 
-            int childId = tree.AddChild(100, propertyDict);
+        //    int childId = tree.AddChild(100, propertyDict);
 
-            // Make sure the child wasn't added
-            Assert.IsNull(tree.Children(100));
-            Assert.AreEqual(childId, -1);
+        //    // Make sure the child wasn't added
+        //    Assert.IsNull(tree.Children(100));
+        //    Assert.AreEqual(childId, -1);
 
-            // Make sure no properties were added
-            Dictionary<string, Dictionary<int, dynamic>> expectedProperties = new Dictionary<string, Dictionary<int, dynamic>>() { };
-            CollectionAssert.AreEqual(tree.properties, expectedProperties);
-        }
+        //    // Make sure no properties were added
+        //    Dictionary<string, Dictionary<int, dynamic>> expectedProperties = new Dictionary<string, Dictionary<int, dynamic>>() { };
+        //    CollectionAssert.AreEqual(tree.properties, expectedProperties);
+        //}
 
         [TestMethod()]
         public void AddChild_NoProperties_ChildAddedAndNoPropertiesForTheChild()
@@ -409,5 +409,54 @@ namespace csMTG.Tests
 
 
         #endregion
+
+        #region Tests of InsertSibling
+
+        [TestMethod()]
+        public void InsertSibling_AddSiblingToATree_SiblingAndPropertiesAdded()
+        {
+            // PropertyTree: {0 => 1 , 2} and {1 => 3 , 4}
+
+            PropertyTree tree = new PropertyTree();
+
+            int firstChild = tree.AddChild(tree.root);
+            int secondChild = tree.AddChild(tree.root);
+
+            int thirdChild = tree.AddChild(firstChild);
+            int fourthChild = tree.AddChild(firstChild);
+
+            // Add siblings so that: {0 => 1,5,2} & {1 => 6,3,4}
+
+            int firstSibling = tree.InsertSibling(secondChild, namesValues: new Dictionary<string, dynamic>() { { "Edge_Type", "<" } });
+            int secondSibling = tree.InsertSibling(thirdChild, namesValues: new Dictionary<string, dynamic>() { { "Edge_Type", "+" } });
+
+            // Verification of the parents
+
+            Assert.AreEqual(tree.root, tree.Parent(firstSibling));
+            Assert.AreEqual(tree.root, tree.Parent(secondChild));
+            Assert.AreEqual(firstChild, tree.Parent(secondSibling));
+            Assert.AreEqual(firstChild, tree.Parent(thirdChild));
+
+            // Verification of the children (and the correct order)
+
+            CollectionAssert.AreEqual(new List<int>() { firstChild, firstSibling, secondChild }, tree.Children(tree.root));
+            CollectionAssert.AreEqual(new List<int>() { secondSibling, thirdChild, fourthChild }, tree.Children(firstChild));
+
+            // Verification of the insertion of the properties
+
+            Assert.IsTrue(tree.properties.ContainsKey("Edge_Type"));
+
+            Dictionary<string, dynamic> props = new Dictionary<string, dynamic>();
+            props.Add("Edge_Type", "<");
+
+            CollectionAssert.AreEqual(tree.GetVertexProperties(firstSibling), props);
+
+            props["Edge_Type"] = "+";
+            CollectionAssert.AreEqual(tree.GetVertexProperties(secondSibling), props);
+
+        }
+
+        #endregion
+
     }
 }

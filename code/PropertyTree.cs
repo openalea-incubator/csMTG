@@ -9,8 +9,15 @@ namespace csMTG
 
     public class PropertyTree : Tree
     {
+
+        #region Attributes
+
         // Attribute which carries all properties of the tree
         public Dictionary<string, Dictionary<int, dynamic>> properties;
+
+        #endregion
+
+        #region Constructor
 
         /// <summary>
         /// Constructor.
@@ -19,6 +26,10 @@ namespace csMTG
         {
             properties = new Dictionary<string, Dictionary<int, dynamic>>();
         }
+
+        #endregion
+
+        #region Properties' accessors (Functions: Properties, PropertyNames, Property(name))
 
         /// <summary>
         /// Accessor to the attribute properties.
@@ -58,6 +69,10 @@ namespace csMTG
 
         }
 
+        #endregion
+
+        #region Add and remove a property
+
         /// <summary>
         /// Adds a new key to the properties.
         /// <para> If the name already exists, it throws an exception.</para>
@@ -89,6 +104,10 @@ namespace csMTG
             else
                 throw new ArgumentException("Property doesn't exist. ");
         }
+
+        #endregion
+
+        #region Add, remove and get the properties of a vertex
 
         /// <summary>
         ///  Adds a set of properties to the specified vertex.
@@ -151,6 +170,10 @@ namespace csMTG
             return vertexProperties;
         }
 
+        #endregion
+
+        #region Functions related to vertices (AddChild, RemoveVertex, InsertParent, Clear)
+
         /// <summary>
         /// Adds a child along with its properties
         /// </summary>
@@ -158,11 +181,11 @@ namespace csMTG
         /// <param name="namesValues"> The dictionary containing the names and values of the properties for the child vertex. </param>
         /// <param name="childId"> The identifier of the child. (Optional) </param>
         /// <returns> Returns the identifier of the child. </returns>
-        public int AddChild(int parentId, Dictionary<string, dynamic> namesValues, int childId = -1)
+        public int AddChild(int parentId, Dictionary<string, dynamic> namesValues = null, int childId = -1)
         {
 
             int child = base.AddChild(parentId,childId);
-            if(child != -1)
+            if(child != -1 && namesValues != null)
                 AddVertexProperties(child, namesValues);
 
             return child;
@@ -179,10 +202,211 @@ namespace csMTG
             RemoveVertexProperties(vertexId);
         }
 
+        /// <summary>
+        /// Insert a parent with properties between a vertex and its actual parent.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="namesValues"> The new parent's properties. </param>
+        /// <param name="parentId"> Parent identifier. </param>
+        /// <returns> The new parent's identifier. </returns>
+        public int InsertParent(int vertexId, int parentId = -1, Dictionary<string, dynamic> namesValues = null)
+        {
+            parentId = base.InsertParent(vertexId, parentId);
 
-        //static void Main(String[] args)
-        //{
-            
-        //}
+            if(namesValues != null)
+                AddVertexProperties(parentId, namesValues);
+
+            return parentId;
+        }
+
+        /// <summary>
+        /// Remove all properties.
+        /// </summary>
+        public new void Clear()
+        {
+            base.Clear();
+
+            properties.Clear();
+        }
+
+        #endregion
+
+        #region Siblings (InsertSibling)
+
+        /// <summary>
+        /// Add a sibling with its properties before the vertex in the parameters.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="namesValues"> The properties of the new vertex. </param>
+        /// <param name="vertexToInsert"> The new vertex to add. </param>
+        /// <returns> The identifier of the new sibling. </returns>
+        public int InsertSibling(int vertexId, int vertexToInsert = -1, Dictionary<string, dynamic> namesValues = null)
+        {
+            vertexToInsert = base.InsertSibling(vertexId, vertexToInsert);
+
+            if(namesValues != null)
+                AddVertexProperties(vertexToInsert, namesValues);
+
+            return vertexToInsert;
+        }
+       
+
+        #endregion
+
+        #region SubTree, InsertSiblingTree, AddChildTree, RemoveTree
+
+        /// <summary>
+        /// Return the subtree rooted on the vertex in the parameters.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="copy"> If true: return a new tree holding the subtree.
+        /// If false: The subtree is created using the original tree. </param>
+        public new PropertyTree SubTree(int vertexId, bool copy = true)
+        {
+            traversal t = new traversal();
+
+            if (!copy)
+            {
+                IEnumerable<int> bunch = t.RecursivePreOrder((mtg)this, vertexId);
+                IEnumerable<int> removeBunch = this.Vertices().Except(bunch);
+
+                foreach (int vid in removeBunch)
+                {
+                    RemoveVertexProperties(vid);
+
+                    // Remove parent edge
+
+                    int parentId = (int)Parent(vid);
+
+                    if (parentId != -1)
+                    {
+                        children[parentId].Remove(vid);
+                        parent.Remove(vid);
+                    }
+
+                    // Remove children edges
+
+                    foreach (int child in Children(vid))
+                        parent[child] = -1;
+
+                    if (children.ContainsKey(vid))
+                        children.Remove(vid);
+                }
+
+                SetRoot(vertexId);
+
+                return this;
+            }
+            else
+            {
+                Dictionary<int, int> renumberedTree = new Dictionary<int, int>();
+
+                PropertyTree tree = new PropertyTree();
+                SetRoot(0);
+
+                foreach (string name in Properties().Keys)
+                    tree.AddProperty(name);
+
+                renumberedTree.Add(vertexId, tree.root);
+                tree.AddVertexProperties(tree.root, GetVertexProperties(vertexId));
+
+                IEnumerable<int> subTree = t.RecursivePreOrder((mtg)this, vertexId);
+
+                foreach (int vid in subTree)
+                {
+                    if (vid != vertexId)
+                    {
+                        int parentId = (int)Parent(vid);
+
+                        if (parentId != -1)
+                        {
+                            int parent = renumberedTree[parentId];
+                            int v = tree.AddChild(parent);
+                            renumberedTree.Add(vid, v);
+                        }
+
+                        tree.AddVertexProperties(vid, GetVertexProperties(vid));
+
+                    }
+                }
+
+                return tree;
+
+            }
+        }
+
+        /// <summary>
+        /// Insert a tree before the vertex.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <param name="tree"> The tree to add. </param>
+        /// <returns> A dictionary of the new identifiers. </returns>
+        public Dictionary<int, int> InsertSiblingTree(int vertexId, PropertyTree tree)
+        {
+            Dictionary<int, int> renumberedTree = base.InsertSiblingTree(vertexId, tree);
+
+            foreach (int key in renumberedTree.Keys)
+            {
+                foreach (string name in tree.Properties().Keys)
+                {
+                    if (tree.Property(name).ContainsKey(key))
+                    {
+                        int v = tree.Property(name)[key];
+
+                        if (v != -1)
+                            properties[name].Add(renumberedTree[key], v);
+
+                    }
+                }
+            }
+
+            return renumberedTree;
+
+        }
+
+        /// <summary>
+        /// Add a tree after the children of the parent vertex.
+        /// </summary>
+        /// <param name="parent"> Parent identifier. </param>
+        /// <param name="tree"> The tree to add. </param>
+        /// <returns> A dictionary of the equivalence between identifiers of the tree in the parameters and their new value once added to the tree. </returns>
+        public Dictionary<int, int> AddChildTree(int parent, PropertyTree tree)
+        {
+            Dictionary<int, int> renumberedTree = base.AddChildTree(parent, tree);
+
+            foreach (int key in renumberedTree.Keys)
+            {
+                foreach (string name in tree.Properties().Keys)
+                {
+                    if (tree.Property(name).ContainsKey(key))
+                    {
+                        int v = tree.Property(name)[key];
+
+                        if (v != -1)
+                            properties[name].Add(renumberedTree[key], v);
+                    }
+                }
+            }
+
+            return renumberedTree;
+        }
+
+        /// <summary>
+        /// Remove the subtree rooted on the vertex in the parameters.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier. </param>
+        /// <returns> A list of the deleted vertices. </returns>
+        public List<int> RemoveTree(int vertexId)
+        {
+            List<int> deletedVertices = base.RemoveTree(vertexId);
+
+            foreach (int vertex in deletedVertices)
+                RemoveVertexProperties(vertex);
+
+            return deletedVertices;
+        }
+
+        #endregion
+
     }
 }

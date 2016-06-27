@@ -142,15 +142,13 @@ namespace csMTG.Tests
         }
 
         [TestMethod()]
-        public void Children_NoChildren_EmptyList()
+        public void Children_NoChildren_ReturnsEmptyList()
         {
             Tree t = new Tree();
 
             int childId = t.AddChild(t.root);
 
-            List<int> expectedResult = new List<int> { };
-
-            CollectionAssert.AreEqual(t.Children(childId), expectedResult);
+            CollectionAssert.AreEqual(new List<int>() { }, t.Children(childId));
         }
         #endregion
 
@@ -206,45 +204,47 @@ namespace csMTG.Tests
             Assert.AreEqual(t.Parent(thirdChild), t.root);
         }
 
-        [TestMethod()]
-        public void AddChild_ChildAlreadyExists_ParentIsChanged()
-        {
-            Tree t = new Tree();
+        // I think we will never have this case !
 
-            int firstChild = t.AddChild(t.root);
-            int secondChild = t.AddChild(firstChild, 2);
-            int thirdChild = t.AddChild(t.root, secondChild);
+        //[TestMethod()]
+        //public void AddChild_ChildAlreadyExists_ParentIsChanged()
+        //{
+        //    Tree t = new Tree();
 
-            //All children have been added to the right parent
-            Assert.AreEqual(t.Children(t.root).Count(), 2);
-            Assert.IsTrue(t.Children(t.root).Contains(firstChild));
-            Assert.IsTrue(t.Children(t.root).Contains(thirdChild));
-            Assert.IsFalse(t.Children(firstChild).Contains(secondChild));
+        //    int firstChild = t.AddChild(t.root);
+        //    int secondChild = t.AddChild(firstChild, 2);
+        //    int thirdChild = t.AddChild(t.root, secondChild);
 
-            //All children have the right id (2 isn't repeated)
-            Assert.AreEqual(firstChild, 1);
-            Assert.AreEqual(secondChild, 2);
-            Assert.AreEqual(thirdChild, 2);
+        //    //All children have been added to the right parent
+        //    Assert.AreEqual(t.Children(t.root).Count(), 2);
+        //    Assert.IsTrue(t.Children(t.root).Contains(firstChild));
+        //    Assert.IsTrue(t.Children(t.root).Contains(thirdChild));
+        //    Assert.IsFalse(t.Children(firstChild).Contains(secondChild));
 
-            //All children have the right parent
-            Assert.AreEqual(t.Parent(firstChild), t.root);
-            Assert.AreEqual(t.Parent(secondChild), t.root);
-            Assert.AreEqual(t.Parent(thirdChild), t.root);
-        }
+        //    //All children have the right id (2 isn't repeated)
+        //    Assert.AreEqual(firstChild, 1);
+        //    Assert.AreEqual(secondChild, 2);
+        //    Assert.AreEqual(thirdChild, 2);
 
-        [TestMethod()]
-        public void AddChild_ParentDoesntExist_ChildNotAdded()
-        {
-            Tree t = new Tree();
+        //    //All children have the right parent
+        //    Assert.AreEqual(t.Parent(firstChild), t.root);
+        //    Assert.AreEqual(t.Parent(secondChild), t.root);
+        //    Assert.AreEqual(t.Parent(thirdChild), t.root);
+        //}
 
-            int childId = t.AddChild(1);
+        //[TestMethod()]
+        //public void AddChild_ParentDoesntExist_ChildNotAdded()
+        //{
+        //    Tree t = new Tree();
 
-            //Child hasn't been added
-            Assert.IsNull(t.Children(1));
+        //    int childId = t.AddChild(1);
 
-            //An id hasn't been attributed
-            Assert.AreEqual(childId, -1);
-        }
+        //    //Child hasn't been added
+        //    Assert.IsNull(t.Children(1));
+
+        //    //An id hasn't been attributed
+        //    Assert.AreEqual(childId, -1);
+        //}
         #endregion
 
         #region Tests of function RemoveVertex
@@ -327,5 +327,159 @@ namespace csMTG.Tests
 
         #endregion
 
+        #region Tests of Siblings
+
+        [TestMethod()]
+        public void Siblings_VertexWithSiblings_ReturnsListOfSiblings()
+        {
+            Tree t = new Tree();
+
+            int firstChild = t.AddChild(t.root);
+            int secondChild = t.AddChild(t.root);
+            int thirdChild = t.AddChild(t.root);
+            int fourthChild = t.AddChild(firstChild);
+
+            List<int> expectedListOfChildren = new List<int>();
+            expectedListOfChildren.Add(secondChild);
+            expectedListOfChildren.Add(thirdChild);
+
+            CollectionAssert.AreEqual(t.Siblings(1), expectedListOfChildren);
+        }
+
+        [TestMethod()]
+        public void Siblings_VertexWithoutSiblings_ReturnsEmptyList()
+        {
+            Tree t = new Tree();
+
+            int firstChild = t.AddChild(t.root);
+            List<int> expectedList = new List<int>();
+
+            CollectionAssert.AreEqual(expectedList, t.Siblings(firstChild));
+
+        }
+
+        [TestMethod()]
+        public void Siblings_VertexDoesntExist_ReturnsEmptyList()
+        {
+            Tree t = new Tree();
+
+            List<int> expectedList = new List<int>();
+
+            CollectionAssert.AreEqual(expectedList, t.Siblings(5));
+
+        }
+
+        [TestMethod()]
+        public void NbSiblings_VertexWithTwoSiblings_ReturnsTwo()
+        {
+            Tree t = new Tree();
+
+            int firstChild = t.AddChild(t.root);
+            int secondChild = t.AddChild(t.root);
+            int thirdChild = t.AddChild(t.root);
+            int fourthChild = t.AddChild(firstChild);
+
+            Assert.AreEqual(t.NbSiblings(firstChild), 2);
+
+        }
+
+        [TestMethod()]
+        public void NbSiblings_VertexWithNoSiblings_ReturnsZero()
+        {
+            Tree t = new Tree();
+
+            int firstChild = t.AddChild(t.root);
+
+            Assert.AreEqual(t.NbSiblings(firstChild), 0);
+
+        }
+
+        [TestMethod()]
+        public void NbSiblings_VertexDoesntExist_ReturnsZero()
+        {
+            Tree t = new Tree();
+
+            Assert.AreEqual(t.NbSiblings(10), 0);
+
+        }
+
+        [TestMethod()]
+        public void InsertSibling_AddSiblingToATree_SiblingInserted()
+        {
+            // Tree: {0 => 1 , 2} and {1 => 3 , 4}
+
+            Tree tree = new Tree();
+
+            int firstChild = tree.AddChild(tree.root);
+            int secondChild = tree.AddChild(tree.root);
+
+            int thirdChild = tree.AddChild(firstChild);
+            int fourthChild = tree.AddChild(firstChild);
+
+            // Assertions before inserting the sibling
+
+            Assert.AreEqual(tree.root, tree.Parent(firstChild));
+            Assert.AreEqual(tree.root, tree.Parent(secondChild));
+            Assert.AreEqual(firstChild, tree.Parent(thirdChild));
+            Assert.AreEqual(firstChild, tree.Parent(fourthChild));
+
+            CollectionAssert.AreEqual(new List<int>() { firstChild, secondChild }, tree.Children(tree.root));
+            CollectionAssert.AreEqual(new List<int>() { thirdChild, fourthChild }, tree.Children(firstChild));
+
+            // Insert 2 siblings so that we have: {0 => 1,5,2} & {1 => 6,3,4}
+
+            int firstSibling = tree.InsertSibling(secondChild);
+            int secondSibling = tree.InsertSibling(thirdChild);
+
+            // Verification of the parents
+
+            Assert.AreEqual(tree.root, tree.Parent(firstSibling));
+            Assert.AreEqual(tree.root, tree.Parent(secondChild));
+            Assert.AreEqual(firstChild, tree.Parent(secondSibling));
+            Assert.AreEqual(firstChild, tree.Parent(thirdChild));
+
+            // Verification of the children (and the correct order)
+
+            CollectionAssert.AreEqual(new List<int>() { firstChild, firstSibling, secondChild }, tree.Children(tree.root));
+            CollectionAssert.AreEqual(new List<int>() { secondSibling, thirdChild, fourthChild }, tree.Children(firstChild));
+
+
+        }
+
+        #endregion
+
+        #region Tests of InsertParent
+
+        [TestMethod()]
+        public void InsertParent_ParentWithFourChildren_ParentWithFourChildrenAndGrandChild()
+        {
+            Tree tree = new Tree();
+
+            int firstChild = tree.AddChild(tree.root);
+            int secondChild = tree.AddChild(tree.root);
+            int thirdChild = tree.AddChild(tree.root);
+            int fourthChild = tree.AddChild(tree.root);
+
+            Assert.AreEqual(tree.root, tree.Parent(firstChild));
+            Assert.AreEqual(tree.root, tree.Parent(secondChild));
+            Assert.AreEqual(tree.root, tree.Parent(thirdChild));
+            Assert.AreEqual(tree.root, tree.Parent(fourthChild));
+
+            CollectionAssert.AreEqual(new List<int>() { firstChild, secondChild, thirdChild, fourthChild }, tree.Children(tree.root));
+
+            int newParent = tree.InsertParent(thirdChild);
+
+            Assert.AreEqual(tree.root, tree.Parent(firstChild));
+            Assert.AreEqual(tree.root, tree.Parent(secondChild));
+            Assert.AreEqual(newParent, tree.Parent(thirdChild));
+            Assert.AreEqual(tree.root, tree.Parent(fourthChild));
+            Assert.AreEqual(tree.root, tree.Parent(newParent));
+
+            CollectionAssert.AreEqual(new List<int>() { firstChild, secondChild, newParent, fourthChild }, tree.Children(tree.root));
+            CollectionAssert.AreEqual(new List<int>() { thirdChild }, tree.Children(newParent));
+
+        }
+
+        #endregion
     }
 }
