@@ -105,6 +105,29 @@ namespace csMTG
             }
         }
 
+        /// <summary>
+        /// Add a root to a plant.
+        /// </summary>
+        /// <param name="plantId"> The plant to which the root will be added. </param>
+        /// <returns> The identifier of the root created. </returns>
+        public int AddRoot(int plantId)
+        {
+            if (HasVertex(plantId))
+            {
+                Dictionary<string, dynamic> rootLabel = new Dictionary<string, dynamic>();
+                rootLabel.Add("label", "root" + plantId);
+
+                int rootId = AddComponent(plantId, rootLabel);
+
+                return rootId;
+
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         #endregion
 
         // Properties (We'll have in the parameters "vid to which the properties will be added + the properties to add")

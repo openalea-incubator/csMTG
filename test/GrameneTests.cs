@@ -72,6 +72,72 @@ namespace csMTG.Tests
 
         #endregion
 
+        #region AddShoot
+
+        [TestMethod()]
+        public void AddShoot_PlantExists_ShootCreated()
+        {
+            Gramene g = new Gramene();
+
+            int plantId = g.AddPlant();
+
+            int shootId = g.AddShoot(plantId);
+
+            // Verification of the scale.
+
+            Assert.AreEqual(g.Scale(plantId) + 1, g.Scale(shootId));
+
+            // Verification of the label.
+
+            Assert.AreEqual("shoot" + plantId, g.GetVertexProperties(shootId)["label"]);
+
+            // Verification of the complex.
+
+            Assert.AreEqual(plantId, g.Complex(shootId));
+
+        }
+
+        [TestMethod()]
+        public void AddShoot_PlantDoesntExist_()
+        {
+            
+        }
+
+        #endregion
+
+        #region AddRoot
+
+        [TestMethod()]
+        public void AddRoot_PlantExists_RootCreated()
+        {
+            Gramene g = new Gramene();
+
+            int plantId = g.AddPlant();
+
+            int rootId = g.AddRoot(plantId);
+
+            // Verification of the scale.
+
+            Assert.AreEqual(g.Scale(plantId) + 1, g.Scale(rootId));
+
+            // Verification of the label.
+
+            Assert.AreEqual("root" + plantId, g.GetVertexProperties(rootId)["label"]);
+
+            // Verification of the complex.
+
+            Assert.AreEqual(plantId, g.Complex(rootId));
+
+        }
+
+        [TestMethod()]
+        public void AddRoot_PlantDoesntExist_()
+        {
+
+        }
+
+        #endregion
+
         #region Accessors (Plants)
 
         [TestMethod()]
