@@ -753,24 +753,6 @@ namespace csMTG
 
         #endregion
 
-        static void Main(String[] args)
-        {
-            Algorithm a = new Algorithm();
-            traversal t = new traversal();
-
-            mtg tree1 = new mtg();
-
-            int whatever = a.RandomTree(tree1, tree1.root, 200);
-
-            t.SaveToFile(tree1, "C:\\Users\\aannaque\\Desktop\\tulip1.tlp");
-
-            mtg tree2 = new mtg();
-
-            int whatever2 = a.RandomTree(tree2, tree2.root, 200);
-
-            t.SaveToFile(tree2, "C:\\Users\\aannaque\\Desktop\\tulip2.tlp");
-
-
-        }
+        
     }
 }

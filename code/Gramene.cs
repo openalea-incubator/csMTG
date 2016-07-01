@@ -8,11 +8,16 @@ namespace csMTG
 {
     public class Gramene : mtg
     {
-        // Attributes
+        #region Attributes
 
         public Dictionary<int, string> labelsOfScales;
 
+        int nbPlants = 0;
+        int canopyId;
+
         // We may also have attributes that would stand for memory attributes (Plant, stem, last internode)
+
+        #endregion
 
         #region Constructor
 
@@ -35,7 +40,7 @@ namespace csMTG
 
             // add a canopy
 
-            AddComponent(0, componentId: 1);
+            canopyId = AddComponent(0, componentId: 1);
 
         }
 
@@ -43,12 +48,52 @@ namespace csMTG
 
         // Accessors (g.Plants , g.Stems, ... They will all return a vid or a list of vids)
 
-        // Edition (AddPlant, AddStem,...)
+        #region Accessors
+
+        /// <summary>
+        /// Returns a list containing the identifiers of all plants.
+        /// It is to note that plants are in scale number 2.
+        /// </summary>
+        /// <returns></returns>
+        public List<int> Plants()
+        {
+            return Vertices(2);
+        }
+
+        #endregion
+
+
+        #region Functions fo editing (AddPlant)
+
+        /// <summary>
+        /// Add a plant to the canopy.
+        /// It is to note that the plant is labelled plant+number of the plant (e.g: plant0, plant1, ..).
+        /// </summary>
+        /// <returns> Identifier of the plant. </returns>
+        public int AddPlant()
+        {
+            Dictionary<string,dynamic> plantLabel = new Dictionary<string,dynamic>();
+            plantLabel.Add("label","plant"+nbPlants);
+
+            nbPlants++;
+
+            int plantId = AddComponent(canopyId, namesValues: plantLabel);
+
+            return plantId;
+        }
+
+        #endregion
 
         // Properties (We'll have in the parameters "vid to which the properties will be added + the properties to add")
 
         // Query functions
 
+        // Main
+
+        static void Main(String[] args)
+        {
+
+        }
 
     }
 }
