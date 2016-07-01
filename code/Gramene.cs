@@ -46,8 +46,6 @@ namespace csMTG
 
         #endregion
 
-        // Accessors (g.Plants , g.Stems, ... They will all return a vid or a list of vids)
-
         #region Accessors
 
         /// <summary>
@@ -59,6 +57,8 @@ namespace csMTG
         {
             return Vertices(2);
         }
+
+
 
         #endregion
 
@@ -80,6 +80,29 @@ namespace csMTG
             int plantId = AddComponent(canopyId, namesValues: plantLabel);
 
             return plantId;
+        }
+
+        /// <summary>
+        /// Add a shoot to a plant.
+        /// </summary>
+        /// <param name="plantId"> The plant to which the shoot will be added. </param>
+        /// <returns> The identifier of the shoot created. </returns>
+        public int AddShoot(int plantId)
+        {
+            if (HasVertex(plantId))
+            {
+                Dictionary<string, dynamic> shootLabel = new Dictionary<string, dynamic>();
+                shootLabel.Add("label", "shoot" + plantId);
+
+                int shootId = AddComponent(plantId, shootLabel);
+
+                return shootId;
+
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         #endregion
