@@ -63,7 +63,7 @@ namespace csMTG
         #endregion
 
 
-        #region Functions fo editing (AddPlant)
+        #region Editing functions (AddPlant, AddShoot, AddRoot, AddAxis)
 
         /// <summary>
         /// Add a plant to the canopy.
@@ -127,6 +127,35 @@ namespace csMTG
                 return 0;
             }
         }
+
+        /// <summary>
+        /// Add an axis to a shoot. Its label is: "axis"+plantId.
+        /// </summary>
+        /// <param name="shootId"> The shoot to which the axis will be added. </param>
+        /// <returns> The identifier of the axis created. </returns>
+        public int AddAxis(int shootId)
+        {
+            if (HasVertex(shootId))
+            {
+
+                string plantId = GetVertexProperties(shootId)["label"].Substring(5);
+
+                Dictionary<string, dynamic> axisLabel = new Dictionary<string, dynamic>();
+                axisLabel.Add("label", "axis" + plantId);
+
+                int axisId = AddComponent(shootId, axisLabel);
+
+                return axisId;
+
+            }
+            else
+            {
+                return 0;
+            }
+
+        }
+
+
 
         #endregion
 
