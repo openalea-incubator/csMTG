@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using csMTG;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace csMTG.Tests
 {
@@ -107,7 +108,11 @@ namespace csMTG.Tests
 
             int plantId = g.AddPlant();
 
-            int shootId = g.AddShoot(plantId);
+            Assert.AreEqual(plantId, g.GetCursor());
+
+            int shootId = g.AddShoot();
+
+            Assert.AreEqual(shootId, g.GetCursor());
 
             // Verification of the scale.
 
@@ -115,7 +120,9 @@ namespace csMTG.Tests
 
             // Verification of the label.
 
-            Assert.AreEqual("shoot" + plantId, g.GetVertexProperties(shootId)["label"]);
+            string plantNb = g.GetVertexProperties(plantId)["label"].Substring(5);
+
+            Assert.AreEqual("shoot" + plantNb, g.GetVertexProperties(shootId)["label"]);
 
             // Verification of the complex.
 
@@ -124,9 +131,41 @@ namespace csMTG.Tests
         }
 
         [TestMethod()]
-        public void AddShoot_PlantDoesntExist_()
+        public void AddShoot_PlantDoesntExist_PlantCreatedAndShootAdded()
         {
-            
+            Gramene g = new Gramene();
+
+            int shootId = g.AddShoot();
+
+            // Verify that the canopy is created.
+
+            int canopy = shootId;
+
+            while (g.Scale(canopy) != 1)
+                canopy = (int)g.Complex(canopy);
+
+            Assert.AreEqual(1, g.Scale(canopy));
+            CollectionAssert.AreEqual(new List<int>() { canopy }, g.Components(0));
+
+            // Verify that the plant is created.
+
+            int plant = (int)g.Complex(shootId);
+
+            Assert.AreEqual(2, g.Scale(plant));
+
+            string plantLabel = g.GetVertexProperties(plant)["label"];
+            Assert.AreEqual("plant", plantLabel.Substring(0,5));
+
+            // Verify that the cursor is placed on the shoot.
+
+            Assert.AreEqual(shootId, g.GetCursor());
+
+        }
+
+        [TestMethod()]
+        public void AddShoot_PlantAlreadyHasShoot_NewPlantCreatedAndShootAdded()
+        {
+
         }
 
         #endregion
@@ -163,7 +202,7 @@ namespace csMTG.Tests
         }
 
         #endregion
-
+        /*
         #region AddAxis
 
         [TestMethod()]
@@ -192,7 +231,7 @@ namespace csMTG.Tests
         }
 
         #endregion
-
+        */
         #region Accessors (Plants)
 
         [TestMethod()]

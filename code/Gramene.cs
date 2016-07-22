@@ -81,6 +81,36 @@ namespace csMTG
             return canopyCursor;
         }
 
+        /// <summary>
+        /// Retrieve the actual plant's identifier.
+        /// The cursor's scale should be equal to 2.
+        /// In case the cursor's scale is lower than 2, the plant needs to be created first.
+        /// In case the cursor's scale is greater than 2, we will iteratively look for the complex until scale 2 is reached.
+        /// </summary>
+        /// <returns> The identifier of the plant. </returns>
+        int GetPlantId()
+        {
+            int plantId;
+
+            if (Scale(cursor) == 2)
+                plantId = cursor;
+            else
+            {
+                if (Scale(cursor) < 2)
+                    plantId = AddPlant();
+                else
+                {
+                    plantId = cursor;
+
+                    while (Scale(plantId) != 2)
+                        plantId = (int)Complex(plantId);
+
+                }
+            }
+
+            return plantId;
+        }
+
         #endregion
 
         #region Accessors
@@ -97,9 +127,33 @@ namespace csMTG
 
         #endregion
 
+        #region Internal functions
+
+        /// <summary>
+        /// Checks if the plants already has a shoot.
+        /// </summary>
+        /// <param name="plantId"> The plant to verify. </param>
+        /// <returns> Whether it's true or not. </returns>
+        bool PlantHasShoot(int plantId)
+        {
+            bool shootExists = false;
+
+            if (Components(plantId).Count > 0)
+            {
+                foreach (int component in Components(plantId))
+                {
+                    if (GetVertexProperties(component)["label"].Substring(0, 5) == "shoot")
+                        shootExists = true;
+                }
+            }
+            
+            return shootExists;
+        }
+
+        #endregion
 
         #region Editing functions (AddPlant, AddShoot, AddRoot, AddAxis)
-        
+
         /// <summary>
         /// Adds a canopy which will contain all plants.
         /// </summary>
@@ -152,25 +206,30 @@ namespace csMTG
 
         /// <summary>
         /// Add a shoot to a plant.
+        /// A naming convention would be that the shoot and the plant will have the same label number.
+        /// (e.g: plant0 is decomposed into shoot0, plant1 into shoot1 and so on).
         /// </summary>
         /// <param name="plantId"> The plant to which the shoot will be added. </param>
         /// <returns> The identifier of the shoot created. </returns>
-        public int AddShoot(int plantId)
+        public int AddShoot()
         {
-            if (HasVertex(plantId))
-            {
-                Dictionary<string, dynamic> shootLabel = new Dictionary<string, dynamic>();
-                shootLabel.Add("label", "shoot" + plantId);
+            int plantId = GetPlantId();
 
-                int shootId = AddComponent(plantId, shootLabel);
+            if (PlantHasShoot(plantId) == true)
+                plantId = AddPlant();
 
-                return shootId;
+            string plantNb = GetVertexProperties(plantId)["label"].Substring(5);
 
-            }
-            else
-            {
-                return 0;
-            }
+            Dictionary<string, dynamic> shootLabel = new Dictionary<string, dynamic>();
+            shootLabel.Add("label", "shoot" + plantNb);
+            shootLabel.Add("Edge_Type", "/");
+
+            int shootId = AddComponent(plantId, shootLabel);
+
+            SetCursor(shootId);
+
+            return shootId;
+
         }
 
         /// <summary>
@@ -233,6 +292,7 @@ namespace csMTG
 
         static void Main(String[] args)
         {
+
 
         }
 
