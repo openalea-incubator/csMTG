@@ -9,25 +9,46 @@ namespace csMTG.Tests
     [TestClass]
     public class GrameneTests
     {
-        #region Test of constructor
 
-        [TestMethod]
-        public void GrameneAndAddCanopy_NewGramene_CanopyAdded()
+        #region AddCanopy
+
+        [TestMethod()]
+        public void AddCanopy_NoCanopyBefore_CanopyAddedAndCursorMoved()
+        {
+            // Add a canopy
+
+            Gramene g = new Gramene();
+            int canopyId = g.AddCanopy();
+
+            // Compare the expected scale of the canopy and the actual one.
+
+            int scaleOfCanopy = g.labelsOfScales.FirstOrDefault(x => x.Value == "canopy").Key;
+
+            Assert.AreEqual(1, scaleOfCanopy);
+
+            Assert.AreEqual(1, g.Scale(canopyId));
+
+            // Verify that the components are correct.
+
+            CollectionAssert.AreEqual(new List<int>() { canopyId }, g.Components(0));
+
+            // Verify that the cursor moved to the newly created canopy.
+
+            Assert.AreEqual(canopyId, g.GetCursor());
+        }
+
+        /*
+
+        [TestMethod()]
+        public void AddCanopy_CursorIsInScaleThree_CanopyAddedAndCursorMoved()
         {
             Gramene g = new Gramene();
-            g.AddCanopy();
 
-            int idOfCanopy = g.labelsOfScales.FirstOrDefault(x => x.Value == "canopy").Key;
-
-            Assert.AreEqual(1, idOfCanopy);
-            Assert.AreEqual("canopy", g.labelsOfScales[idOfCanopy]);
-            Assert.AreEqual(1, g.Scale(idOfCanopy));
-
-            CollectionAssert.AreEqual(new List<int>() { idOfCanopy }, g.Components(0));
-
-            Assert.AreEqual(idOfCanopy, g.getCursor());
+            int canopyId = g.AddCanopy();
 
         }
+
+         */
 
         #endregion
 
@@ -38,9 +59,14 @@ namespace csMTG.Tests
         {
             Gramene g = new Gramene();
 
+            Assert.AreEqual(0, g.GetCursor());
+
             // Get the identifiers of the new plants.
 
             int firstPlant = g.AddPlant();
+
+            Assert.AreEqual(firstPlant, g.GetCursor());
+
             int secondPlant = g.AddPlant();
             int thirdPlant = g.AddPlant();
 
@@ -68,10 +94,7 @@ namespace csMTG.Tests
             Assert.AreEqual(1, g.Complex(secondPlant));
             Assert.AreEqual(1, g.Complex(thirdPlant));
 
-
-
         }
-
 
         #endregion
 

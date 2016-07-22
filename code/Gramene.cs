@@ -46,7 +46,7 @@ namespace csMTG
         /// Gets the value of the cursor.
         /// </summary>
         /// <returns> Value of the cursor. </returns>
-        public int getCursor()
+        public int GetCursor()
         {
             return cursor;
         }
@@ -55,9 +55,30 @@ namespace csMTG
         /// Updates the value of the cursor.
         /// </summary>
         /// <param name="vertexId"> Vertex identifier on which will be placed the cursor. </param>
-        void setCursor(int vertexId)
+        void SetCursor(int vertexId)
         {
             cursor = vertexId;
+        }
+
+        /// <summary>
+        /// Retrieve the identifier of the canopy based on the position of the cursor.
+        /// The cursor is set to the last item visited. If it's in the right scale (1), it is equal to the canopy's id.
+        /// Otherwise, we will iteratively look for the complex of the cursor until scale 1 is reached.
+        /// </summary>
+        /// <returns> The identifier of the canopy. </returns>
+        int GetCanopyId()
+        {
+            int canopyCursor = cursor;
+
+            while (Scale(canopyCursor) != 1 && canopyCursor != 0)
+            {
+                canopyCursor = (int)Complex(canopyCursor);
+            }
+
+            if (canopyCursor == 0)
+                canopyCursor = AddCanopy();
+
+            return canopyCursor;
         }
 
         #endregion
@@ -75,6 +96,7 @@ namespace csMTG
         }
 
         #endregion
+
 
         #region Editing functions (AddPlant, AddShoot, AddRoot, AddAxis)
         
@@ -99,7 +121,7 @@ namespace csMTG
             else
                 canopy = AddComponent(0);
 
-            setCursor(canopy);
+            SetCursor(canopy);
             canopyId = canopy;
 
             return canopy;
@@ -112,12 +134,18 @@ namespace csMTG
         /// <returns> Identifier of the plant. </returns>
         public int AddPlant()
         {
+
+            int canopy = GetCanopyId();
+
             Dictionary<string,dynamic> plantLabel = new Dictionary<string,dynamic>();
             plantLabel.Add("label","plant"+nbPlants);
+            plantLabel.Add("Edge_Type", "/");
+
+            int plantId = AddComponent(canopy, namesValues: plantLabel);
 
             nbPlants++;
 
-            int plantId = AddComponent(canopyId, namesValues: plantLabel);
+            SetCursor(plantId);
 
             return plantId;
         }
