@@ -12,10 +12,9 @@ namespace csMTG
 
         public Dictionary<int, string> labelsOfScales;
 
+        int cursor = 0;
         int nbPlants = 0;
         int canopyId;
-
-        // We may also have attributes that would stand for memory attributes (Plant, stem, last internode)
 
         #endregion
 
@@ -24,7 +23,6 @@ namespace csMTG
         /// <summary>
         /// Constructor of Gramene:
         /// * Sets the labels of the 6 scales of an mtg.
-        /// * Creates an mtg composed of one element (canopy).
         /// </summary>
         public Gramene()
         {
@@ -38,10 +36,28 @@ namespace csMTG
             labelsOfScales.Add(5, "botanical_unit");
             labelsOfScales.Add(6, "organ");
 
-            // add a canopy
+        }
 
-            canopyId = AddComponent(0, componentId: 1);
+        #endregion
 
+        #region Cursor
+
+        /// <summary>
+        /// Gets the value of the cursor.
+        /// </summary>
+        /// <returns> Value of the cursor. </returns>
+        public int getCursor()
+        {
+            return cursor;
+        }
+
+        /// <summary>
+        /// Updates the value of the cursor.
+        /// </summary>
+        /// <param name="vertexId"> Vertex identifier on which will be placed the cursor. </param>
+        void setCursor(int vertexId)
+        {
+            cursor = vertexId;
         }
 
         #endregion
@@ -58,12 +74,36 @@ namespace csMTG
             return Vertices(2);
         }
 
-
-
         #endregion
 
-
         #region Editing functions (AddPlant, AddShoot, AddRoot, AddAxis)
+        
+        /// <summary>
+        /// Adds a canopy which will contain all plants.
+        /// </summary>
+        /// <param name="label"> Optional parameter. 
+        /// Specified in case all plants are of the same botanical variety. </param>
+        /// <returns> Identifier of the canopy added. </returns>
+        public int AddCanopy(string label = null)
+        {
+            int canopy;
+
+            if (label != null)
+            {
+                Dictionary<string, dynamic> canopyLabel = new Dictionary<string, dynamic>();
+                canopyLabel.Add("label", label);
+
+                canopy = AddComponent(0, canopyLabel);
+
+            }
+            else
+                canopy = AddComponent(0);
+
+            setCursor(canopy);
+            canopyId = canopy;
+
+            return canopy;
+        }
 
         /// <summary>
         /// Add a plant to the canopy.
@@ -154,8 +194,6 @@ namespace csMTG
             }
 
         }
-
-
 
         #endregion
 

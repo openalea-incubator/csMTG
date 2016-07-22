@@ -12,9 +12,10 @@ namespace csMTG.Tests
         #region Test of constructor
 
         [TestMethod]
-        public void Gramene_NewGramene_CanopyAdded()
+        public void GrameneAndAddCanopy_NewGramene_CanopyAdded()
         {
             Gramene g = new Gramene();
+            g.AddCanopy();
 
             int idOfCanopy = g.labelsOfScales.FirstOrDefault(x => x.Value == "canopy").Key;
 
@@ -23,6 +24,8 @@ namespace csMTG.Tests
             Assert.AreEqual(1, g.Scale(idOfCanopy));
 
             CollectionAssert.AreEqual(new List<int>() { idOfCanopy }, g.Components(0));
+
+            Assert.AreEqual(idOfCanopy, g.getCursor());
 
         }
 
