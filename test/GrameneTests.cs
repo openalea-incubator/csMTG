@@ -190,7 +190,11 @@ namespace csMTG.Tests
 
             int plantId = g.AddPlant();
 
-            int rootId = g.AddRoot(plantId);
+            Assert.AreEqual(plantId, g.GetCursor());
+
+            int rootId = g.AddRoot();
+
+            Assert.AreEqual(rootId, g.GetCursor());
 
             // Verification of the scale.
 
@@ -198,7 +202,9 @@ namespace csMTG.Tests
 
             // Verification of the label.
 
-            Assert.AreEqual("root" + plantId, g.GetVertexProperties(rootId)["label"]);
+            string plantNb = g.GetVertexProperties(plantId)["label"].Substring(5);
+
+            Assert.AreEqual("root" + plantNb, g.GetVertexProperties(rootId)["label"]);
 
             // Verification of the complex.
 
@@ -207,10 +213,63 @@ namespace csMTG.Tests
         }
 
         [TestMethod()]
-        public void AddRoot_PlantDoesntExist_()
+        public void AddRoot_PlantDoesntExist_PlantCreatedAndRootAdded()
         {
+            Gramene g = new Gramene();
+
+            int rootId = g.AddRoot();
+
+            // Verify that the canopy is created.
+
+            int canopy = rootId;
+
+            while (g.Scale(canopy) != 1)
+                canopy = (int)g.Complex(canopy);
+
+            Assert.AreEqual(1, g.Scale(canopy));
+            CollectionAssert.AreEqual(new List<int>() { canopy }, g.Components(0));
+
+            // Verify that the plant is created.
+
+            int plant = (int)g.Complex(rootId);
+
+            Assert.AreEqual(2, g.Scale(plant));
+
+            string plantLabel = g.GetVertexProperties(plant)["label"];
+            Assert.AreEqual("plant0", plantLabel);
+
+            // Verify that the cursor is placed on the shoot.
+
+            Assert.AreEqual(rootId, g.GetCursor());
 
         }
+
+        [TestMethod()]
+        public void AddRoot_PlantAlreadyHasRoot_NewPlantCreatedAndRootAdded()
+        {
+            Gramene g = new Gramene();
+
+            // First root created.
+
+            int rootId1 = g.AddRoot();
+            int plantId1 = (int)g.Complex(rootId1);
+            int canopyId1 = (int)g.Complex(plantId1);
+
+            // Second root created.
+
+            int rootId2 = g.AddRoot();
+            int plantId2 = (int)g.Complex(rootId2);
+            int canopyId2 = (int)g.Complex(plantId2);
+
+            // Verify that the plants aren't the same but the canopy is.
+
+            Assert.AreEqual(canopyId1, canopyId2);
+            Assert.AreNotEqual(plantId1, plantId2);
+
+            Assert.AreEqual("root0", g.GetVertexProperties(rootId1)["label"]);
+            Assert.AreEqual("root1", g.GetVertexProperties(rootId2)["label"]);
+        }
+
 
         #endregion
         /*

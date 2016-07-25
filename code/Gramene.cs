@@ -149,6 +149,27 @@ namespace csMTG
             return shootExists;
         }
 
+        /// <summary>
+        /// Checks if the plants already has a root.
+        /// </summary>
+        /// <param name="plantId"> The plant to verify. </param>
+        /// <returns> Whether it's true or not. </returns>
+        bool PlantHasRoot(int plantId)
+        {
+            bool rootExists = false;
+
+            if (Components(plantId).Count > 0)
+            {
+                foreach (int component in Components(plantId))
+                {
+                    if (GetVertexProperties(component)["label"].Substring(0, 4) == "root")
+                        rootExists = true;
+                }
+            }
+
+            return rootExists;
+        }
+
         #endregion
 
         #region Editing functions (AddCanopy, AddPlant, AddShoot, AddRoot, AddAxis)
@@ -201,7 +222,6 @@ namespace csMTG
         /// A naming convention would be that the shoot and the plant will have the same label number.
         /// (e.g: plant0 is decomposed into shoot0, plant1 into shoot1 and so on).
         /// </summary>
-        /// <param name="plantId"> The plant to which the shoot will be added. </param>
         /// <returns> The identifier of the shoot created. </returns>
         public int AddShoot()
         {
@@ -226,25 +246,29 @@ namespace csMTG
 
         /// <summary>
         /// Add a root to a plant.
+        /// A naming convention would be that the root and the plant will have the same label number.
+        /// (e.g: plant0 is decomposed into root0, plant1 into root1 and so on).
         /// </summary>
-        /// <param name="plantId"> The plant to which the root will be added. </param>
         /// <returns> The identifier of the root created. </returns>
-        public int AddRoot(int plantId)
+        public int AddRoot()
         {
-            if (HasVertex(plantId))
-            {
-                Dictionary<string, dynamic> rootLabel = new Dictionary<string, dynamic>();
-                rootLabel.Add("label", "root" + plantId);
+            int plantId = GetPlantId();
 
-                int rootId = AddComponent(plantId, rootLabel);
+            if (PlantHasRoot(plantId) == true)
+                plantId = AddPlant();
 
-                return rootId;
+            string plantNb = GetVertexProperties(plantId)["label"].Substring(5);
 
-            }
-            else
-            {
-                return 0;
-            }
+            Dictionary<string, dynamic> rootLabel = new Dictionary<string, dynamic>();
+            rootLabel.Add("label", "root" + plantNb);
+            rootLabel.Add("Edge_Type", "/");
+
+            int rootId = AddComponent(plantId, rootLabel);
+
+            SetCursor(rootId);
+
+            return rootId;
+             
         }
 
         /// <summary>
