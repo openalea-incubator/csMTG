@@ -156,7 +156,27 @@ namespace csMTG.Tests
         [TestMethod()]
         public void AddShoot_PlantAlreadyHasShoot_NewPlantCreatedAndShootAdded()
         {
+            Gramene g = new Gramene();
 
+            // First shoot created.
+
+            int shootId1 = g.AddShoot();
+            int plantId1 = (int)g.Complex(shootId1);
+            int canopyId1 = (int)g.Complex(plantId1);
+
+            // Second shoot created.
+
+            int shootId2 = g.AddShoot();
+            int plantId2 = (int)g.Complex(shootId2);
+            int canopyId2 = (int)g.Complex(plantId2);
+            
+            // Verify that the plants aren't the same but the canopy is.
+
+            Assert.AreEqual(canopyId1, canopyId2);
+            Assert.AreNotEqual(plantId1, plantId2);
+
+            Assert.AreEqual("shoot0", g.GetVertexProperties(shootId1)["label"]);
+            Assert.AreEqual("shoot1", g.GetVertexProperties(shootId2)["label"]);
         }
 
         #endregion
