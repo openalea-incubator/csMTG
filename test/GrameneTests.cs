@@ -36,20 +36,11 @@ namespace csMTG.Tests
             // Verify that the cursor moved to the newly created canopy.
 
             Assert.AreEqual(canopyId, g.GetCursor());
+
+            // Verify that the label of the canopy is "canopy".
+
+            Assert.AreEqual("canopy", g.GetVertexProperties(canopyId)["label"]);
         }
-
-        /*
-
-        [TestMethod()]
-        public void AddCanopy_CursorIsInScaleThree_CanopyAddedAndCursorMoved()
-        {
-            Gramene g = new Gramene();
-
-            int canopyId = g.AddCanopy();
-
-        }
-
-         */
 
         #endregion
 

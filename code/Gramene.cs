@@ -14,7 +14,6 @@ namespace csMTG
 
         int cursor = 0;
         int nbPlants = 0;
-        int canopyId;
 
         #endregion
 
@@ -152,7 +151,7 @@ namespace csMTG
 
         #endregion
 
-        #region Editing functions (AddPlant, AddShoot, AddRoot, AddAxis)
+        #region Editing functions (AddCanopy, AddPlant, AddShoot, AddRoot, AddAxis)
 
         /// <summary>
         /// Adds a canopy which will contain all plants.
@@ -160,23 +159,16 @@ namespace csMTG
         /// <param name="label"> Optional parameter. 
         /// Specified in case all plants are of the same botanical variety. </param>
         /// <returns> Identifier of the canopy added. </returns>
-        public int AddCanopy(string label = null)
+        public int AddCanopy(string label = "canopy")
         {
             int canopy;
+            Dictionary<string, dynamic> canopyLabel = new Dictionary<string, dynamic>();
 
-            if (label != null)
-            {
-                Dictionary<string, dynamic> canopyLabel = new Dictionary<string, dynamic>();
-                canopyLabel.Add("label", label);
+            canopyLabel.Add("label", label);
 
-                canopy = AddComponent(0, canopyLabel);
-
-            }
-            else
-                canopy = AddComponent(0);
+            canopy = AddComponent(0, canopyLabel);
 
             SetCursor(canopy);
-            canopyId = canopy;
 
             return canopy;
         }
