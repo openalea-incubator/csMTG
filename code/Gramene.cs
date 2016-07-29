@@ -110,6 +110,41 @@ namespace csMTG
             return plantId;
         }
 
+        /// <summary>
+        /// Retrieve the actual shoot's identifier.
+        /// The cursor's scale should be equal to 3.
+        /// In case the cursor's scale is lower than 3, the shoot needs to be created first.
+        /// In case the cursor's scale is greater than 2, we will iteratively look for the complex until scale 3 is reached.
+        /// </summary>
+        /// <returns> The identifier of the shoot. </returns>
+        int GetShootId()
+        {
+            int shootId = cursor;
+
+            if (Scale(shootId) == 3)
+            {
+                int plantId = (int)Complex(shootId);
+                
+                shootId = PlantHasShoot(plantId);
+
+                if (shootId == 0)
+                    AddShoot();
+            }
+            else
+            {
+                if (Scale(shootId) < 3)
+                    AddShoot();
+                else
+                {
+                    while (Scale(shootId) != 3)
+                        shootId = (int)Complex(shootId);
+                }
+            }
+
+            return shootId;
+
+        }
+
         #endregion
 
         #region Accessors
