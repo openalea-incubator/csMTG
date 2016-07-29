@@ -132,17 +132,17 @@ namespace csMTG
         /// Checks if the plants already has a shoot.
         /// </summary>
         /// <param name="plantId"> The plant to verify. </param>
-        /// <returns> Whether it's true or not. </returns>
-        bool PlantHasShoot(int plantId)
+        /// <returns> The identifier of the shoot if found. If not, it returns zero. </returns>
+        int PlantHasShoot(int plantId)
         {
-            bool shootExists = false;
+            int shootExists = 0;
 
             if (Components(plantId).Count > 0)
             {
                 foreach (int component in Components(plantId))
                 {
                     if (GetVertexProperties(component)["label"].Substring(0, 5) == "shoot")
-                        shootExists = true;
+                        shootExists = component;
                 }
             }
             
@@ -153,17 +153,17 @@ namespace csMTG
         /// Checks if the plants already has a root.
         /// </summary>
         /// <param name="plantId"> The plant to verify. </param>
-        /// <returns> Whether it's true or not. </returns>
-        bool PlantHasRoot(int plantId)
+        /// <returns> The identifier of the root if found. If not, it returns zero. </returns>
+        int PlantHasRoot(int plantId)
         {
-            bool rootExists = false;
+            int rootExists = 0;
 
             if (Components(plantId).Count > 0)
             {
                 foreach (int component in Components(plantId))
                 {
                     if (GetVertexProperties(component)["label"].Substring(0, 4) == "root")
-                        rootExists = true;
+                        rootExists = component;
                 }
             }
 
@@ -227,7 +227,7 @@ namespace csMTG
         {
             int plantId = GetPlantId();
 
-            if (PlantHasShoot(plantId) == true)
+            if (PlantHasShoot(plantId) != 0)
                 plantId = AddPlant();
 
             string plantNb = GetVertexProperties(plantId)["label"].Substring(5);
@@ -254,7 +254,7 @@ namespace csMTG
         {
             int plantId = GetPlantId();
 
-            if (PlantHasRoot(plantId) == true)
+            if (PlantHasRoot(plantId) != 0)
                 plantId = AddPlant();
 
             string plantNb = GetVertexProperties(plantId)["label"].Substring(5);
