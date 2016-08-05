@@ -358,6 +358,8 @@ namespace csMTG
                 axisId = AddChild(mainstemId);
             }
 
+            SetCursor(axisId);
+
             return axisId;
 
         }
