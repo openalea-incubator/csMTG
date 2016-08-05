@@ -99,10 +99,7 @@ namespace csMTG
                     plantId = AddPlant();
                 else
                 {
-                    plantId = cursor;
-
-                    while (Scale(plantId) != 2)
-                        plantId = (int)Complex(plantId);
+                    plantId = ComplexAtScale(cursor, 2);
 
                 }
             }
@@ -136,8 +133,8 @@ namespace csMTG
                     AddShoot();
                 else
                 {
-                    while (Scale(shootId) != 3)
-                        shootId = (int)Complex(shootId);
+                    shootId = ComplexAtScale(shootId, 3);
+
                 }
             }
 
