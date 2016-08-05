@@ -205,6 +205,27 @@ namespace csMTG
             return rootExists;
         }
 
+        /// <summary>
+        /// Checks if the shoot already has a mainstem or not.
+        /// </summary>
+        /// <param name="shootId"> Identifier of the shoot. </param>
+        /// <returns> Identifier of the mainstem if found. If not, it returns zero. </returns>
+        int ShootHasMainstem(int shootId)
+        {
+            int mainstemId = 0;
+
+            if (Components(shootId).Count > 0)
+            {
+                foreach (int component in Components(shootId))
+                {
+                    if (GetVertexProperties(component)["label"].Substring(0, 8) == "mainstem")
+                        mainstemId = component;
+                }
+            }
+
+            return mainstemId;
+        }
+
         #endregion
 
         #region Editing functions (AddCanopy, AddPlant, AddShoot, AddRoot, AddAxis)
@@ -307,39 +328,44 @@ namespace csMTG
         }
 
         /// <summary>
-        /// Add an axis to a shoot. Its label is: "axis"+plantId.
+        /// Adds an axis to the plant.
+        /// If the plant doesn't have a mainstem, it creates one. Its label is: "mainstem".
+        /// If the plant already has one, it adds an axis on the mainstem. Its label is: "axis"+number of the axis.
         /// </summary>
-        /// <param name="shootId"> The shoot to which the axis will be added. </param>
-        /// <returns> The identifier of the axis created. </returns>
-        public int AddAxis(int shootId)
+        /// <returns> The identifier of the new axis added. </returns>
+        public int AddAxis()
         {
-            if (HasVertex(shootId))
+            int axisId;
+
+            int shootId = GetShootId();
+
+            int mainstemId = ShootHasMainstem(shootId);
+
+            Dictionary<string, dynamic> axisLabel = new Dictionary<string, dynamic>();
+
+            if (mainstemId == 0)
             {
+                axisLabel.Add("label", "mainstem");
+                axisLabel.Add("Edge_Type", "/");
 
-                string plantId = GetVertexProperties(shootId)["label"].Substring(5);
-
-                Dictionary<string, dynamic> axisLabel = new Dictionary<string, dynamic>();
-                axisLabel.Add("label", "axis" + plantId);
-
-                int axisId = AddComponent(shootId, axisLabel);
-
-                return axisId;
+                axisId = AddComponent(shootId, axisLabel);
 
             }
             else
             {
-                return 0;
+                int axisNumber = NbChildren(mainstemId) + 1;
+
+                axisLabel.Add("label", "axis"+axisNumber);
+                axisLabel.Add("Edge_Type", "+");
+
+                axisId = AddChild(mainstemId);
             }
+
+            return axisId;
 
         }
 
         #endregion
-
-        // Properties (We'll have in the parameters "vid to which the properties will be added + the properties to add")
-
-        // Query functions
-
-        // Main
 
         static void Main(String[] args)
         {
