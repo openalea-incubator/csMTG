@@ -287,9 +287,30 @@ namespace csMTG
             return internodeId;
         }
 
+        /// <summary>
+        /// Checks if the metamer already has a sheath or not.
+        /// </summary>
+        /// <param name="metamerId"> Identifier of the metamer. </param>
+        /// <returns> Identifier of the sheath if found. If not, it returns zero. </returns>
+        int MetamerHasSheath(int metamerId)
+        {
+            int sheathId = 0;
+
+            if (Components(metamerId).Count > 0)
+            {
+                foreach (int component in Components(metamerId))
+                {
+                    if (GetVertexProperties(component)["label"].Substring(0, 6) == "sheath")
+                        sheathId = component;
+                }
+            }
+
+            return sheathId;
+        }
+
         #endregion
 
-        #region Editing functions (AddCanopy, AddPlant, AddShoot, AddRoot, AddAxis, AddMetamer, AddInternode)
+        #region Editing functions (AddCanopy, AddPlant, AddShoot, AddRoot, AddAxis, AddMetamer, AddInternode, AddSheath)
 
         /// <summary>
         /// Adds a canopy which will contain all plants.
@@ -490,6 +511,38 @@ namespace csMTG
 
             return internodeId;
         }
+
+        /// <summary>
+        /// Adds a sheath to the current metamer.
+        /// It is to note that a sheath requires that an internode already exists.
+        /// The sheath is a child of the internode and a component of the metamer.
+        /// </summary>
+        /// <returns> Identifier of the sheath added. </returns>
+        public int AddSheath()
+        {
+            int metamerId = GetMetamerId();
+            int internodeId = MetamerHasInternode(metamerId);
+
+            // Verifies that the metamer doesn't already have a sheath. If so, it creates a new metamer.
+            int sheathId = MetamerHasSheath(metamerId);
+            if (sheathId != 0)
+                metamerId = AddMetamer();
+
+            if ( internodeId == 0)
+                internodeId = AddInternode();
+
+            Dictionary<string, dynamic> sheathLabel = new Dictionary<string, dynamic>();
+            sheathLabel.Add("label", "sheath");
+            sheathLabel.Add("Edge_type", "/");
+
+            sheathId = AddComponent(metamerId, sheathLabel);
+
+            sheathLabel["Edge_type"] = "+";
+            AddChild(internodeId, sheathLabel, sheathId);
+
+            return sheathId;
+        }
+
         #endregion
 
         static void Main(String[] args)
