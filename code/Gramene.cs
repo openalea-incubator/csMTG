@@ -163,6 +163,28 @@ namespace csMTG
             return axisId;
         }
 
+        /// <summary>
+        /// Retrieve the current metamer's identifier.
+        /// The cursor should be on scale 5.
+        /// If it's lower than that, we create a new metamer on the same axis.
+        /// If it's greater than that, we iteratively look for the complex at scale 5.
+        /// </summary>
+        /// <returns> Identifier of the metamer. </returns>
+        int GetMetamerId()
+        {
+            int metamerId = cursor;
+
+            if (Scale(metamerId) != 5)
+            {
+                if (Scale(metamerId) > 5)
+                    metamerId = ComplexAtScale(metamerId, 5);
+                else
+                    metamerId = AddMetamer();
+            }
+
+            return metamerId;
+        }
+
         #endregion
 
         #region Accessors
@@ -244,9 +266,30 @@ namespace csMTG
             return mainstemId;
         }
 
+        /// <summary>
+        /// Checks if the metamer already has an internode or not.
+        /// </summary>
+        /// <param name="metamerId"> Identifier of the metamer. </param>
+        /// <returns> Identifier of the internode if found. If not, it returns zero. </returns>
+        int MetamerHasInternode(int metamerId)
+        {
+            int internodeId = 0;
+
+            if (Components(metamerId).Count > 0)
+            {
+                foreach (int component in Components(metamerId))
+                {
+                    if (GetVertexProperties(component)["label"].Substring(0, 7) == "metamer")
+                        internodeId = component;
+                }
+            }
+
+            return internodeId;
+        }
+
         #endregion
 
-        #region Editing functions (AddCanopy, AddPlant, AddShoot, AddRoot, AddAxis)
+        #region Editing functions (AddCanopy, AddPlant, AddShoot, AddRoot, AddAxis, AddMetamer, AddInternode)
 
         /// <summary>
         /// Adds a canopy which will contain all plants.
@@ -399,7 +442,7 @@ namespace csMTG
             // Retrieve the number of the last metamer to label it.
             int metamerNb = Components(axisId).Count;
 
-            // Identifier of the last metamer (if thea xis already bears other metamers).
+            // Identifier of the last metamer (if the axis already bears other metamers).
             int lastMetamer = 0;
             if (metamerNb != 0)
             {
@@ -408,18 +451,45 @@ namespace csMTG
 
             Dictionary<string, dynamic> metamerLabel = new Dictionary<string, dynamic>();
             metamerLabel.Add("label", "metamer" + metamerNb);
-            metamerLabel.Add("Edge_type", "<");
+            metamerLabel.Add("Edge_type", "/");
 
             int metamerId = AddComponent(axisId, metamerLabel);
 
             if (lastMetamer != 0)
-                AddChild(lastMetamer, metamerId);
+            {
+                metamerLabel["Edge_Type"] = "<";
+                AddChild(lastMetamer, metamerLabel, metamerId);
+            }
 
             SetCursor(metamerId);
 
             return metamerId;
         }
 
+        /// <summary>
+        /// Adds an internode to the current metamer.
+        /// There is only one internode per metamer, and it is on scale 6. (The internode is a component of the metamer).
+        /// </summary>
+        /// <returns> Identifier of the internode. </returns>
+        public int AddInternode()
+        {
+            int metamerId = GetMetamerId();
+
+            // Retrieve the identifier of the internode if it already exists.
+            int internodeId = MetamerHasInternode(metamerId);
+            if (internodeId != 0)
+                metamerId = AddMetamer();
+
+            Dictionary<string, dynamic> internodeLabel = new Dictionary<string, dynamic>();
+            internodeLabel.Add("label", "internode");
+            internodeLabel.Add("Edge_type", "/");
+
+            internodeId = AddComponent(metamerId, internodeLabel);
+
+            SetCursor(internodeId);
+
+            return internodeId;
+        }
         #endregion
 
         static void Main(String[] args)
