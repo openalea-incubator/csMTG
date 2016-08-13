@@ -142,6 +142,27 @@ namespace csMTG
 
         }
 
+        /// <summary>
+        /// Retrieve the current axis' identifier.
+        /// The cursor should be on the scale 4.
+        /// If it's lower than that, we create a plant and shoot.
+        /// If it's greater than that, we iteratively look for the complex at scale 4.
+        /// </summary>
+        /// <returns> Identifier of the axis. </returns>
+        int GetAxisId()
+        {
+            int axisId = cursor;
+            if (Scale(cursor) != 4)
+            {
+                if (Scale(cursor) < 4)
+                    axisId = AddAxis();
+                else
+                    axisId = ComplexAtScale(axisId, 4);
+            }
+
+            return axisId;
+        }
+
         #endregion
 
         #region Accessors
@@ -362,6 +383,28 @@ namespace csMTG
 
             return axisId;
 
+        }
+
+        /// <summary>
+        /// Adds a metamer to the current axis.
+        /// Note that a single axis can bear multiple metamers. Each of them is a component of the axis.
+        /// </summary>
+        /// <returns> The identifier of the metamer. </returns>
+        public int AddMetamer()
+        {
+            int axisId = GetAxisId();
+
+            int metamerNb = Components(axisId).Count;
+
+            Dictionary<string, dynamic> metamerLabel = new Dictionary<string, dynamic>();
+            metamerLabel.Add("label", "metamer" + metamerNb);
+            metamerLabel.Add("Edge_type", "<");
+
+            int metamerId = AddComponent(axisId, metamerLabel);
+
+            SetCursor(axisId);
+
+            return metamerId;
         }
 
         #endregion
