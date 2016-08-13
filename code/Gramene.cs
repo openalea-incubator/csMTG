@@ -387,14 +387,24 @@ namespace csMTG
 
         /// <summary>
         /// Adds a metamer to the current axis.
-        /// Note that a single axis can bear multiple metamers. Each of them is a component of the axis.
+        /// Note that a single axis can bear multiple metamers.
+        /// The new metamer is added as a component of the axis but also as a child of the last existing metamer.
         /// </summary>
         /// <returns> The identifier of the metamer. </returns>
         public int AddMetamer()
         {
+
             int axisId = GetAxisId();
 
+            // Retrieve the number of the last metamer to label it.
             int metamerNb = Components(axisId).Count;
+
+            // Identifier of the last metamer (if thea xis already bears other metamers).
+            int lastMetamer = 0;
+            if (metamerNb != 0)
+            {
+                lastMetamer = Components(axisId).Max();
+            }
 
             Dictionary<string, dynamic> metamerLabel = new Dictionary<string, dynamic>();
             metamerLabel.Add("label", "metamer" + metamerNb);
@@ -402,7 +412,10 @@ namespace csMTG
 
             int metamerId = AddComponent(axisId, metamerLabel);
 
-            SetCursor(axisId);
+            if (lastMetamer != 0)
+                AddChild(lastMetamer, metamerId);
+
+            SetCursor(metamerId);
 
             return metamerId;
         }
