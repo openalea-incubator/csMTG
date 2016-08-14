@@ -308,9 +308,30 @@ namespace csMTG
             return sheathId;
         }
 
+        /// <summary>
+        /// Checks if the metamer already has a blade or not.
+        /// </summary>
+        /// <param name="metamerId"> Identifier of the metamer. </param>
+        /// <returns> Identifier of the blade if found. If not, it returns zero. </returns>
+        int MetamerHasBlade(int metamerId)
+        {
+            int bladeId = 0;
+
+            if (Components(metamerId).Count > 0)
+            {
+                foreach (int component in Components(metamerId))
+                {
+                    if (GetVertexProperties(component)["label"].Substring(0, 5) == "blade")
+                        bladeId = component;
+                }
+            }
+
+            return bladeId;
+        }
+
         #endregion
 
-        #region Editing functions (AddCanopy, AddPlant, AddShoot, AddRoot, AddAxis, AddMetamer, AddInternode, AddSheath)
+        #region Editing functions (AddCanopy, AddPlant, AddShoot, AddRoot, AddAxis, AddMetamer, AddInternode, AddSheath, AddBlade)
 
         /// <summary>
         /// Adds a canopy which will contain all plants.
@@ -472,7 +493,7 @@ namespace csMTG
 
             Dictionary<string, dynamic> metamerLabel = new Dictionary<string, dynamic>();
             metamerLabel.Add("label", "metamer" + metamerNb);
-            metamerLabel.Add("Edge_type", "/");
+            metamerLabel.Add("Edge_Type", "/");
 
             int metamerId = AddComponent(axisId, metamerLabel);
 
@@ -503,7 +524,7 @@ namespace csMTG
 
             Dictionary<string, dynamic> internodeLabel = new Dictionary<string, dynamic>();
             internodeLabel.Add("label", "internode");
-            internodeLabel.Add("Edge_type", "/");
+            internodeLabel.Add("Edge_Type", "/");
 
             internodeId = AddComponent(metamerId, internodeLabel);
 
@@ -521,26 +542,64 @@ namespace csMTG
         public int AddSheath()
         {
             int metamerId = GetMetamerId();
-            int internodeId = MetamerHasInternode(metamerId);
-
+            
             // Verifies that the metamer doesn't already have a sheath. If so, it creates a new metamer.
             int sheathId = MetamerHasSheath(metamerId);
             if (sheathId != 0)
                 metamerId = AddMetamer();
 
-            if ( internodeId == 0)
+            int internodeId = MetamerHasInternode(metamerId);
+
+            if (internodeId == 0)
                 internodeId = AddInternode();
 
             Dictionary<string, dynamic> sheathLabel = new Dictionary<string, dynamic>();
             sheathLabel.Add("label", "sheath");
-            sheathLabel.Add("Edge_type", "/");
+            sheathLabel.Add("Edge_Type", "/");
 
             sheathId = AddComponent(metamerId, sheathLabel);
 
-            sheathLabel["Edge_type"] = "+";
+            sheathLabel["Edge_Type"] = "+";
             AddChild(internodeId, sheathLabel, sheathId);
 
+            SetCursor(sheathId);
+
             return sheathId;
+        }
+
+        /// <summary>
+        /// Adds a blade to the current metamer.
+        /// It is to note that a blade requires that a sheath already exists.
+        /// The blade is a child of the sheath, and a component of the metamer.
+        /// </summary>
+        /// <returns> Identifier of the blade added. </returns>
+        public int AddBlade()
+        {
+            int metamerId = GetMetamerId();
+
+            // Verifies that the metamer doesn't already have a blade. If so, it creates a new metamer.
+            int bladeId = MetamerHasBlade(metamerId);
+            if (bladeId != 0)
+                metamerId = AddMetamer();
+
+            int internodeId = MetamerHasInternode(metamerId);
+            int sheathId = MetamerHasSheath(metamerId);
+
+            if (sheathId == 0)
+                sheathId = AddSheath();
+
+            Dictionary<string, dynamic> bladeLabel = new Dictionary<string, dynamic>();
+            bladeLabel.Add("label", "blade");
+            bladeLabel.Add("Edge_Type", "/");
+
+            bladeId = AddComponent(metamerId, bladeLabel);
+
+            bladeLabel["Edge_Type"] = "<";
+            AddChild(sheathId, bladeLabel, bladeId);
+
+            SetCursor(bladeId);
+
+            return bladeId;
         }
 
         #endregion
