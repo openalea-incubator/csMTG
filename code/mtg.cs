@@ -535,7 +535,10 @@ namespace csMTG
         {
             childId = base.AddChild(parentId, namesValues, childId);
 
-            scale.Add(childId, scale[parentId]);
+            if (!scale.ContainsKey(childId))
+                scale.Add(childId, scale[parentId]);
+            else
+                scale[childId] = scale[parentId];
 
             return childId;
         }

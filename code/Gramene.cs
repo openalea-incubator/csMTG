@@ -14,6 +14,7 @@ namespace csMTG
 
         int cursor = 0;
         int nbPlants = 0;
+        int leafNumber;
 
         #endregion
 
@@ -190,6 +191,18 @@ namespace csMTG
         #region Accessors
 
         /// <summary>
+        /// Retrieved the number of leaves contained in the plant.
+        /// It does so through counting the number of elements at scale 5 (metamers)
+        /// </summary>
+        /// <returns> The number of the leaves. </returns>
+        public int GetLeafNumber()
+        {
+            leafNumber = NbVertices(5);
+
+            return leafNumber;
+        }
+
+        /// <summary>
         /// Returns a list containing the identifiers of all plants.
         /// It is to note that plants are in scale number 2.
         /// </summary>
@@ -279,8 +292,13 @@ namespace csMTG
             {
                 foreach (int component in Components(metamerId))
                 {
-                    if (GetVertexProperties(component)["label"].Substring(0, 7) == "metamer")
-                        internodeId = component;
+                    if (GetVertexProperties(component)["label"].Length > 8)
+                    {
+                        string label = GetVertexProperties(component)["label"].Substring(0, 9);
+
+                        if (label == "internode")
+                            internodeId = component;
+                    }
                 }
             }
 
@@ -496,13 +514,13 @@ namespace csMTG
             metamerLabel.Add("Edge_Type", "/");
 
             int metamerId = AddComponent(axisId, metamerLabel);
-
+            
             if (lastMetamer != 0)
             {
                 metamerLabel["Edge_Type"] = "<";
                 AddChild(lastMetamer, metamerLabel, metamerId);
             }
-
+            
             SetCursor(metamerId);
 
             return metamerId;
@@ -604,9 +622,38 @@ namespace csMTG
 
         #endregion
 
+        #region High level functions (Wheat)
+
+        /// <summary>
+        /// A function that the final user can use to create a Wheat plant composed of a number of leaves they will choose.
+        /// </summary>
+        /// <param name="NbLeaves"> The number of leaves desired in the plant. </param>
+        /// <returns> The plant structure. </returns>
+        public Gramene Wheat(int NbLeaves)
+        {
+            Gramene g = new Gramene();
+
+            g.AddCanopy("wheat");
+            g.AddPlant();
+            g.AddRoot();
+            g.AddShoot();
+            g.AddAxis();
+
+            for (int i = 0; i < NbLeaves; i++)
+            {
+                g.AddMetamer();
+                g.AddInternode();
+                g.AddSheath();
+                g.AddBlade();
+            }
+
+            return g;
+        }
+
+        #endregion
+
         static void Main(String[] args)
         {
-
 
         }
 
