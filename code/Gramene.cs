@@ -14,7 +14,7 @@ namespace csMTG
 
         int cursor = 0;
         int nbPlants = 0;
-        int leafNumber;
+        int leafNumber = 0;
 
         #endregion
 
@@ -197,9 +197,15 @@ namespace csMTG
         /// <returns> The number of the leaves. </returns>
         public int GetLeafNumber()
         {
-            leafNumber = NbVertices(5);
-
             return leafNumber;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void SetLeafNumber()
+        {
+            leafNumber = NbVertices(5);
         }
 
         /// <summary>
