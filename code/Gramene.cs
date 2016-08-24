@@ -191,8 +191,7 @@ namespace csMTG
         #region Accessors
 
         /// <summary>
-        /// Retrieved the number of leaves contained in the plant.
-        /// It does so through counting the number of elements at scale 5 (metamers)
+        /// Retrieves the number of leaves contained in the plant.
         /// </summary>
         /// <returns> The number of the leaves. </returns>
         public int GetLeafNumber()
@@ -201,7 +200,7 @@ namespace csMTG
         }
 
         /// <summary>
-        /// 
+        /// Sets the leafNumber to the number of vertices at scale 5 (Metamers).
         /// </summary>
         public void SetLeafNumber()
         {
@@ -363,7 +362,7 @@ namespace csMTG
         /// <param name="label"> Optional parameter. 
         /// Specified in case all plants are of the same botanical variety. </param>
         /// <returns> Identifier of the canopy added. </returns>
-        public int AddCanopy(string label = "canopy")
+        protected int AddCanopy(string label = "canopy")
         {
             int canopy;
             Dictionary<string, dynamic> canopyLabel = new Dictionary<string, dynamic>();
@@ -382,7 +381,7 @@ namespace csMTG
         /// It is to note that the plant is labelled plant+number of the plant (e.g: plant0, plant1, ..).
         /// </summary>
         /// <returns> Identifier of the plant. </returns>
-        public int AddPlant()
+        protected int AddPlant()
         {
 
             int canopy = GetCanopyId();
@@ -406,7 +405,7 @@ namespace csMTG
         /// (e.g: plant0 is decomposed into shoot0, plant1 into shoot1 and so on).
         /// </summary>
         /// <returns> The identifier of the shoot created. </returns>
-        public int AddShoot()
+        protected int AddShoot()
         {
             int plantId = GetPlantId();
 
@@ -433,7 +432,7 @@ namespace csMTG
         /// (e.g: plant0 is decomposed into root0, plant1 into root1 and so on).
         /// </summary>
         /// <returns> The identifier of the root created. </returns>
-        public int AddRoot()
+        protected int AddRoot()
         {
             int plantId = GetPlantId();
 
@@ -460,7 +459,7 @@ namespace csMTG
         /// If the plant already has one, it adds an axis on the mainstem. Its label is: "axis"+number of the axis.
         /// </summary>
         /// <returns> The identifier of the new axis added. </returns>
-        public int AddAxis()
+        protected int AddAxis()
         {
             int axisId;
 
@@ -500,7 +499,7 @@ namespace csMTG
         /// The new metamer is added as a component of the axis but also as a child of the last existing metamer.
         /// </summary>
         /// <returns> The identifier of the metamer. </returns>
-        public int AddMetamer()
+        protected int AddMetamer()
         {
 
             int axisId = GetAxisId();
@@ -528,6 +527,7 @@ namespace csMTG
             }
             
             SetCursor(metamerId);
+            SetLeafNumber();
 
             return metamerId;
         }
@@ -537,7 +537,7 @@ namespace csMTG
         /// There is only one internode per metamer, and it is on scale 6. (The internode is a component of the metamer).
         /// </summary>
         /// <returns> Identifier of the internode. </returns>
-        public int AddInternode()
+        protected int AddInternode()
         {
             int metamerId = GetMetamerId();
 
@@ -563,7 +563,7 @@ namespace csMTG
         /// The sheath is a child of the internode and a component of the metamer.
         /// </summary>
         /// <returns> Identifier of the sheath added. </returns>
-        public int AddSheath()
+        protected int AddSheath()
         {
             int metamerId = GetMetamerId();
             
@@ -597,7 +597,7 @@ namespace csMTG
         /// The blade is a child of the sheath, and a component of the metamer.
         /// </summary>
         /// <returns> Identifier of the blade added. </returns>
-        public int AddBlade()
+        protected int AddBlade()
         {
             int metamerId = GetMetamerId();
 
@@ -654,6 +654,30 @@ namespace csMTG
             }
 
             return g;
+        }
+
+        #endregion
+
+        #region Testing functions
+
+        public int TestAddCanopy(string label = "canopy")
+        {
+            return AddCanopy(label);
+        }
+
+        public int TestAddPlant()
+        {
+            return AddPlant();
+        }
+
+        public int TestAddShoot()
+        {
+            return AddShoot();
+        }
+
+        public int TestAddRoot()
+        {
+            return AddRoot();
         }
 
         #endregion

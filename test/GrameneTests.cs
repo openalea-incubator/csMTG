@@ -8,7 +8,7 @@ using System.Text;
 namespace csMTG.Tests
 {
     [TestClass]
-    public class GrameneTests
+    public class GrameneTests : Gramene
     {
 
         #region AddCanopy
@@ -19,7 +19,7 @@ namespace csMTG.Tests
             // Add a canopy
 
             Gramene g = new Gramene();
-            int canopyId = g.AddCanopy();
+            int canopyId = g.TestAddCanopy();
 
             // Compare the expected scale of the canopy and the actual one.
 
@@ -55,12 +55,12 @@ namespace csMTG.Tests
 
             // Get the identifiers of the new plants.
 
-            int firstPlant = g.AddPlant();
+            int firstPlant = g.TestAddPlant();
 
             Assert.AreEqual(firstPlant, g.GetCursor());
 
-            int secondPlant = g.AddPlant();
-            int thirdPlant = g.AddPlant();
+            int secondPlant = g.TestAddPlant();
+            int thirdPlant = g.TestAddPlant();
 
             // Get the label of the plants.
 
@@ -97,11 +97,11 @@ namespace csMTG.Tests
         {
             Gramene g = new Gramene();
 
-            int plantId = g.AddPlant();
+            int plantId = g.TestAddPlant();
 
             Assert.AreEqual(plantId, g.GetCursor());
 
-            int shootId = g.AddShoot();
+            int shootId = g.TestAddShoot();
 
             Assert.AreEqual(shootId, g.GetCursor());
 
@@ -126,7 +126,7 @@ namespace csMTG.Tests
         {
             Gramene g = new Gramene();
 
-            int shootId = g.AddShoot();
+            int shootId = g.TestAddShoot();
 
             // Verify that the canopy is created.
 
@@ -160,13 +160,13 @@ namespace csMTG.Tests
 
             // First shoot created.
 
-            int shootId1 = g.AddShoot();
+            int shootId1 = g.TestAddShoot();
             int plantId1 = (int)g.Complex(shootId1);
             int canopyId1 = (int)g.Complex(plantId1);
 
             // Second shoot created.
 
-            int shootId2 = g.AddShoot();
+            int shootId2 = g.TestAddShoot();
             int plantId2 = (int)g.Complex(shootId2);
             int canopyId2 = (int)g.Complex(plantId2);
             
@@ -188,11 +188,11 @@ namespace csMTG.Tests
         {
             Gramene g = new Gramene();
 
-            int plantId = g.AddPlant();
+            int plantId = g.TestAddPlant();
 
             Assert.AreEqual(plantId, g.GetCursor());
 
-            int rootId = g.AddRoot();
+            int rootId = g.TestAddRoot();
 
             Assert.AreEqual(rootId, g.GetCursor());
 
@@ -217,7 +217,7 @@ namespace csMTG.Tests
         {
             Gramene g = new Gramene();
 
-            int rootId = g.AddRoot();
+            int rootId = g.TestAddRoot();
 
             // Verify that the canopy is created.
 
@@ -251,13 +251,13 @@ namespace csMTG.Tests
 
             // First root created.
 
-            int rootId1 = g.AddRoot();
+            int rootId1 = g.TestAddRoot();
             int plantId1 = (int)g.Complex(rootId1);
             int canopyId1 = (int)g.Complex(plantId1);
 
             // Second root created.
 
-            int rootId2 = g.AddRoot();
+            int rootId2 = g.TestAddRoot();
             int plantId2 = (int)g.Complex(rootId2);
             int canopyId2 = (int)g.Complex(plantId2);
 
@@ -309,8 +309,8 @@ namespace csMTG.Tests
         {
             Gramene g = new Gramene();
 
-            int firstPlant = g.AddPlant();
-            int secondPlant = g.AddPlant();
+            int firstPlant = g.TestAddPlant();
+            int secondPlant = g.TestAddPlant();
 
             CollectionAssert.AreEqual(new List<int>(){firstPlant,secondPlant}, g.Plants());
 
