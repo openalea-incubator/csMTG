@@ -326,14 +326,14 @@ namespace csMTG.Tests
 
         #endregion
 
-        #region Wheat
+        #region CreateBasicWheat
 
         [TestMethod()]
-        public void Wheat_NewWheat_WheatCreatedAndNumberOfLeavesUpdated()
+        public void CreateBasicWheat_NewPlant_WheatCreatedAndNumberOfLeavesUpdated()
         {
             Gramene g = new Gramene();
             
-            g = g.Wheat(10);
+            g.CreateBasicWheat(10);
 
             Assert.AreEqual(10, g.GetLeafNumber());
 

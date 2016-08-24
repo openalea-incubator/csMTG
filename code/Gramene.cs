@@ -635,25 +635,21 @@ namespace csMTG
         /// </summary>
         /// <param name="NbLeaves"> The number of leaves desired in the plant. </param>
         /// <returns> The plant structure. </returns>
-        public Gramene Wheat(int NbLeaves)
+        public void CreateBasicWheat(int NbLeaves)
         {
-            Gramene g = new Gramene();
-
-            g.AddCanopy("wheat");
-            g.AddPlant();
-            g.AddRoot();
-            g.AddShoot();
-            g.AddAxis();
+            this.AddCanopy("wheat");
+            this.AddPlant();
+            this.AddRoot();
+            this.AddShoot();
+            this.AddAxis();
 
             for (int i = 0; i < NbLeaves; i++)
             {
-                g.AddMetamer();
-                g.AddInternode();
-                g.AddSheath();
-                g.AddBlade();
+                this.AddMetamer();
+                this.AddInternode();
+                this.AddSheath();
+                this.AddBlade();
             }
-
-            return g;
         }
 
         #endregion
