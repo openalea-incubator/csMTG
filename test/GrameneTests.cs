@@ -342,5 +342,35 @@ namespace csMTG.Tests
 
         #endregion
 
+        #region LeafNumber
+
+        [TestMethod()]
+        public void SetLeafNumber_SameNumberOfLeavesOnPlant_NoChanges()
+        {
+            Gramene g = new Gramene();
+            g.CreateBasicWheat(10);
+
+            Assert.AreEqual(10, g.GetLeafNumber());
+
+            g.SetLeafNumber(10);
+
+            Assert.AreEqual(10, g.GetLeafNumber());
+        }
+
+        [TestMethod()]
+        public void SetLeafNumber_GreaterThanNumberOfLeavesOnPlant_NewLeavesAdded()
+        {
+            Gramene g = new Gramene();
+            g.CreateBasicWheat(10);
+
+            Assert.AreEqual(10, g.GetLeafNumber());
+
+            g.SetLeafNumber(20);
+
+            Assert.AreEqual(20, g.GetLeafNumber());
+        }
+
+        #endregion
+
     }
 }

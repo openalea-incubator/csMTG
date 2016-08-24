@@ -200,11 +200,24 @@ namespace csMTG
         }
 
         /// <summary>
-        /// Sets the leafNumber to the number of vertices at scale 5 (Metamers).
+        /// Updates the leafNumber to the number of vertices at scale 5 (Metamers).
         /// </summary>
-        public void SetLeafNumber()
+        void UpdateLeafNumber()
         {
             leafNumber = NbVertices(5);
+        }
+
+        /// <summary>
+        /// A function which verifies that the number of leaves wanted is equal to the actual number of leaves on the plant.
+        /// In case the plant has fewer leaves than the specified number, the missing leaves are added.
+        /// </summary>
+        /// <param name="nbLeaves"> Number of desired leaves. </param>
+        public void SetLeafNumber(int nbLeaves)
+        {
+            while (nbLeaves > leafNumber)
+            {
+                AddLeaf();
+            }
         }
 
         /// <summary>
@@ -354,7 +367,7 @@ namespace csMTG
 
         #endregion
 
-        #region Editing functions (AddCanopy, AddPlant, AddShoot, AddRoot, AddAxis, AddMetamer, AddInternode, AddSheath, AddBlade)
+        #region Editing functions (AddCanopy, AddPlant, AddShoot, AddRoot, AddAxis, AddMetamer, AddInternode, AddSheath, AddBlade, AddLeaf)
 
         /// <summary>
         /// Adds a canopy which will contain all plants.
@@ -527,7 +540,7 @@ namespace csMTG
             }
             
             SetCursor(metamerId);
-            SetLeafNumber();
+            UpdateLeafNumber();
 
             return metamerId;
         }
@@ -624,6 +637,19 @@ namespace csMTG
             SetCursor(bladeId);
 
             return bladeId;
+        }
+
+        /// <summary>
+        /// A function which summarizes the act of adding a leaf to the plant.
+        /// This requires to add a metamer, then the internode, sheath and blade which compose it.
+        /// It is to note that the leafNumber is implicitly updated in the function AddMetamer.
+        /// </summary>
+        public void AddLeaf()
+        {
+            AddMetamer();
+            AddInternode();
+            AddSheath();
+            AddBlade();
         }
 
         #endregion
