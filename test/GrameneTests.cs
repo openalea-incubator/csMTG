@@ -402,6 +402,27 @@ namespace csMTG.Tests
 
         #endregion
 
+        #region Copy Constructor
+
+        [TestMethod()]
+        public void Gramene_CopyOfGramene_CorrectlyCopied()
+        {
+            // Creation of a gramene
+
+            Gramene g = new Gramene();
+            g.CreateBasicWheat(10);
+
+            // Copy of a gramene
+
+            Gramene g1 = new Gramene(g);
+
+            Assert.AreEqual(g1.GetCursor(), g.GetCursor());
+
+            Assert.AreEqual(10, g1.GetLeafNumber());
+
+        }
+
+        #endregion
 
     }
 }

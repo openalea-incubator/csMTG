@@ -17,7 +17,7 @@ namespace csMTG
 
         #endregion
 
-        #region Constructor
+        #region Constructor and copy constructor
 
         /// <summary>
         /// Constructor of Gramene:
@@ -36,6 +36,57 @@ namespace csMTG
             labelsOfScales.Add(6, "organ");
 
         }
+
+
+        /// <summary>
+        /// Copy constructor of gramene.
+        /// It copies the values of: scale, complex, components, parent, children, properties and the class attributes
+        /// </summary>
+        /// <param name="grameneToCopyFrom"> The gramene we want to copy from. </param>
+        /// <param name="copyAll"></param>
+        public Gramene(Gramene grameneToCopyFrom, bool copyAll = true)
+        {
+            // Copy of the scales
+            foreach (int vertex in grameneToCopyFrom.scale.Keys)
+            {
+                if (vertex != 0)
+                    this.scale.Add(vertex, (int)grameneToCopyFrom.Scale(vertex));
+            }
+
+
+            // Copy of the complexes
+            foreach (int component in grameneToCopyFrom.complex.Keys)
+                this.complex.Add(component, (int)grameneToCopyFrom.Complex(component));
+
+            // Copy of the components
+            foreach (int complex in grameneToCopyFrom.components.Keys)
+                this.components.Add(complex, grameneToCopyFrom.Components(complex));
+
+            // Copy of the parents
+            foreach (int child in grameneToCopyFrom.parent.Keys)
+            {
+                if (child != 0)
+                    this.parent.Add(child, (int)grameneToCopyFrom.Parent(child));
+            }
+
+            // Copy of the children
+            foreach (int parent in grameneToCopyFrom.children.Keys)
+                this.children.Add(parent, grameneToCopyFrom.Children(parent));
+
+            // Copy of the properties
+            foreach (string label in grameneToCopyFrom.PropertyNames())
+            {
+                if (this.properties.ContainsKey(label))
+                    this.properties[label] = grameneToCopyFrom.Property(label);
+                else
+                    this.properties.Add(label, grameneToCopyFrom.Property(label));
+            }
+
+            cursor = grameneToCopyFrom.cursor;
+            nbPlants = grameneToCopyFrom.nbPlants;
+
+        }
+
 
         #endregion
 
