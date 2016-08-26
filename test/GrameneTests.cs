@@ -350,11 +350,11 @@ namespace csMTG.Tests
             Gramene g = new Gramene();
             g.CreateBasicWheat(10);
 
-            Assert.AreEqual(10, g.GetLeafNumber());
+            Assert.AreEqual(10, g.GetPlantLeafNumber());
 
             g.SetLeafNumber(10);
 
-            Assert.AreEqual(10, g.GetLeafNumber());
+            Assert.AreEqual(10, g.GetPlantLeafNumber());
         }
 
         [TestMethod()]
@@ -399,6 +399,94 @@ namespace csMTG.Tests
 
         }
 
+        [TestMethod()]
+        public void GetPlantLeafNumber_TwoAxes_CorrectTotal()
+        {
+            Gramene g = new Gramene();
+
+            // Create a plant with 2 axes
+
+            g.TestAddCanopy();
+            g.TestAddPlant();
+            g.TestAddRoot();
+            g.TestAddShoot();
+
+            int axis1 = g.TestAddAxis();
+
+            // First axis contains 5 leaves
+
+            for (int i = 0; i < 5; i++)
+            {
+                g.AddLeaf();
+            }
+
+            // Second axis contains 2 leaves
+
+            int axis2 = g.TestAddAxis();
+            g.AddLeaf();
+            g.AddLeaf();
+
+            // Verify that we get the right number of leaves per axis
+
+            Assert.AreEqual(5, g.GetLeafNumber(axis1));
+            Assert.AreEqual(2, g.GetLeafNumber(axis2));
+            Assert.AreEqual(2, g.GetLeafNumber());
+
+            // Verify that the total is the sum of both axes
+
+            Assert.AreEqual(7, g.GetPlantLeafNumber());
+
+        }
+
+        [TestMethod()]
+        public void GetPlantLeafNumber_TwoPlants_CorrectTotal()
+        {
+            Gramene g = new Gramene();
+
+            // Create a plant with two axes
+
+            g.TestAddCanopy();
+            g.TestAddPlant();
+            g.TestAddRoot();
+            g.TestAddShoot();
+
+            int axis1 = g.TestAddAxis();
+
+            // This axis contains 5 leaves
+
+            for (int i = 0; i < 5; i++)
+            {
+                g.AddLeaf();
+            }
+
+            // The second axis contains one leaf
+
+            int axis2 = g.TestAddAxis();
+            g.AddLeaf();
+
+            // Create a second plant with one axis and two leaves
+
+            g.TestAddPlant();
+            g.TestAddRoot();
+            g.TestAddShoot();
+            int axis3 = g.TestAddAxis();
+            g.AddLeaf();
+            g.AddLeaf();
+
+            // Verify that we get the right number of leaves per axis
+
+            Assert.AreEqual(5, g.GetLeafNumber(axis1));
+            Assert.AreEqual(1, g.GetLeafNumber(axis2));
+            Assert.AreEqual(2, g.GetLeafNumber(axis3));
+
+            // Verify that the total leaf number is different for each plant
+
+            g.SetCursor(axis1);
+            Assert.AreEqual(5+1, g.GetPlantLeafNumber());
+
+            g.SetCursor(axis3);
+            Assert.AreEqual(2, g.GetPlantLeafNumber());
+        }
 
         #endregion
 

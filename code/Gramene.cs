@@ -105,7 +105,7 @@ namespace csMTG
         /// Updates the value of the cursor.
         /// </summary>
         /// <param name="vertexId"> Vertex identifier on which will be placed the cursor. </param>
-        void SetCursor(int vertexId)
+        public void SetCursor(int vertexId)
         {
             cursor = vertexId;
         }
@@ -238,30 +238,50 @@ namespace csMTG
 
         #endregion
 
-        #region Accessors
+        #region leafNumber accessors
 
         /// <summary>
-        /// Retrieves the number of leaves contained in the plant.
+        /// Retrieves the number of leaves contained in the axis.
+        /// If no axis is specified, we get the cursor.
         /// </summary>
         /// <returns> The number of the leaves. </returns>
-        public double GetLeafNumber()
+        public double GetLeafNumber(int axisId = 0)
         {
-            int plantId = GetPlantId();
+            if (axisId == 0)
+                axisId = GetAxisId();
 
-            double leafNumber = GetVertexProperties(plantId)["leafNumber"];
+            double leafNumber = GetVertexProperties(axisId)["leafNumber"];
 
             return leafNumber;
         }
 
         /// <summary>
-        /// Updates the leafNumber to the number of vertices at scale 5 (Metamers).
+        /// Retrieves the total of leafNumber.
+        /// It sums the leafNumber of each axis composing the plant.
         /// </summary>
-        void UpdateLeafNumber()
+        /// <returns> The total number of leaves on the plant. </returns>
+        public double GetPlantLeafNumber()
         {
             int plantId = GetPlantId();
-            double leafNumber = GetLeafNumber();
+            double totalLeafNumber = 0.0;
 
-            Property("leafNumber")[plantId] = NbVertices(5);
+            int shootId = PlantHasShoot(plantId);
+            List<int> axes = Components(shootId);
+
+            foreach (int axis in axes)
+                totalLeafNumber += GetLeafNumber(axis);
+
+            return totalLeafNumber;
+        }
+
+        /// <summary>
+        /// Updates the leafNumber to the number of vertices at scale 5 (Metamers).
+        /// </summary>
+        void UpdateLeafNumber(int axisId = 0)
+        {
+            double leafNumber = GetLeafNumber(axisId);
+
+            Property("leafNumber")[axisId] = Components(axisId).Count;
 
         }
 
@@ -270,21 +290,22 @@ namespace csMTG
         /// In case the plant has fewer leaves than the specified number, the missing leaves are added.
         /// </summary>
         /// <param name="nbLeaves"> Number of desired leaves. </param>
-        public void SetLeafNumber(double nbLeaves)
+        public void SetLeafNumber(double nbLeaves, int axisId = 0)
         {
             double fractionalPart = nbLeaves - Math.Truncate(nbLeaves);
 
             nbLeaves = (double)Math.Truncate(nbLeaves);
 
-            while (nbLeaves > GetLeafNumber())
+            while (nbLeaves > GetLeafNumber(axisId))
             {
                 AddLeaf();
             }
 
             if (fractionalPart != 0)
             {
-                int plantId = GetPlantId();
-                Property("leafNumber")[plantId] = Math.Truncate((double)(Property("leafNumber")[plantId])) + fractionalPart;
+                if (axisId == 0)
+                    axisId = GetAxisId();
+                Property("leafNumber")[axisId] = Math.Truncate((double)(Property("leafNumber")[axisId])) + fractionalPart;
             }
         }
 
@@ -470,7 +491,6 @@ namespace csMTG
             Dictionary<string,dynamic> plantLabel = new Dictionary<string,dynamic>();
             plantLabel.Add("label","plant"+nbPlants);
             plantLabel.Add("Edge_Type", "/");
-            plantLabel.Add("leafNumber", 0.0);
 
             int plantId = AddComponent(canopy, namesValues: plantLabel);
 
@@ -555,6 +575,7 @@ namespace csMTG
             {
                 axisLabel.Add("label", "mainstem");
                 axisLabel.Add("Edge_Type", "/");
+                axisLabel.Add("leafNumber", 0.0);
 
                 axisId = AddComponent(shootId, axisLabel);
 
@@ -565,8 +586,9 @@ namespace csMTG
 
                 axisLabel.Add("label", "axis"+axisNumber);
                 axisLabel.Add("Edge_Type", "+");
+                axisLabel.Add("leafNumber", 0.0);
 
-                axisId = AddChild(mainstemId);
+                axisId = AddChild(mainstemId, axisLabel);
             }
 
             SetCursor(axisId);
@@ -609,7 +631,7 @@ namespace csMTG
             }
             
             SetCursor(metamerId);
-            UpdateLeafNumber();
+            UpdateLeafNumber(axisId);
 
             return metamerId;
         }
@@ -770,6 +792,32 @@ namespace csMTG
         {
             return AddRoot();
         }
+
+        public int TestAddAxis()
+        {
+            return AddAxis();
+        }
+
+        public int TestAddMetamer()
+        {
+            return AddMetamer();
+        }
+
+        public int TestAddInternode()
+        {
+            return AddInternode();
+        }
+
+        public int TestAddSheath()
+        {
+            return AddSheath();
+        }
+
+        public int TestAddBlade()
+        {
+            return AddBlade();
+        }
+
 
         #endregion
 
