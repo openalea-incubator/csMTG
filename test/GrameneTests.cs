@@ -370,7 +370,38 @@ namespace csMTG.Tests
             Assert.AreEqual(20, g.GetLeafNumber());
         }
 
+        [TestMethod()]
+        public void SetLeafNumber_FractionalNumberOfLeaves_SameNumberOnOutput()
+        {
+            Gramene g = new Gramene();
+            g.CreateBasicWheat(10);
+
+            Assert.AreEqual(10, g.GetLeafNumber());
+
+            g.SetLeafNumber(20.6);
+
+            Assert.AreEqual(20.6, g.GetLeafNumber());
+        }
+
+        [TestMethod()]
+        public void SetLeafNumber_UseItTwice_LeafNumberIncremented()
+        {
+            Gramene g = new Gramene();
+            g.CreateBasicWheat(10);
+
+            Assert.AreEqual(10, g.GetLeafNumber());
+
+            g.SetLeafNumber(15);
+            Assert.AreEqual(15, g.GetLeafNumber());
+
+            g.SetLeafNumber(20);
+            Assert.AreEqual(20, g.GetLeafNumber());
+
+        }
+
+
         #endregion
+
 
     }
 }

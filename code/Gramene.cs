@@ -14,7 +14,6 @@ namespace csMTG
 
         int cursor = 0;
         int nbPlants = 0;
-        int leafNumber = 0;
 
         #endregion
 
@@ -194,8 +193,12 @@ namespace csMTG
         /// Retrieves the number of leaves contained in the plant.
         /// </summary>
         /// <returns> The number of the leaves. </returns>
-        public int GetLeafNumber()
+        public double GetLeafNumber()
         {
+            int plantId = GetPlantId();
+
+            double leafNumber = GetVertexProperties(plantId)["leafNumber"];
+
             return leafNumber;
         }
 
@@ -204,7 +207,11 @@ namespace csMTG
         /// </summary>
         void UpdateLeafNumber()
         {
-            leafNumber = NbVertices(5);
+            int plantId = GetPlantId();
+            double leafNumber = GetLeafNumber();
+
+            Property("leafNumber")[plantId] = NbVertices(5);
+
         }
 
         /// <summary>
@@ -212,11 +219,21 @@ namespace csMTG
         /// In case the plant has fewer leaves than the specified number, the missing leaves are added.
         /// </summary>
         /// <param name="nbLeaves"> Number of desired leaves. </param>
-        public void SetLeafNumber(int nbLeaves)
+        public void SetLeafNumber(double nbLeaves)
         {
-            while (nbLeaves > leafNumber)
+            double fractionalPart = nbLeaves - Math.Truncate(nbLeaves);
+
+            nbLeaves = (double)Math.Truncate(nbLeaves);
+
+            while (nbLeaves > GetLeafNumber())
             {
                 AddLeaf();
+            }
+
+            if (fractionalPart != 0)
+            {
+                int plantId = GetPlantId();
+                Property("leafNumber")[plantId] = Math.Truncate((double)(Property("leafNumber")[plantId])) + fractionalPart;
             }
         }
 
@@ -402,6 +419,7 @@ namespace csMTG
             Dictionary<string,dynamic> plantLabel = new Dictionary<string,dynamic>();
             plantLabel.Add("label","plant"+nbPlants);
             plantLabel.Add("Edge_Type", "/");
+            plantLabel.Add("leafNumber", 0.0);
 
             int plantId = AddComponent(canopy, namesValues: plantLabel);
 
