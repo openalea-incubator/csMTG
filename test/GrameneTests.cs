@@ -272,36 +272,7 @@ namespace csMTG.Tests
 
 
         #endregion
-        /*
-        #region AddAxis
-
-        [TestMethod()]
-        public void AddAxis_PlantExists_AxisCreated()
-        {
-            Gramene g = new Gramene();
-
-            int plantId = g.AddPlant();
-            int shootId = g.AddShoot(plantId);
-
-            int axisId = g.AddAxis(shootId);
-
-            // Verification of the scale.
-
-            Assert.AreEqual(g.Scale(shootId) + 1, g.Scale(axisId));
-            Assert.AreEqual(4, g.Scale(axisId));
-
-            // Verification of the label.
-
-            Assert.AreEqual("axis" + plantId, g.GetVertexProperties(axisId)["label"]);
-
-            // Verification of the complex.
-
-            Assert.AreEqual(shootId, g.Complex(axisId));
-
-        }
-
-        #endregion
-        */
+        
         #region Accessors (Plants)
 
         [TestMethod()]
