@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -58,6 +59,7 @@
     <Compile Include="traversalTests.cs" />
     <Compile Include="TreeTests.cs" />
     <Compile Include="MtgTests.cs" />
+    <Compile Include="GrameneTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\code\code.csproj">

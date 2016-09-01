@@ -396,7 +396,7 @@ namespace csMTG
         /// </summary>
         /// <param name="vertexId"> Vertex identifier. </param>
         /// <returns> A list of the deleted vertices. </returns>
-        public List<int> RemoveTree(int vertexId)
+        new public List<int> RemoveTree(int vertexId)
         {
             List<int> deletedVertices = base.RemoveTree(vertexId);
 
